@@ -1,0 +1,292 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass classicthesis
+\begin_preamble
+% book example for classicthesis.sty
+ % KOMA-Script book
+\usepackage{lipsum}
+\usepackage[linedheaders,parts]{classicthesis}% ,manychapters
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language spanish
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command bibtex8
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter*
+Introducción y Motivación
+\end_layout
+
+\begin_layout Standard
+Los últimos avances tecnológicos en materia de captura y procesamiento de
+ imágenes digitales han impactado de manera considerable en el área de la
+ medicina, favoreciendo la exploración y análisis de modalidades médicas
+ ampliamente difundidas en la práctica clínica, tales como las Tomografías
+ Computadas (CT), las Resonancias Magnéticas (MRI), entre otras
+\begin_inset CommandInset citation
+LatexCommand citep
+key "bankman2008handbook"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Entre los numerosos aspectos a tener en cuenta para el desarrollo de aplicacione
+s de asistencia al diagnóstico o seguimiento de tratamientos médicos, uno
+ de los más importantes tiene que ver con disponer de algoritmos de segmentación
+ que permitan detectar regiones de interés dentro de la imagen o serie de
+ imágenes involucradas en el estudio, para su posterior análisis 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "pham2000current"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+La segmentación constituye una de las etapas más importantes dentro del
+ pipeline de Procesamiento de Imágenes debido a que sus resultados condicionan
+ significativamente las etapas posteriores relacionadas con la visualización
+ y el análisis de información derivada.
+ En general, la segmentación consiste en la identificación de regiones de
+ interés en una imagen, con propósitos que varían de acuerdo a la aplicación
+ particular 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "fu1981survey"
+
+\end_inset
+
+.
+ En la práctica médica, por ejemplo, consiste en un proceso clave para la
+ detección de órganos (tales como el corazón, el hígado, el cerebro, etc.)
+ o para distinguir tejidos (en el caso del cerebro, por ejemplo, materia
+ gris, materia blanca y líquido cefalorraquídeo) 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "yi2009discriminative"
+
+\end_inset
+
+ o lesiones patológicas (como tumores, hemorragias, etc.) 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "deng2010mri"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Desde hace algunos años la segmentación constituye uno de los temas de investiga
+ción más difundidos en el área del procesamiento de imágenes médicas, y
+ permanece en continua evolución 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "corona2013information,qian2013active,del2009combined"
+
+\end_inset
+
+.
+ Existen numerosas soluciones computacionales para abordar este tipo de
+ problemas, tanto automáticas como semiautomáticas o interactivas.
+ En general, los algoritmos de segmentación pueden clasificarse según dos
+ propiedades básicas: discontinuidad y similitud.
+ Los primeros se caracterizan por la utilización de operadores derivativos,
+ que permiten detectar cambios abruptos en los bordes entre los objetos;
+ los basados en similitud, por su parte, intentar determinar regiones homogéneas
+ en la imagen a partir de la integración de elementos con características
+ similares 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "deng2010mri"
+
+\end_inset
+
+.
+ Estos últimos pueden resultar triviales frente a imágenes simples en las
+ que los objetos son homogéneos y contrastan significativamente con el resto.
+ Sin embargo, en imágenes como las utilizadas en el ámbito médico, donde
+ las estructuras suelen ser más complejas, esta tarea se vuelve mucho más
+ difícil.
+ Habitualmente, las imágenes médicas presentan inconvenientes tales como
+ ruido, distorsiones, intensidades variables, artefactos, transiciones difusas
+ entre objetos, etc., que provocan fallas en los métodos más tradicionales
+ y obligan al desarrollo de estrategias más robustas.
+\end_layout
+
+\begin_layout Standard
+El problema de la segmentación de imágenes tridimensionales (3D) se relaciona
+ con el de la generación de mallas geométricas asociadas a las regiones
+ de interés 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "lorensen1987marching"
+
+\end_inset
+
+.
+ Las técnicas tradicionalmente utilizadas en el estado del arte suelen tener
+ un comportamiento general aceptable, pero a menudo ocasionan inconvenientes
+ en casos en los que no hay una clara definición de los bordes en la imagen.
+ Además, suelen generar mallas con un número innecesariamente elevado de
+ polígonos (lo que perjudica la visualización utilizando técnicas de renderizaci
+ón o eleva significativamente el costo computacional de los cálculo o simulacion
+es que se realicen sobre ellas) o con irregularidades tales como huecos
+ o regiones no conexas, a menudo no asociadas con las características del
+ órgano o tejido real.
+ Esto contribuye a la necesidad de algoritmos que permitan obtener mallas
+ de superficie geométricamente regulares y optimizadas.
+ 
+\end_layout
+
+\begin_layout Standard
+Entre las distintas alternativas propuestas, los métodos de segmentación
+ difusa se caracterizan por no brindar una segmentación unívoca, si no establece
+r probabilísticamente el nivel de confianza con el que un punto de la imagen
+ pertenece a una determinada región de interés 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "chuang2006fuzzy"
+
+\end_inset
+
+.
+ En particular, los mismos proveen como resultado una imagen o volumen difuso
+ por cada región de interés, donde cada punto representa la probabilidad
+ de que el mismo pertenezca al objeto que se intenta detectar.
+ Entre los enfoques de segmentación difusa más utilizados se distingue el
+ de Fuzzy C-Means, que permite obtener los mapas probabilísticos de C regiones
+ de interés a partir de la información característica de los mismos 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "chaira2010intuitionistic"
+
+\end_inset
+
+.
+ La ventaja de estos métodos es que permiten la utilización de más de una
+ única banda espectral como información de entrada, lo que facilita su traslado
+ a problemas de segmentación multiespectral, donde las imágenes de entrada
+ corresponden a las de un mismo paciente, pero obtenidas utilizando más
+ de una modalidad de captura 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "chen2010comparison"
+
+\end_inset
+
+.
+ Sin embargo, sus resultados dependen en gran medida de la información caracterí
+stica de los clústeres con los que es inicializado, y requieren de etapas
+ de postprocesamiento para su refinamiento y utilización 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "li2011integrating"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Otros de los métodos de segmentación más populares son los basados en modelos
+ deformables, también conocidos como snakes o superficies activas, en su
+ versión 3D 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "mcinemey1999topology"
+
+\end_inset
+
+.
+ Los mismos se basan en la minimización de una función de energía asociada
+ a una superficie continua, que se deforma elásticamente de acuerdo a la
+ acción de un sistema de fuerzas, hasta alcanzar los límites de las regiones
+ de interés.
+ Además, se aplican sobre un dominio continuo, lo que permite reconstruir
+ superficies suaves, con una precisión mayor a la de la imagen de entrada.
+ Sin embargo, no soportan directamente cambios topológicos, y requieren
+ una inicialización apropiada, complicando su adaptación a la segmentación
+ de objetos de estructura compleja.
+ Por otro lado, existen muy pocos enfoques en la bibliografía que propongan
+ modificaciones a su definición original para incorporar información probabilíst
+ica obtenida a través de estrategias de segmentación difusa 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "shyu2012global"
+
+\end_inset
+
+.
+\end_layout
+
+\end_body
+\end_document

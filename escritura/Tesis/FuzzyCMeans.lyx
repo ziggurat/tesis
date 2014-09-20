@@ -1,0 +1,1701 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass classicthesis
+\begin_preamble
+% book example for classicthesis.sty
+ % KOMA-Script book
+\usepackage{lipsum}
+\usepackage[linedheaders,parts]{classicthesis}% ,manychapters
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language spanish
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command bibtex8
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Fuzzy C-Means
+\end_layout
+
+\begin_layout Section
+Introducción
+\end_layout
+
+\begin_layout Standard
+Como se explicó anteriormente, la etapa inicial de nuestro enfoque de segmentaci
+ón está basada en Fuzzy C-Means.
+ Fuzzy C-Means es un algoritmo de clustering no supervisado, introducido
+ por 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "dunn1973fuzzy"
+
+\end_inset
+
+ y extendido luego por 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "bezdek1984fcm"
+
+\end_inset
+
+, que permite obtener segmentaciones difusas agrupando elementos similares
+ en clusters.
+ Un cluster es un conjunto de elementos que son afines entre sí.
+ Una de las principales desventajas de los algoritmos de clustering tradicionale
+s radica en que los mismos asumen que cada elemento pertenece inequívocamente
+ a un cluster, ignorando si existe o no alguna similaridad con los demás
+ miembros de otros clusters 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "full1982fuzzy"
+
+\end_inset
+
+.
+ Una manera de modelar esta similaridad fue introducida por Zadeh en 1965
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "zadeh1965fuzzy"
+
+\end_inset
+
+, y consiste en representar la semejanza de los puntos que se desean clusterizar
+ con una función cuyos valores están entre cero y uno.
+ Basado en esta propuesta, y a diferencia de K-Means, en donde cada elemento
+ pertenece o no a un cluster de manera determinante, en Fuzzy C-Means cada
+ elemento posee una probabilidad de pertenencia a cada uno de los clusters.
+ Este agrupamiento se obtiene minimizando iterativamente una función de
+ costo que depende de la similaridad de los elementos de un cluster respecto
+ al centroide del mismo.
+ El centroide es el vector característico de un clúster, obtenido como el
+ promedio de los vectores de características de los puntos que pertenecen
+ al cluster.
+ A cada clúster le corresponde un único centroide, que varía conforme se
+ incorporan o quitan puntos del mismo.
+ Fuzzy C-Means requiere como entrada un vector de características por cada
+ uno de los puntos que se desean clusterizar, y el número de clusters en
+ los que se quiere dividir la imagen.
+ El algoritmo asigna a cada voxel a una categoría con una cierta probabilidad
+ de pertenencia.
+ Más formalmente, sea 
+\begin_inset Formula $X=(x_{1},x_{2},...,x_{n})$
+\end_inset
+
+ una imagen de 
+\begin_inset Formula $n$
+\end_inset
+
+ voxeles a ser particionados en 
+\begin_inset Formula $C$
+\end_inset
+
+ regiones, en donde cada 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ representa el vector de características del 
+\begin_inset Formula $i$
+\end_inset
+
+-ésimo vóxel.
+ El algoritmo asigna cada vóxel a una clase a través de la minimización
+ iterativa de una función de costo, definida como: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+J=\sum_{j=1}^{N}\sum_{i=1}^{c}u_{ij}^{m}\left\Vert x_{j}-v_{i}\right\Vert {}^{2}\label{eq:fuzzy}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+donde 
+\begin_inset Formula $u_{ij}$
+\end_inset
+
+ representa la pertenencia de un voxel 
+\begin_inset Formula $x_{j}$
+\end_inset
+
+ al cluster 
+\begin_inset Formula $i$
+\end_inset
+
+, 
+\begin_inset Formula $v_{i}$
+\end_inset
+
+ es el centroide del cluster 
+\begin_inset Formula $i$
+\end_inset
+
+, 
+\begin_inset Formula $\left\Vert \right\Vert $
+\end_inset
+
+ es la distancia euclídea entre los voxels y 
+\begin_inset Formula $m$
+\end_inset
+
+ es una constante.
+ Esta constante controla el nivel de difusión de la clusterización resultante
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "chuang2006fuzzy"
+
+\end_inset
+
+ y toma valores entre 
+\begin_inset Formula $1<m<\infty$
+\end_inset
+
+.
+ Incrementar el valor de 
+\begin_inset Formula $m$
+\end_inset
+
+ tiende a degradar la pertenencia.
+ No hay estudios teóricos o computacionales que distingan un 
+\begin_inset Formula $m$
+\end_inset
+
+ óptimo.
+ El rango de valores útiles parece ser entre 
+\begin_inset Formula $1$
+\end_inset
+
+ y 
+\begin_inset Formula $30$
+\end_inset
+
+ aproximadamente y para la mayor parte de las imágenes analizadas 
+\begin_inset Formula $1.5\leq m\leq3.0$
+\end_inset
+
+ da buenos resultados 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "bezdek1984fcm"
+
+\end_inset
+
+.
+ El valor utilizado en este estudio es de 
+\begin_inset Formula $m=2$
+\end_inset
+
+ ya que todos los experimentos realizados en la bibliografía consultada
+ lo utilizan
+\begin_inset CommandInset citation
+LatexCommand citep
+key "caldairou2011non,yang2005fuzzy,chuang2006fuzzy"
+
+\end_inset
+
+.
+ La función de costo tiene por objetivo asignar probabilidades altas de
+ pertenencia de un vóxel 
+\begin_inset Formula $j$
+\end_inset
+
+ a un cluster 
+\begin_inset Formula $i$
+\end_inset
+
+ si su vector característico asociado 
+\begin_inset Formula $x_{j}$
+\end_inset
+
+ es similar al centroide 
+\begin_inset Formula $v_{j}$
+\end_inset
+
+.
+ Esta similitud entre vectores es cuantificada midiendo la distancia euclídea
+ entre ambos en el espacio de características: si el vector de características
+ es muy disímil respecto al centroide del cluster de estudio, la distancia
+ euclídea entre ambos será alta; si los vectores son similares, la distancia
+ será menor.
+ El resultado del proceso de segmentación es una matriz de pertenencias
+ y una lista de centroides de cada una de las regiones.
+ Una implementación de la función objetivo puede ser obtenida mediante un
+ proceso iterativo como el siguiente:
+\end_layout
+
+\begin_layout Enumerate
+Configurar los valores iniciales para 
+\begin_inset Formula $c$
+\end_inset
+
+ (cantidad de clusters), 
+\begin_inset Formula $m$
+\end_inset
+
+ (nivel de difusión), y adicionalmente 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ y 
+\begin_inset Formula $looplimit$
+\end_inset
+
+ que serán utilizados como condiciones de corte.
+\end_layout
+
+\begin_layout Enumerate
+Inicializar una matriz 
+\begin_inset Formula $U=[u_{ij}]$
+\end_inset
+
+ inicial.
+ En nuestro caso se realizaron dos implementaciones de este paso, la primera
+ implementación realiza una inicialización aleatoria de la matriz de pertenencia
+s inicial mientras que la implementación alternativa permite definir los
+ centroides iniciales manualmente en un punto determinado de la imagen original.
+\end_layout
+
+\begin_layout Enumerate
+Configurar un contador 
+\begin_inset Formula $b=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Calcular los centroides de los clusters 
+\begin_inset Formula $\left\{ v_{i}^{(b)}\right\} $
+\end_inset
+
+ utilizando 
+\begin_inset Formula $U^{(b)}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Calcular la pertenencia de los píxeles 
+\begin_inset Formula $U^{(b+1)}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Si 
+\begin_inset Formula $\left\Vert U^{(b)}-U^{(b+1)}\right\Vert <\epsilon$
+\end_inset
+
+ o 
+\begin_inset Formula $b=looplimit$
+\end_inset
+
+entonces detener el algoritmo, sino configurar 
+\begin_inset Formula $b=b+1$
+\end_inset
+
+ y volver al paso 4.
+\end_layout
+
+\begin_layout Standard
+En las siguientes secciones se abordarán algunos detalles particulares del
+ algoritmo, evaluados sobre diferentes tipos de imágenes.
+ En la Sección X.X se presenta un estudio de sensibilidad realizado sobre
+ fantomas artificiales con y sin ruido, y con y sin efecto bias.
+ En la sección X.X describimos un estudio similar realizado sobre imágenes
+ de MRI cerebrales.
+ 
+\end_layout
+
+\begin_layout Section
+Estudio de sensibilidad sobre fantomas artificiales
+\end_layout
+
+\begin_layout Standard
+Con la intención de evaluar el comportamiento del algoritmo en diferentes
+ escenarios que puedan presentarse en las imágenes reales, éste fue aplicado
+ sobre imágenes bidimensionales creadas artificialmente para representar
+ con claridad las situaciones a analizar.
+ Los escenarios planteados involucraron dos tipos posibles de inicialización
+ de los centroides del algoritmo: de manera aleatoria, y seleccionados manualmen
+te.
+ Las ejecuciones fueron realizadas en un ambiente controlado, aunque en
+ los casos de inicialización aleatoria de los centroides el resultado es
+ no determinístico.
+ La evaluación fue realizada sobre imágenes con 2 clusters bien diferenciados
+ en términos de sus intensidades, con distintos tipos de borde entre unos
+ y otros, con diferentes niveles de ruido y de intensidades.
+\end_layout
+
+\begin_layout Subsection
+Imágenes sin ruido
+\end_layout
+
+\begin_layout Standard
+La primera serie de pruebas se realizó sobre imágenes sin ruido, con el
+ objetivo de estudiar el comportamiento del algoritmo utilizando intensidades
+ y también incorporando información espacial.
+\end_layout
+
+\begin_layout Subsubsection
+Imagen artificial con bordes rectos entre clusters
+\end_layout
+
+\begin_layout Standard
+La primera imagen utilizada para evaluar el algoritmo consta de dos secciones
+ claramente definidas, diferenciadas por su color.
+ La parte izquierda de la imagen es negra y la derecha es blanca, lo que
+ permite diferenciar con claridad ambos clusters
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+El recuadro negro es solo para señalar que la mitad derecha es blanca pero
+ no forma parte de la imagen evaluada
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_250x250.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Imagen artificial con borde recto entre clusters
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:mitad_mitad"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La primera ejecución del algoritmo se realizó con inicialización aleatoria
+ de los centroides y sin ninguna supervisión por parte del usuario.
+ Los centroides iniciales fueron seleccionados aleatoriamente, la cantidad
+ de iteraciones máxima fue limitada a 
+\begin_inset Formula $200$
+\end_inset
+
+, y el 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ de convergencia se estableció en un valor muy pequeño, equivalente a 
+\begin_inset Formula $1e^{-5}$
+\end_inset
+
+.
+ Para esta evaluación del algoritmo sólo se tuvieron en cuenta como característi
+cas las intensidades de la imagen.
+ Luego de la ejecución se obtuvo el mapa probabilístico correspondiente
+ a cada una de las dos regiones.
+ En la figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mit_mit_sin_coordenadas"
+
+\end_inset
+
+ se presenta una representación gráfica de dichos mapas.
+ La escala de colores de los mapas probabilísticos presentados varia de
+ azul a rojo, donde el color azul indica una pertenencia nula del píxel
+ al centroide y el color rojo una pertenencia con probabilidad de 1.
+ En el caso de la figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mit_mit_sin_coordenadas"
+
+\end_inset
+
+ la imagen de la izquierda representa el mapa probabilístico del primer
+ cluster, y se observa que la mitad izquierda de los puntos tienen una probabili
+dad de pertenencia nula, representada por el color rojo, mientras que los
+ puntos de la parte derecha tienen una pertenencia del 100% representada
+ por el color azul.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_clusters_sin_coordenadas_random.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Clusterizacion con centroides aleatorios, sin coordenadas espaciales
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:mit_mit_sin_coordenadas"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Como era de esperar, el algoritmo diferenció de manera correcta a qué región
+ pertenece cada punto, basándose sólo en las intensidades.
+ Se puede concluir a partir de este resultado que el contraste pronunciado
+ entre las intensidades de la imagen permite lograr una agrupación precisa
+ de los puntos.
+ Luego se evaluó el algoritmo utilizando la misma imagen, pero incluyendo
+ además como feature la coordenada 
+\begin_inset Formula $(x,y)$
+\end_inset
+
+ de cada punto.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_clusters_con_coordenadas_random.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos con coordenadas como features
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:mit_mit_con_coord"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Como se puede observar en las representaciones de los mapas probabilísticos
+ (figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mit_mit_con_coord"
+
+\end_inset
+
+), la inclusión de la posición para el cálculo de la distancia entre puntos
+ afecta en gran medida el valor probabilístico de pertenencia de los puntos.
+ Se distingue con claridad el centroide de cada región en el centro de las
+ mismas, con una probabilidad mayor de pertenencia, y se observa que la
+ probabilidad de pertenencia de los diferentes puntos disminuye de manera
+ radial a medida que los mismos se alejan encuentran más alejados del centroide.
+ La diferenciación entre los dos clusters sigue siendo muy clara, ya que
+ el contraste de intensidades continúa siendo muy alto; sin embargo, también
+ es posible visualizar cómo los puntos más alejados de los centroides tienen
+ una probabilidad considerablemente más baja de pertenencia.
+ 
+\end_layout
+
+\begin_layout Standard
+El siguiente conjunto de pruebas realizadas se llevó a cabo utilizando la
+ misma imagen que en los experimentos anteriores (Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mitad_mitad"
+
+\end_inset
+
+), pero seleccionando los centroides iniciales manualmente en lugar de al
+ azar.
+ En la primera ejecución realizada con el centroide manual utilizando sólo
+ las intensidades para el cálculo de la distancia, el resultado fue exactamente
+ el mismo que en el caso de los centroides al azar.
+ Esto era esperable ya que la imagen solo consta de dos intensidades de
+ gris y cualquier punto de la misma intensidad seleccionado como centroide
+ inicial nos entregará los mismos resultados.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_clusters_sin_coordenadas_random.png
+	scale 75
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Clusterizacion con centroides iniciales seleccionados a mano sin coordenadas
+ espaciales
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Al agregar las coordenadas de los puntos en las pruebas realizadas con centroide
+s elegidos manualmente, los resultados también fueron similares a los encontrado
+s en las pruebas con centroides iniciales al azar, pese a haber seleccionado
+ el centroide inicial en la esquina superior izquierda para un cluster y
+ en la esquina inferior derecha para otro.
+ 
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_clusters_con_coordenadas_centroide_manual.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Clusterizacion con centroides iniciales seleccionados a mano y coordenadas
+ espaciales
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Clusterizacion-con-centroides-1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Al observar que el resultado es el mismo, realizamos pruebas limitando la
+ cantidad de iteraciones del algoritmo para observar cómo era alterado el
+ centroide en cada iteración.
+ Como se puede observar en la secuencia de la Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Progresion-del-desplazamiento-cuadrados"
+
+\end_inset
+
+ el centroide va desplazándose desde la ubicación original, elegida a mano,
+ hacia el centro de la región.
+ Esto parece indicar que, al menos para figuras de este tipo, la elección
+ manual de un centroide inicial no afecta la matriz de pertenencias obtenida
+ luego de varias iteraciones, ya que el centroide tiende a desplazarse hacia
+ el centro de la región.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_con_coordenadas_manual_desplazamiento.png
+	lyxscale 65
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Progresión del desplazamiento de los centroides
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Progresion-del-desplazamiento-cuadrados"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Imagen artificial con bordes curvos entre clusters
+\end_layout
+
+\begin_layout Standard
+Nuestro segundo conjunto de pruebas para evaluar el algoritmo fue realizado
+ utilizando una imagen artificial con un cluster cerrado.
+ La imagen consta de un círculo negro con fondo blanco
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+El recuadro negro es solo para señalar que el fondo de la imagen es blanco,
+ pero no es parte de la imagen utilizada en la ejecución de los algoritmos
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/circulo_250x250.eps
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Imagen artificial con bordes curvos entre clusters
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La primera prueba para esta imagen fue realizada utilizando centroides iniciales
+ aleatorios y no se incluyeron las coordenadas espaciales.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/circulo_250x250_sin_coordenadas_random.png
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos sin coordenadas como feature y centroides aleatorios
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Los resultados obtenidos demostraron que el algoritmo es capaz de agrupar
+ los puntos de manera correcta en zonas cerradas cuando existe un fuerte
+ contraste de intensidades entre la zona interior y la exterior.
+ Al incluir las coordenadas espaciales los resultados obtenidos fueron de
+ menor calidad.
+ Si bien se logra diferenciar con claridad la zona central del fondo en
+ la imagen original, se observa que las probabilidades de los puntos pertenecien
+tes al cluster cerrado son afectadas por la distancia al centroide que tiende
+ a ubicarse en un punto tangente a la circunferencia.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/circulo_250x250_con_coordenadas_random.png
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos con coordenadas como feature y centroides aleatorios
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+En la primera imagen se observa cómo el rango de probabilidades para la
+ zona circular abarca desde probabilidad 0 a probabilidad 0.5 aproximadamente,
+ y en la segunda figura vemos cómo las probabilidades de la zona cerrada
+ varía desde 0.5 tendiendo a 1 pero sin lograr probabilidades altas.
+ Se observa claramente que hay incertidumbre en la matriz de pertenencias
+ de la región cerrada, y que esta incertidumbre aumenta en el resto de la
+ imagen.
+ Se puede apreciar cómo las probabilidades en el fondo prácticamente recorren
+ el rango completo de probabilidades, lo cual indica que la zona de fondo
+ no es identificada con certeza como perteneciente a ningún cluster.
+\end_layout
+
+\begin_layout Standard
+Al realizar las pruebas utilizando un centroide inicial seleccionado manualmente
+ encontramos los mismos resultados que al elegir el centroide inicial al
+ azar.
+ El centroide inicial para uno de los clusters fue seleccionado en la zona
+ central del círculo, mientras que el centroide correspondiente al otro
+ cluster fue seleccionado en el punto superior izquierdo de la imagen.
+ No se notaron diferencias en los resultados, y al igual que en el caso
+ aleatorio los valores límites de probabilidades se desplazan hacia un punto
+ tangente de la figura cerrada.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/circulo_250x250_con_coordenadas_manual.png
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos con coordenadas como feature y centroides seleccionados
+ manualmente
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Mapas-probabilísticos-A"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+También se realizó el experimento de ejecutar el algoritmo con los centroides
+ elegidos a mano pero con un límite de iteraciones bajo para observar cómo
+ se desplazaban los mismos.
+ Como se observa en la Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Secuencia-A"
+
+\end_inset
+
+ inicialmente la circunferencia tiene valores relativamente altos de pertenencia
+ en la segunda figura pero disminuye a medida que se ejecutan más iteraciones
+ y el resultado final es el mismo que vimos en la Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Mapas-probabilísticos-A"
+
+\end_inset
+
+.
+ A medida que el algoritmo progresa el centroide se desplaza hacia un punto
+ del borde de la circunferencia.
+ También observamos que la región del fondo sigue siendo incorrectamente
+ identificada por el algoritmo, ya que las probabilidades abarcan el rango
+ completo de 0 a 1.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/circulo_250x250_con_coordenadas_manual_desplazamiento.png
+	lyxscale 65
+	scale 40
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Desplazamiento de centroides con coordenadas como feature y centroides seleccion
+ados manualmente
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Secuencia-A"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Imágenes con ruido
+\end_layout
+
+\begin_layout Standard
+La siguiente serie de experimentos se realizó utilizando imágenes con ruido
+ 
+\emph on
+salt and pepper
+\emph default
+.
+ En la primera evaluación se utilizó una imagen con 1% de ruido.
+ Como era de esperar, en el caso en el que no incluimos las coordenadas
+ espaciales se puede observar que los puntos de ruido son catalogados con
+ una probabilidad baja de pertenencia a su cluster debido a la diferencia
+ de color.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_sin_coordenadas_random_con_ruido.png
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos sin coordenadas como feature, centroides aleatorios
+ y ruido de 1%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/circulo_250x250_sin_coordenadas_random_con_ruido.png
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos sin coordenadas como feature, centroides aleatorios
+ y ruido de 1%
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cuando se añaden las coordenadas espaciales al algoritmo, se puede observar
+ el mismo comportamiento de clusterización que en la imagen sin ruido, con
+ la diferencia de que los puntos de ruido tienen una probabilidad ligeramente
+ más cercana a la de sus vecinos en comparación a la misma ejecución sin
+ coordenadas espaciales (Figuras 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ruido1"
+
+\end_inset
+
+ y 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:ruido2"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/mitad_mitad_con_coordenadas_random_con_ruido.png
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos sin coordenadas como feature, centroides seleccionados
+ manualmente y ruido de 1%
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ruido1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/circulo_250x250_con_coordenadas_random_con_ruido.png
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapas probabilísticos sin coordenadas como feature, centroides seleccionados
+ manualmente y ruido de 1%
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ruido2"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Imágenes con bias
+\end_layout
+
+\begin_layout Standard
+En las siguientes pruebas se utilizó una imagen con 3 regiones y con bias
+ (Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:bias"
+
+\end_inset
+
+).
+ El bias es una distorsión de la imagen causada por el instrumento de captura
+ de la imagen.
+ Esta distorsión se presenta generalmente sobre los bordes y contornos y
+ causa cambios en la intensidad de los valores de los píxeles de manera
+ que el mismo tejido es representado por diferentes grises en la imagen
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "juntu2005bias"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/biasing.png
+	lyxscale 65
+	scale 65
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Imagen de bordes curvos con 3 clusters y biasing
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:bias"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+El comportamiento del algoritmo cuando no se utilizaron coordenadas espaciales
+ fue similar al observado en las pruebas anteriores, las 3 zonas fueron
+ correctamente detectadas y se puede notar como el biasing afecta las probabilid
+ades de las zonas debido al cambio de intensidades.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/biasing_sin_coordenadas.png
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Imagen de las 3 zonas clusterizadas con biasing sin coordenadas
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cuando utilizamos coordenadas espaciales en esta imagen, podemos apreciar
+ que al igual que en los experimentos anteriores el algoritmo no detecta
+ correctamente la zona del fondo.
+ En el caso particular de la segunda imagen, vemos concretamente la influencia
+ de las coordenadas espaciales donde se observa que la zona central y el
+ anillo que rodea la zona central son reconocidos como un solo grupo pese
+ a la diferencia de intensidades.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/biasing_con_coordenadas.png
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mapa con las 3 zonas con coordenadas
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Análisis de convergencia
+\end_layout
+
+\begin_layout Standard
+Utilizando la imagen de la figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mitad_mitad"
+
+\end_inset
+
+ se realizó un análisis de convergencia para observar la evolución de la
+ función costo y la cantidad de iteraciones requeridas para la convergencia
+ del algoritmo cuando se variaba el valor 
+\begin_inset Formula $m$
+\end_inset
+
+ como vimos en la formula 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:fuzzy"
+
+\end_inset
+
+ representa la difusión de la pertenencia de los píxeles a una región.
+ El primer análisis fue realizado con 
+\begin_inset Formula $m=2$
+\end_inset
+
+ y como se puede observar en la figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Convergencia-de-Figura1"
+
+\end_inset
+
+ la convergencia se produjo rápidamente en 10 iteraciones.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/convergencia_mitad_mitad_factor2_10it.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Convergencia de Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:mit_mit_sin_coordenadas"
+
+\end_inset
+
+ con 
+\begin_inset Formula $m=2$
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Convergencia-de-Figura1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Cuando aumentamos el valor de 
+\begin_inset Formula $m$
+\end_inset
+
+ a 3, se puede observar que fueron necesarias 200 iteraciones para la convergenc
+ia del algoritmo.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/convergencia_mitad_mitad_factor3_200it.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Convergencia con 
+\begin_inset Formula $m=3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La siguiente prueba fue realizada con 
+\begin_inset Formula $m=4$
+\end_inset
+
+.
+ Si bien las 3 figuras tienen la misma curva y se puede observar que existe
+ un punto de inflexión en el cual el algoritmo realiza un salto cualitativo
+ donde la función costo disminuye drásticamente, observamos que en este
+ último caso la función costo se torna mas inestable y que tiene una mayor
+ diferencia entre iteraciones consecutivas que en los casos anteriores.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/convergencia_mitad_mitad_factor4_62it.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Convergencia con 
+\begin_inset Formula $m=4$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+De acuerdo a la bibliografía consultada no existe ningún análisis teórico
+ o practico para definir un valor óptimo de 
+\begin_inset Formula $m$
+\end_inset
+
+.
+\end_layout
+
+\end_body
+\end_document

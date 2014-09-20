@@ -1,0 +1,168 @@
+Esquema de segmentación propuesto
+
+1.1 Descripción general 
+
+Esperen para escribir esto a tener bien definido todo el enfoque. 
+Acá se presenta el pipeline particular que ustedes proponen, 
+haciendo especial hincapié en qué sale de cada etapa y para qué 
+se usa en la siguiente.
+
+1.2 Segmentación inicial por clustering difuso
+
+Un primer paso importante en el análisis de imágenes es la 
+división de las mismas en regiones significativas. La etapa 
+inicial de nuestro enfoque de segmentación está basada en Fuzzy 
+C-Means. Fuzzy C-Means es un algoritmo no supervisado de 
+clustering que permite obtener segmentaciones difusas agrupando 
+elementos similares en clusters. Un hecho significativo en un 
+algoritmo de clustering no difuso es el defecto axiomatico del 
+modelo donde inequívocamente cada elemento pertenece a un grupo 
+junto con otros miembros de su cluster, y por lo tanto no tienen 
+similaridad aparente con elementos de otro cluster [bezdek1984fcm]
+. Una manera de reflejar la semejanza entre elementos de otros 
+clusters fue introducida por Zadeh en 1965 [zadeh1965fuzzy]. La 
+idea clave de Zadeh es representar la similaridad de los puntos 
+con una función cuyos valores están entre cero y uno. Basado en 
+esta propuesta, a diferencia de C-Means donde cada elemento 
+pertenece o no a un cluster de manera determinante, en Fuzzy 
+C-Means cada elemento tiene una probabilidad de pertenecer a un 
+cluster. Este agrupamiento se obtiene minimizando iterativamente 
+una función, llamada comúnmente función costo, que depende de la 
+similaridad de los elementos de un grupo respecto al centro del 
+cluster. Este método fue desarrollado por Dunn en 1973 [dunn1973fuzzy]
+ y mejorado por Bezdek en 1981 [bezdek1981pattern]. Actualmente 
+es aplicado en varios campos desde reconocimiento de patrones de 
+suelos [odeh1992soil] hasta segmentación de zonas en imagenes 
+tridimensionales de resonancia magnetica.
+
+El algoritmo de segmentación por clustering difuso recibe como 
+entrada el conjunto de datos a clusterizar, la cantidad de 
+regiones en las que se quiere dividir la imagen y un umbral de 
+corte. La implementación del algoritmo Fuzzy C-Means asigna cada 
+voxel a una categoría utilizando una pertenencia difusa. Digamos 
+que X=(x_{1},x_{2},...,x_{N})
+ representa una imagen de N
+ 
+voxeles a ser particionados en c
+ regiones. El algoritmo es una 
+optimización iterativa que minimiza una función costo definida de 
+esta manera:
+
+J=\sum_{j=1}^{N}\sum_{i=1}^{c}u_{ij}^{m}||x_{j}-v_{i}||^{2}
+
+
+donde u_{ij}
+ representa la pertenencia de un voxel x_{j}
+ al 
+cluster i
+,v_{i}
+ es el centro del cluster i
+, ||\,||
+ es la 
+distancia entre los voxels y m
+ es una constante que controla el 
+factor de difusión de la categorización resultante [chuang2006fuzzy]
+. En este estudio utilizamos diferentes valores de m
+ para 
+evaluar el algoritmo. La función de costo se minimiza cuando a 
+voxeles que son cercanos a un centroide se le asigna una 
+probabilidad alta de pertenencia y a voxeles lejanos una 
+probabilidad baja. Cabe aclarar que cuando utilizamos el concepto 
+de distancia, no nos referimos solo a distancia espacial.
+
+La implementación desarrollada se basa en los conceptos 
+explicados y espera como entrada un conjunto de datos, un limite 
+de mejora mínima de la función objetivo entre iteración e 
+iteración, el factor de control de difusión m
+ y una cantidad 
+máxima de iteraciones. Si bien los experimentos se realizaron 
+utilizando imágenes tridimensionales, el conjunto de datos de 
+entrada del algoritmo es en forma de matriz donde cada elemento a 
+clusterizar puede tener entre 1 y n
+ componentes. De esta manera 
+podemos por ejemplo realizar una clusterizacion de una imagen 
+bidimensional utilizando las coordenadas como componentes de cada 
+elemento, es decir ingresando al algoritmo una matriz de N\times2
+
+ siendo N
+ la cantidad de puntos y la segunda dimensión de la 
+matriz la tupla de coordenadas (x,y)
+. Aplicando el mismo 
+concepto a imágenes tridimensionales, ingresaríamos al algoritmo 
+una matriz de N\times3
+ y podemos ampliar este concepto a 
+cualquier cantidad de componentes que reflejen una diferencia de 
+características que puedan ser utilizadas para medir diferencias 
+entre elementos.
+
+La implementación se puede dividir conceptualmente en 
+inicialización del algoritmo, el cálculo de la la función 
+objetivo basada en la distancia entre elementos y una iteración 
+del cálculo de la función objetivo que finaliza cuando se cumple 
+la cantidad máxima de iteraciones o la diferencia de la función 
+costo entre pasos consecutivos es menor al limite de mejora 
+mínima, siendo estos últimos dos conceptos parámetros ingresados 
+al algoritmo. La inicialización del algoritmo se realiza creando 
+una matriz de probabilidades inicial generada aleatoriamente pero 
+cumpliendo el requisito (ACA REQUISITO, MIRAR IMPLEMENTACION). 
+Esta inicialización permite que el algoritmo se pueda ejecutar de 
+manera no supervisada. La función objetivo es calculada 
+utilizando la formula expresada en la ecuación [eq:fuzzy], donde 
+se utiliza la distancia euclídea para medir la distancia entre 
+elementos. El resultado de la función es un valor de probabilidad 
+de pertenencia de cada elemento a cada cluster. En cada paso de 
+la iteración mencionada se calcula la función costo y se compara 
+con la función costo de la iteración anterior. Si esta diferencia 
+es menor al valor delta ingresado como parámetro, el algoritmo 
+finaliza. La utilización de esta diferencia como condición de 
+corte necesita un conocimiento previo de los valores de la 
+función de costo para poder parametrizar el algoritmo con un 
+valor correcto, o bien la normalización de los datos de entrada. 
+Para lograr un algoritmo sin supervisión la segunda opción es la 
+elegida en nuestra implementación.
+
+En el enfoque propuesto inicialmente sólo consideramos la 
+intensidad del gris del voxel para calcular su pertenencia. De 
+esta manera el resultado obtenido no tiene en cuenta la posición 
+por lo que voxels con semejante intensidad de gris pertenecerán a 
+la misma región pese a estar distantes uno del otro. En el 
+segundo enfoque se utilizó como dato de entrada al algoritmo las 
+intensidades y las coordenadas del voxel. De esta manera al 
+calcular las distancias entre voxels, el algoritmo no solo tiene 
+encuentra la similaridad de color sino también su proximidad 
+espacial. En este trabajo el conjunto de datos es una 
+representación matricial de la imagen de resonancia magnética en 
+escala de grises. El formato de imagen utilizado es DICOM aunque 
+también se han utilizado otros formatos como PNG y MHA. El 
+resultado del proceso de segmentación es una matriz de 
+pertenencias y una lista de centroides de cada una de las 
+regiones.
+
+Cuando tengan andando la primera parte, documentan esto. a) 
+Presenten lo más formal posible (ecuaciones, terminología 
+adecuada) el algoritmo de Fuzzy C-Means. b) Comenten cada una de 
+las decisiones que tomaron a la hora del desarrollo. c) Expliquen 
+la estrategia de inicialización y muestren algunos resultados 
+parciales (esto es, un ejemplo de inicialización, de evolución 
+del algoritmo y de mapa probabilístico resultante). De llegar a 
+tener que introducir algún parámetro en el algoritmo, incluyamos 
+un estudio de sensibilidad cualitativo (esto es, cómo se 
+modifican los resultados gráficamente a raíz de tal o cual 
+elección del parámetro).
+
+Esto lo vamos a discutir una vez que tengan la primera parte 
+andando. Mi idea sería que este umbralado lo hagamos de la manera 
+más automática e inteligente posible. Hay algoritmos para esto 
+que casi no hay que programarlos. Lo vemos más adelante. También 
+vamos a explicar cómo hicimos para extraer la malla a partir de 
+la región de interés que umbralamos.
+
+1.3 Modelos deformables 
+
+Última parte del trabajo más duro. Acá se descompone el modelo en 
+cada una de sus fuerzas, explicando las variantes que 
+introducimos nosotros para poder incluir información 
+probabilística además de las intensidades. También está bueno 
+incluir un estudio de sensibilidad respecto a los parámetros del 
+modelo. 
+

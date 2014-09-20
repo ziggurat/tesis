@@ -1,0 +1,140 @@
+
+\chapter{Reporte 1: Fuzzy C-Means}
+
+
+\section{Introducción}
+
+Como se explicó anteriormente, la etapa inicial de nuestro enfoque
+de segmentación está basada en Fuzzy C-Means. Fuzzy C-Means es un
+algoritmo de clustering no supervisado que permite obtener segmentaciones
+difusas agrupando elementos similares en clusters. Un cluster es un
+conjunto de elementos que son afines entre sí. Una de las principales
+desventajas de los algoritmos de clustering tradicionales radica en
+que los mismos asumen que cada elemento pertenece inequívocamente
+a un cluster, ignorando si existe o no alguna similaridad con los
+demás miembros de otros clusters (full1982fuzzy). Una manera de modelar
+esta similaridad fue introducida por Zadeh en 1965 \citet{zadeh1965fuzzy},
+y consiste en representar la semejanza de los puntos que se desean
+clusterizar con una función cuyos valores están entre cero y uno.
+Basado en esta propuesta, y a diferencia de K-Means, en donde cada
+elemento pertenece o no a un cluster de manera determinante, en Fuzzy
+C-Means cada elemento posee una probabilidad de pertenencia a cada
+uno de los clusters. Este agrupamiento se obtiene minimizando iterativamente
+una función de costo que depende de la similaridad de los elementos
+de un cluster respecto al centroide del mismo. El centroide es el
+vector característico de un clúster, obtenido como el promedio de
+los vectores de características de los puntos que pertenecen al cluster.
+A cada clúster le corresponde un único centroide, que varía conforme
+se incorporan o quitan puntos del mismo. Fuzzy C-Means requiere como
+entrada un vector de características por cada uno de los puntos que
+se desean clusterizar, y el número de clusters en los que se quiere
+dividir la imagen. El algoritmo asigna a cada voxel a una categoría
+con una cierta probabilidad de pertenencia. Más formalmente, sea $X=(x_{1},x_{2},...,x_{n})$
+una imagen de $n$ voxeles a ser particionados en $C$ regiones, en
+donde cada $x_{i}$ representa el vector de características del $i$-ésimo
+vóxel. El algoritmo asigna cada vóxel a una clase a través de la minimización
+iterativa de una función de costo, definida como: 
+
+\[
+formulaaca
+\]
+
+
+donde $u_{ij}$ representa la pertenencia de un voxel $x_{j}$ al
+cluster $i$, $v_{i}$ es el centroide del cluster $i$, $\left|\right|$
+es la distancia euclídea entre los voxels y m es una constante. Esta
+constante controla el nivel de difusión de la clusterización resultante
+\citet{chuang2006fuzzy}. La función de costo tiene por objetivo asignar
+probabilidades altas de pertenencia de un vóxel $j$ a un cluster
+$i$ si su vector característico asociado $x_{j}$ es similar al centroide
+$v_{j}$. Esta similitud entre vectores es cuantificada midiendo la
+distancia euclídea entre ambos en el espacio de características: si
+el vector de características es muy disímil respecto al centroide
+del cluster de estudio, la distancia euclídea entre ambos será alta;
+si los vectores son similares, la distancia será menor. El resultado
+del proceso de segmentación es una matriz de pertenencias y una lista
+de centroides de cada una de las regiones. En las siguientes secciones
+se abordarán algunos detalles particulares del algoritmo, evaluados
+sobre diferentes tipos de imágenes. En la Sección X.X se presenta
+un estudio de sensibilidad realizado sobre fantomas artificiales con
+y sin ruido, y con y sin efecto bias. En la Sección X.X describimos
+un estudio similar realizado sobre imágenes de MRI cerebrales. 
+
+
+\section{Estudio de sensibilidad sobre fantomas artificiales}
+
+\begin{figure}
+\begin{centering}
+\includegraphics{images/mitad_mitad_250x250}
+\par\end{centering}
+
+\caption{Imagen artificial con clusters abiertos}
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[scale=0.75]{images/mitad_mitad_clusters_sin_coordenadas_random}
+\par\end{centering}
+
+\caption{Clusterizacion con centroides aleatorios, sin coordenadas espaciales}
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[scale=0.75]{images/mitad_mitad_clusters_con_coordenadas_random}
+\par\end{centering}
+
+\caption{Clusterizacion con centroides aleatorios y coordenadas espaciales}
+
+
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[scale=0.75]{images/mitad_mitad_clusters_sin_coordenadas_random}
+\par\end{centering}
+
+\caption{Clusterizacion con centroides iniciales seleccionados a mano sin coordenadas
+espaciales}
+
+
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[scale=0.75]{images/mitad_mitad_clusters_con_coordenadas_centroide_manual}
+\par\end{centering}
+
+\caption{Clusterizacion con centroides iniciales seleccionados a mano y coordenadas
+espaciales}
+
+
+\end{figure}
+
+
+\begin{figure}
+\begin{centering}
+\includegraphics[scale=0.75]{images/mitad_mitad_clusters_con_coordenadas_centroide_manual_1iteracion}
+\par\end{centering}
+
+\caption{Clusterizacion con centroides iniciales seleccionados a mano, coordenadas
+espaciales con una sola iteracion}
+
+
+\end{figure}
+
+
+\begin{center}
+\begin{figure}
+\begin{centering}
+\includegraphics{images/circulo_250x250}
+\par\end{centering}
+
+\centering{}\caption{Imagen artificial zona cerrada}
+\end{figure}
+
+\par\end{center}

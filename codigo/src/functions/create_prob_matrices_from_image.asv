@@ -1,0 +1,23 @@
+function [ output_args ] = create_prob_matrices_from_image( image_path, cluster_qty )
+%CREATE_PROB_MATRICES_FROM_IMAGE Summary of this function goes here
+%   Detailed explanation goes here
+    image = imread(image_path);
+    [m, n] = size(image);
+    image_array = zeros(m, n, 'single');
+    image_array(:,:) = single(image);
+    flat_array = image_array(:);
+    flat_array = normalize_array(flat_array);
+    [center, U, obj_fcn] = fcm_from_image_array(flat_array, cluster_qty, [2.0, 200, 1e-5,1]);
+
+
+    to_plot = reshape(U(1, :), n, m);
+    imagesc(to_plot), colorbar;
+    truesize;
+    figure;
+    to_plot = reshape(U(2, :), n, m);
+    imagesc(to_plot), colorbar;
+    truesize;
+
+
+end
+

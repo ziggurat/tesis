@@ -1,0 +1,219 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass classicthesis
+\begin_preamble
+% book example for classicthesis.sty
+ % KOMA-Script book
+\usepackage{lipsum}
+\usepackage[linedheaders,parts]{classicthesis}% ,manychapters
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language spanish
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command bibtex8
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Introducción
+\end_layout
+
+\begin_layout Section
+Procesamiento de imágenes 
+\end_layout
+
+\begin_layout Standard
+Pueden empezar a escribir esto.
+ El procesamiento digital de imágenes tradicionalmente es un pipeline.
+ En este apartado está bueno siempre describir ese pipeline, explicar cada
+ etapa y profundizar en la importancia que tiene la segmentación para las
+ etapas posteriores.
+ También se suelen hacer comentarios sobre cómo abordan cada etapa en su
+ trabajo, agregando la referencia al capítulo en el que eso se explica en
+ detalle (esto último se hace en la última pasada sobre el documento).
+ Tomen como guía nuestra tesis (traten de no copiar tal cual, innoven lo
+ más posible).
+\end_layout
+
+\begin_layout Section
+Algoritmos de segmentación 
+\end_layout
+
+\begin_layout Standard
+Pueden empezar a escribir esto.
+ Acá describen más o menos qué tipos de algoritmos de segmentación existen.
+ Les listo algunos.
+ Cada subsección organícenla describiendo en líneas generales el método,
+ incluyendo alguna imagen (pueden sacarla de algún paper), y el último párrafo
+ por lo general se lo usa para contar qué trabajos recientes hay que usen
+ este tipo de estrategias.
+ La última oración de cada párrafo resérvenla para explicar trabajos que
+ hayan usado imágenes parecidas a las de ustedes (por ejemplo, de cerebros).
+\end_layout
+
+\begin_layout Subsection
+Umbralado.
+ 
+\end_layout
+
+\begin_layout Standard
+Los algoritmos de umbralado segmentan imagenes escalares creando una separación
+ binaria de las intensidades.
+ El procedimiento de umbralado busca determinar un valor de intensidad,
+ el umbral, que utiliza para realizar la clasificación.
+ La segmentación, finalmente, se logra agrupando todos los píxeles con mayor
+ intensidad al umbral en una clase, y los restantes en otra.
+ Los algoritmos de umbralado son simples pero efectivos para segmentar imagenes
+ con estructuras con intensidades, u otra característica cuantificable,
+ bien contrastadas.
+ Normalmente las particiones se generan con interaccion, pero existen algunos
+ metodos automaticos.
+ Para imagenes escalares, los metodos interactivos suelen basarse en una
+ valoracion visual del operador de la segmentacion obtenida, ya que los
+ algoritmos de umbralado son implementables en tiempo real.
+ Estos algoritmos son normalmente utilizados como paso inicial en las operacione
+s de proceso de imagenes.
+ Su principal limitacion es que en su forma basica solo se pueden generar
+ dos clases y no es aplicable a imagenes multi-canal.
+ Por otro lado, los algoritmos de umbralado normalmente no tienen en cuenta
+ caracteristicas espaciales de la imagen, lo que hace que sean mas sensibles
+ al ruido e inhomogeneidades de las intencidades, comunes en las imagenes
+ de resonancia magnetica.
+ Por esta razon, se han propuesto variaciones al algoritmo clasico de umbralizac
+ión para segmentacion de imagenes medicas, que incorporan informacion basada
+ en intensidadess locales y conectividad.
+\end_layout
+
+\begin_layout Subsection
+Crecimiento de regiones 
+\end_layout
+
+\begin_layout Standard
+Crecimiento de regiones es una tecnica que extrae una region de una imagen
+ que esta conectada con algun criterio pre-definido.
+ Este criterio puede basarse en la informacion de intensidad y/o los bordes
+ de la imagen.
+ En su version mas simple, esta tecnica requiere interaccion con un operador
+ para que seleccione manualmente un punto semilla, a partir de este punto
+ se extraen todos los pixeles conectados a esta semilla con el mismo valor
+ de intensidad.
+ Al igual que los metodos de umbralado, el crecimiento de regiones no es
+ utilizado por si solo, pero si como un paso mas en las operaciones de procesami
+ento de imagenes, particularmente en la deteccion de estructuras simples
+ y pequeñas, como tumores y lesiones.
+ Su principal desventaja es que requiere interaccion manual para obtener
+ las semillas.
+ Si se requiere extraer mas de una region, es necesario seleccionar una
+ semilla para cada una.
+ Los algoritmos de dividir y combinar estan relacionados con crecimiento
+ de regiones, pero no necesitan de una semilla inicial.
+ Con estos algoritmos, el ruido puede provocar que las regiones extraidas
+ contengan agujeros o que directamente esten desconectadas.
+ A la inversa, los efectos de volumen parcial pueden causar que regiones
+ separadas queden conectadas.
+ Para ayudar a minimizar estos problemas, se proponen algoritmos de crecimiento
+ de regiones homotopicas, que preservan la topologia entre la regione inicial
+ y la region extraida.
+ Tambien hay algunos desarrollos de analogias difusas para crecimiento de
+ regiones.
+\end_layout
+
+\begin_layout Subsection
+Segmentación basada en atlas
+\end_layout
+
+\begin_layout Subsection
+Clasificación 
+\end_layout
+
+\begin_layout Standard
+Los metodos de clasificacion son tecnicas de reconicimiento de patrones
+ que buscan particionar un espacio caracteristico derivado de la imagen,
+ utilizando datos de etiquetas conocidas (known labels).
+ Un espacio caracteristico es el espacio rango (the range space) de cualquier
+ funcion de la imagen.
+ Las caracteristicas utilizadas pueden estar relacionadas a texturas u otras
+ propiedades, siendo los valores de intensidad de la imagen por si mismas,
+ el espacio caracteristico mas simple y comun.
+ Los clasificadores son conocidos como metodos supervisados, ya que requieren
+ datos de entrenamiento, manualmente segmentados, que se utilizan como referenci
+a para segmentar nuevos datos automaticamente.
+ 
+\end_layout
+
+\begin_layout Subsection
+Modelos deformables 
+\end_layout
+
+\begin_layout Subsection
+Expliquen esto lo más general posible.
+ 
+\end_layout
+
+\begin_layout Standard
+Usen nuestra tesis.
+\end_layout
+
+\end_body
+\end_document

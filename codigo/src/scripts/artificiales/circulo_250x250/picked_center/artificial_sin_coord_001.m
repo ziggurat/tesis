@@ -1,0 +1,16 @@
+clear;
+original = imread('C:\Users\Manuel\Documents\MATLAB\images\artificiales\circulo_250x250.png');
+[m, n] = size(original);
+image_array = zeros(m, n, 'single');
+image_array(:,:) = single(original);
+flat_array = image_array(:);
+flat_array = normalize_array(flat_array);
+[center, U, obj_fcn] = fcm_picked_center(flat_array, 2, [2.0, 200, 1e-5,1], [-0.707106781186548 0.707106781186548 0.707106781186548;0.707106781186548 -0.707106781186548 -0.707106781186548]);
+figure;
+to_plot = reshape(U(1, :), n, m);
+imagesc(to_plot), colorbar;
+truesize;
+figure;
+to_plot = reshape(U(2, :), n, m);
+imagesc(to_plot), colorbar;
+truesize;

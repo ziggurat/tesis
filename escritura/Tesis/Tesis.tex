@@ -1,0 +1,59 @@
+%% LyX 2.0.7 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[a4paper,spanish]{scrreprt}
+\usepackage{beraserif}
+\usepackage{berasans}
+\usepackage{beramono}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\setcounter{tocdepth}{3}
+\usepackage{color}
+\usepackage{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\usepackage{graphicx}
+\usepackage[authoryear]{natbib}
+\usepackage[unicode=true,
+ bookmarks=false,
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=true]
+ {hyperref}
+\hypersetup{
+ urlcolor=webbrown,linkcolor=Blue,citecolor=webgreen,linktocpage=true,pageanchor=true,hypertexnames=false,naturalnames=true,plainpages=false}
+\usepackage{breakurl}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\special{papersize=\the\paperwidth,\the\paperheight}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+% use Latin Modern instead of Computer Modern sans serif
+\renewcommand{\sfdefault}{lmss}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+% book example for classicthesis.sty
+ % KOMA-Script book
+\usepackage{lipsum}
+\usepackage[linedheaders,parts]{classicthesis}% ,manychapters
+\usepackage[left=1in,right=0.7in,top=1in,bottom=1.5in]{geometry}
+
+\makeatother
+
+\begin{document}
+\include{Titlepage}
+
+\cleardoublepage{}
+
+\include{Introduccion}
+
+\include{FuzzyCMeans}
+
+
+
+\cleardoublepage{}
+
+\bibliographystyle{plainnat}
+\phantomsection\addcontentsline{toc}{chapter}{\bibname}\bibliography{Tesis}
+
+\end{document}
