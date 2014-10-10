@@ -7,9 +7,9 @@ function [ center, U, obj_fcn, prob_matrix_cell ] = create_prob_matrices_from_ar
     single_image_array = single(image_array);
     flat_array = single_image_array(:);
     flat_array = normalize_array(flat_array);
-    [center, U, obj_fcn] = fcm_custom(flat_array, cluster_qty, [2.0, 200, 1e-5,1]);
+    [center, U, obj_fcn] = fcm_custom(flat_array, cluster_qty, [2.0, 50, 1e-2,1]);
     
-    % Creo un cell del tamaño de la cantidad de clusters
+    % Creo un cell del tamaï¿½o de la cantidad de clusters
     prob_matrix_cell = cell(1, cluster_qty);
     % Recorro desde 1 hasta la cantidad de clusters y almaceno las matrices
     % de pertenenticias en el cell.
