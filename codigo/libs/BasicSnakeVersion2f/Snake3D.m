@@ -110,7 +110,7 @@ Fext(:,:,:,2)=-Fy*2*Options.Sigma2^2;
 Fext(:,:,:,3)=-Fz*2*Options.Sigma2^2;
 
 % Do Gradient vector flow, optimalization
-Fext=GVFOptimizeImageForces3D(Fext, Options.Mu, Options.GIterations, Options.Sigma3);
+%Fext=GVFOptimizeImageForces3D(Fext, Options.Mu, Options.GIterations, Options.Sigma3);
 
 % Show the image, contour and force field
 if(Options.Verbose)

@@ -21,10 +21,11 @@ end
 
 % Remove noise by filling holes and cleaning the background
 picked_cluster = input('Cluster number?');
-filled_holes = imfill(cluster_images{picked_cluster}, 'holes');
-figure, imshow(filled_holes);
-no_noise = bwareaopen(filled_holes, 10);
-figure, imshow(no_noise);
+no_noise = removeNoiseAndFillHoles(cluster_images{picked_cluster});
+% filled_holes = imfill(cluster_images{picked_cluster}, 'holes');
+% figure, imshow(filled_holes);
+% no_noise = bwareaopen(filled_holes, 10);
+% figure, imshow(no_noise);
 
 % Get the boundaries of the object
 B = bwboundaries(no_noise);
