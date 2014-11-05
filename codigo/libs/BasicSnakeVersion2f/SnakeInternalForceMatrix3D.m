@@ -27,7 +27,13 @@ for i=1:nV
 end
 
 % Total internal force matrix
+% A = gamma*speye(nV,nV)-alpha*NeMatrix+beta*NeMatrix*NeMatrix;
+% U = chol(A);
+% Uinv = inv(U);
+% UinvT = Uinv';
+% B = Uinv * UinvT;
 B=inv(gamma*speye(nV,nV)-alpha*NeMatrix+beta*NeMatrix*NeMatrix);
+%B=inv(gamma*speye(nV,nV)-alpha*NeMatrix+beta*NeMatrix^2);
 
 function Ne=VertexNeighbours(F,V)
 % Function which return the neighbouring vertices of every vertex

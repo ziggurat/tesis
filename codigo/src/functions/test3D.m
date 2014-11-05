@@ -2,27 +2,29 @@ clear;
 close all;
 iptsetpref('ImshowBorder','tight');
 clusters = 4;
-nii = load_nii('/home/manuel/Tesis/imagenes_3d/IBSR_nifti_stripped/IBSR_01/IBSR_01_ana_strip.nii');
+nii = load_nii('c:/imagenes_3d/IBSR_nifti_stripped/IBSR_01/IBSR_01_ana_strip.nii');
 original = nii.img;
 [center, U, obj_fcn, prob_matrix_cell] = create_prob_matrices_from_array(original, clusters);
 
 cluster_images = split_images(prob_matrix_cell);
-clear nii;
 clear center; 
 clear U;
 clear obj_fcn;
 clear prob_matric_cell;
 
-%nii = make_nii(cluster_images{1});
-%save_nii(nii, 'cluster1.nii');
-
-[v,f,regions,holes]=v2s(double(cluster_images{4}),0.1, 7);
-clear regions;
-clear holes;
-%figure, plotsurf(v, f);
-%vertface2obj(v, f, 'cluster_4.obj');
-
-%picked_cluster = input('Cluster number?');
+clean_volume = cell(1, clusters);
+newnode = cell(1, clusters);
+newface = cell(1, clusters);
+for i = 1 : clusters
+    clean_volume{i} = deislands3d(cluster_images{i},1);
+    clean_volume{i} = fillholes3d(clean_volume{i},1);
+    [v,f,regions,holes] = v2s(clean_volume{i},0.1, 0.1, 'simplify');
+    [newnode{i},newface{i}] = meshcheckrepair(v,f);
+    clear regions;
+    clear holes;
+    newnodetosave{i} = trasladarEinvertir(newnode{i}, nii.hdr.dime.pixdim);
+    vertface2obj(newnodetosave{i}, newface{i}, strcat('c:\Users\Manuel\cluster', num2str(i), '.obj'));
+end
 
 Options=struct;
 Options.Verbose=0;
@@ -31,15 +33,26 @@ Options.Wline=-1;
 Options.Alpha=0.2;
 Options.Beta=0.2;
 Options.Kappa=0.5;
-Options.Delta=0.1000;
-Options.Gamma=0.1000;
-Options.Iterations=20;
+Options.Delta=0.1;
+Options.Gamma=0.1;
+Options.Iterations=15;
 Options.Sigma1=2;
 Options.Sigma2=2;
 Options.Lambda=0.8;
 FV = struct;
-FV.vertices = v;
-clean_face = f;
-clean_face(:,1) = [];
-FV.faces = clean_face;
-FV2=Snake3D(double(original),FV,Options);
+
+for i = 1 : clusters
+    if (max(size(newface{i})) < 30000)
+        FV.vertices = newnode{i};
+        FV.faces = newface{i};
+
+        FV2 = Snake3D(prob_matrix_cell{i},FV,Options);
+        FV3 = FV2;
+        FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+        
+        vertface2obj(FV3.vertices, FV3.faces, strcat('c:\Users\Manuel\cluster_snake_default', num2str(i), '.obj'));
+    end
+end
+
+
+
