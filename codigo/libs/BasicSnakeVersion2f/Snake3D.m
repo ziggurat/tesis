@@ -76,7 +76,7 @@ function FV=Snake3D(I,FV,Options)
 % Function is written by D.Kroon University of Twente (July 2010)
 
 % Process inputs
-I = I * double(255);
+%I = I * double(255);
 defaultoptions=struct('Verbose',false,'Wline',0.04,'Wedge',2,'Sigma1',2,'Sigma2',2,'Alpha',0.2,'Beta',0.2,'Delta',0.1,'Gamma',1,'Kappa',2,'Iterations',100,'GIterations',0,'Mu',0.2,'Sigma3',1,'Lambda',0.8);
 if(~exist('Options','var')), 
     Options=defaultoptions; 
@@ -135,13 +135,11 @@ end
 
 % Make the interal force matrix, which constrains the moving points to a
 % smooth contour
-fprintf('Start internal force matrix...');
+fprintf('Start internal force matrix calculation...\n');
 tic
 S=SnakeInternalForceMatrix3D(FV,Options.Alpha,Options.Beta,Options.Gamma);
-toc
-fprintf('Finished internal force matrix...');
-fprintf('Starting iterations...');
-tic
+fprintf('Finished internal force matrix...\n');
+fprintf('Starting iterations...\n');
 for i=1:Options.Iterations
     FV=SnakeMoveIteration3D(S,FV,Fext,Options.Gamma,Options.Kappa,Options.Delta,Options.Lambda);
 
@@ -154,7 +152,7 @@ for i=1:Options.Iterations
         end
     end
 end
-fprintf('Finished iterations...');
+fprintf('Finished iterations...\n');
 toc
 
 

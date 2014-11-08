@@ -33,6 +33,7 @@ end
 % UinvT = Uinv';
 % B = Uinv * UinvT;
 B=inv(gamma*speye(nV,nV)-alpha*NeMatrix+beta*NeMatrix*NeMatrix);
+%B=(gamma*speye(nV,nV)-alpha*NeMatrix+beta*NeMatrix*NeMatrix) \ speye(nV, nV);
 %B=inv(gamma*speye(nV,nV)-alpha*NeMatrix+beta*NeMatrix^2);
 
 function Ne=VertexNeighbours(F,V)

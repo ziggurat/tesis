@@ -1,58 +1,81 @@
 clear;
 close all;
-iptsetpref('ImshowBorder','tight');
 clusters = 4;
+base_url = 'c:\Users\Manuel\experCarmen\';
 nii = load_nii('c:/imagenes_3d/IBSR_nifti_stripped/IBSR_01/IBSR_01_ana_strip.nii');
-original = nii.img;
-[center, U, obj_fcn, prob_matrix_cell] = create_prob_matrices_from_array(original, clusters);
 
-cluster_images = split_images(prob_matrix_cell);
+mkdir(strcat(base_url));
+
+% Calculate the probabilities matrix using FCM.
+[center, U, obj_fcn, prob_matrix_cell] = create_prob_matrices_from_array(nii.img, clusters);
+for i = 1 : clusters
+    prob_nii = make_nii(prob_matrix_cell{i});
+    prob_nii.hdr.dime.pixdim = nii.hdr.dime.pixdim;
+    save_nii(prob_nii, strcat(base_url, 'prob_', num2str(i), '.nii'));
+end
+
+% Calculate the clusters threshold. This returns a cell of binary images.
+umbraladas = split_images(prob_matrix_cell);
+for i = 1 : clusters
+    umbral_nii = make_nii(umbraladas{i});    
+    umbral_nii.hdr.dime.pixdim = nii.hdr.dime.pixdim;
+    save_nii(umbral_nii, strcat(base_url, 'umbral_', num2str(i), '.nii'));
+end
+
 clear center; 
 clear U;
 clear obj_fcn;
 clear prob_matric_cell;
 
 clean_volume = cell(1, clusters);
-newnode = cell(1, clusters);
-newface = cell(1, clusters);
-for i = 1 : clusters
-    clean_volume{i} = deislands3d(cluster_images{i},1);
-    clean_volume{i} = fillholes3d(clean_volume{i},1);
-    [v,f,regions,holes] = v2s(clean_volume{i},0.1, 0.1, 'simplify');
-    [newnode{i},newface{i}] = meshcheckrepair(v,f);
+mesh_nodes = cell(1, clusters);
+mesh_faces = cell(1, clusters);
+for i = 1 : clusters    
+    clean_volume{i} = fillholes3d(umbraladas{i},1);    
+    % Save filled binary volume
+    filled_volume_nii = make_nii(clean_volume{i});
+    filled_volume_nii.hdr.dime.pixdim = nii.hdr.dime.pixdim;
+    save_nii(filled_volume_nii, strcat(base_url, 'filled_', num2str(i), '.nii'));
+    
+    [v,f,regions,holes] = v2s(clean_volume{i},0.01, 0.1, 'simplify');
+    [mesh_nodes{i},mesh_faces{i}]=meshcheckrepair(v,f);    
     clear regions;
     clear holes;
-    newnodetosave{i} = trasladarEinvertir(newnode{i}, nii.hdr.dime.pixdim);
-    vertface2obj(newnodetosave{i}, newface{i}, strcat('c:\Users\Manuel\cluster', num2str(i), '.obj'));
+    newnodetosave{i} = trasladarEinvertir(v, nii.hdr.dime.pixdim);
+    vertface2obj(newnodetosave{i}, f, strcat(base_url, 'cluster_', num2str(i), '.obj'));
 end
 
 Options=struct;
 Options.Verbose=0;
-Options.Wedge=0;
-Options.Wline=-1;
-Options.Alpha=0.2;
-Options.Beta=0.2;
-Options.Kappa=0.5;
-Options.Delta=0.1;
-Options.Gamma=0.1;
-Options.Iterations=15;
-Options.Sigma1=2;
+Options.Wedge=0.1;
+Options.Wline=0;
+Options.Alpha=0.0001;
+Options.Beta=1;
+Options.Kappa=2;
+Options.Delta=0.6;
+Options.Gamma=1;
+Options.Iterations=20;
+%no puede ser 0
+Options.Sigma1=2.5;
+%no puede ser 0
 Options.Sigma2=2;
 Options.Lambda=0.8;
 FV = struct;
 
-for i = 1 : clusters
-    if (max(size(newface{i})) < 30000)
-        FV.vertices = newnode{i};
-        FV.faces = newface{i};
+params = strcat('it', num2str(Options.Iterations),'we', num2str(Options.Wedge),'wl', num2str(Options.Wline), 'a', num2str(Options.Alpha), 'b',num2str(Options.Beta), 'd', num2str(Options.Delta), 'k', num2str(Options.Kappa),'s1',num2str(Options.Sigma1),'s2',num2str(Options.Sigma2));
 
-        FV2 = Snake3D(prob_matrix_cell{i},FV,Options);
+folder = strcat(base_url,'custom',params);
+mkdir(folder);
+
+for i = 1 : clusters
+    %if (max(size(mesh_faces{i})) < 25000)
+        FV.vertices = mesh_nodes{i};
+        FV.faces = mesh_faces{i};
+
+        FV2 = CustomSnake3D(double(nii.img),FV,Options);
         FV3 = FV2;
         FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
         
-        vertface2obj(FV3.vertices, FV3.faces, strcat('c:\Users\Manuel\cluster_snake_default', num2str(i), '.obj'));
-    end
+        vertface2obj(FV3.vertices, FV3.faces, strcat(folder, '\custom_snake_carmen_', num2str(i),'_',params, '.obj'));
+    %end
 end
-
-
-
