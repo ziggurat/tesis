@@ -1,7 +1,7 @@
 clear;
 close all;
 clusters = 4;
-base_url = 'c:\Users\Manuel\experCarmen\';
+base_url = 'c:\Users\Manuel\experimentos\';
 nii = load_nii('c:/imagenes_3d/IBSR_nifti_stripped/IBSR_01/IBSR_01_ana_strip.nii');
 
 mkdir(strcat(base_url));
@@ -41,22 +41,22 @@ for i = 1 : clusters
     [mesh_nodes{i},mesh_faces{i}]=meshcheckrepair(v,f);    
     clear regions;
     clear holes;
-    newnodetosave{i} = trasladarEinvertir(v, nii.hdr.dime.pixdim);
-    vertface2obj(newnodetosave{i}, f, strcat(base_url, 'cluster_', num2str(i), '.obj'));
+    %newnodetosave{i} = trasladarEinvertir(v, nii.hdr.dime.pixdim);
+    vertface2obj(mesh_nodes{i}, f, strcat(base_url, 'cluster_', num2str(i), '.obj'));
 end
 
 Options=struct;
 Options.Verbose=0;
 Options.Wedge=0.1;
 Options.Wline=0;
-Options.Alpha=0.0001;
-Options.Beta=1;
+Options.Alpha=0.51;
+Options.Beta=0.31;
 Options.Kappa=2;
-Options.Delta=0.6;
+Options.Delta=0.2; %% Hay que jugar con este valor pero variarlo muy poco
 Options.Gamma=1;
 Options.Iterations=20;
 %no puede ser 0
-Options.Sigma1=2.5;
+Options.Sigma1=2;
 %no puede ser 0
 Options.Sigma2=2;
 Options.Lambda=0.8;
@@ -67,15 +67,13 @@ params = strcat('it', num2str(Options.Iterations),'we', num2str(Options.Wedge),'
 folder = strcat(base_url,'custom',params);
 mkdir(folder);
 
-for i = 1 : clusters
-    %if (max(size(mesh_faces{i})) < 25000)
+for i = 1 : 1
         FV.vertices = mesh_nodes{i};
         FV.faces = mesh_faces{i};
 
-        FV2 = CustomSnake3D(double(nii.img),FV,Options);
-        FV3 = FV2;
-        FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+        FV2 = CustomSnake3D(prob_matrix_cell{i},FV,Options);
+        %FV3 = FV2;
+        %FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
         
-        vertface2obj(FV3.vertices, FV3.faces, strcat(folder, '\custom_snake_carmen_', num2str(i),'_',params, '.obj'));
-    %end
+        %vertface2obj(FV3.vertices, FV3.faces, strcat(folder, '\con_distancia', num2str(i),'_',params, '.obj'));    
 end
