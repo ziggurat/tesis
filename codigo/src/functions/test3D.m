@@ -1,7 +1,7 @@
 clear;
 close all;
 clusters = 4;
-base_url = 'c:\Users\Manuel\experimentos\';
+base_url = 'c:\Users\Manuel\experimentos2\';
 nii = load_nii('c:/imagenes_3d/IBSR_nifti_stripped/IBSR_01/IBSR_01_ana_strip.nii');
 
 mkdir(strcat(base_url));
@@ -45,13 +45,14 @@ for i = 1 : clusters
     vertface2obj(mesh_nodes{i}, f, strcat(base_url, 'cluster_', num2str(i), '.obj'));
 end
 
+
 Options=struct;
 Options.Verbose=0;
 Options.Wedge=0.1;
 Options.Wline=0;
-Options.Alpha=0.51;
-Options.Beta=0.31;
-Options.Kappa=2;
+Options.Alpha=0.01;
+Options.Beta=0.07;
+Options.Kappa=2.2;
 Options.Delta=0.2; %% Hay que jugar con este valor pero variarlo muy poco
 Options.Gamma=1;
 Options.Iterations=20;
@@ -64,16 +65,16 @@ FV = struct;
 
 params = strcat('it', num2str(Options.Iterations),'we', num2str(Options.Wedge),'wl', num2str(Options.Wline), 'a', num2str(Options.Alpha), 'b',num2str(Options.Beta), 'd', num2str(Options.Delta), 'k', num2str(Options.Kappa),'s1',num2str(Options.Sigma1),'s2',num2str(Options.Sigma2));
 
-folder = strcat(base_url,'custom',params);
+folder = strcat(base_url,'pruebaDistancia',params);
 mkdir(folder);
 
-for i = 1 : 1
+for i = 4 : 4
         FV.vertices = mesh_nodes{i};
         FV.faces = mesh_faces{i};
 
         FV2 = CustomSnake3D(prob_matrix_cell{i},FV,Options);
-        %FV3 = FV2;
+        FV3 = FV2;
         %FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
         
-        %vertface2obj(FV3.vertices, FV3.faces, strcat(folder, '\con_distancia', num2str(i),'_',params, '.obj'));    
+        vertface2obj(FV3.vertices, FV3.faces, strcat(folder, '\con_distancia', num2str(i),'_',params, '.obj'));    
 end

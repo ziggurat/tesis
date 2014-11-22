@@ -18,7 +18,7 @@ for c = 1 : clusters
     clear regions;
     clear holes;
     %newnode{c} = trasladarEinvertir(newnode{c}, nii.hdr.dime.pixdim);
-    vertface2obj(gt_mesh_nodes{c}, gt_mesh_faces{c}, strcat('c:\Users\Manuel\experimentos', num2str(c), '.obj'));
+    vertface2obj(gt_mesh_nodes{c}, gt_mesh_faces{c}, strcat('c:\Users\Manuel\experimentos2', num2str(c), '.obj'));
 end
 clear cluster;
 clear v;
