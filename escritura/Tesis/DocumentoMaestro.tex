@@ -1,0 +1,59 @@
+\documentclass[spanish, table]{tudelft-report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\selectlanguage{spanish} 
+\usepackage[spanish,onelanguage, ruled, linesnumbered]{algorithm2e}
+%\usepackage[onelanguage, Algoritmo]{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{dcolumn,longtable,hhline,colortbl}
+
+\setcounter{secnumdepth}{4}
+
+%% Change cites style
+\bibpunct{[}{]}{,}{a}{,}{;}
+
+
+\begin{document}
+
+
+%% Use this to remove the section number from the figure numbering
+\renewcommand{\thefigure}{\arabic{figure}}
+
+%% Centering and justifyin captions in the center
+\captionsetup{justification=centering}
+
+%% Use Roman numerals for the page numbers of the title pages and table of
+%% contents.
+\frontmatter
+
+%\title[Optional Subtitle]{Title}
+\title{Integración de clustering difuso y modelos deformables para la segmentación de imágenes médicas}
+\author{Carmen Escudero Leoz y Manuel Corrales}
+\affiliation{Universidad Nacional del Centro de la Provincia de Buenos Aires}
+
+%% Include an optional title page.
+\input{Portada}
+\input{Prefacio}
+\tableofcontents
+
+%% Use Arabic numerals for the page numbers of the chapters.
+\mainmatter
+
+\input{Introduccion}
+\input{EstadoDelArte}
+\input{Fuzzy}
+\input{ModelosDeformables}
+
+
+%% Use letters for the chapter numbers of the appendices.
+\appendix
+
+\listoffigures
+%% \input{appendix-a}
+
+\bibliography{Bibliografia}
+
+\end{document}
+

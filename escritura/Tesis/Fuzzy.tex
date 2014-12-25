@@ -1,0 +1,63 @@
+\chapter{Fuzzy C-Means}
+\section{Introducción}
+
+Como se explicó anteriormente en la Sección Sarasa, la etapa inicial del enfoque de segmentación propuesto está basada en Fuzzy C-Means. Fuzzy C-Means es un algoritmo de clustering no supervisado, introducido por Dunn en 1973 [Dunn, 1973] y extendido luego en \cite{}[Bezdek et al., 1984], que permite obtener segmentaciones difusas agrupando elementos similares en clusters. Un cluster es un conjunto de elementos que son afines entre sí. Una de las principales desventajas de los algoritmos de clustering tradicionales radica en que los mismos asumen que cada elemento pertenece inequívocamente a un cluster, ignorando si existe o no alguna similitud con los demás miembros de otros clusters \citep{full1982fuzzy}.
+
+Una manera de modelar esta similitud fue introducida por Zadeh en 1965 [Zadeh, 1965], y consiste en representar la similitud de los puntos que se desean clusterizar con una función cuyos valores están entre cero y uno. Basado en esta propuesta, y a diferencia de K-Means, en donde cada elemento pertenece o no a un cluster de manera inequívoca, en el enfoque de Fuzzy C-Means cada elemento posee una cierta probabilidad de pertenencia a cada uno de los clusters. Este agrupamiento se obtiene minimizando iterativamente una función de costo que depende de la similitud de los elementos de un cluster respecto al centroide del mismo. El centroide es el vector característico de un clúster, obtenido como el promedio de los vectores de características de los puntos que pertenecen al cluster. A cada clúster le corresponde un único centroide, que varía conforme se incorporan o quitan puntos del mismo.
+ 
+Fuzzy C-Means requiere como entrada un vector de características por cada uno de los puntos que se desean clusterizar, y el número de clusters en los que se quiere dividir la imagen. El algoritmo asigna cada vóxel a una categoría con una cierta probabilidad de pertenencia. Más formalmente, sea X = (x1, x2, ..., xn) una imagen de n voxeles a ser particionados en C regiones, en donde cada xi representa el vector de características del i-ésimo vóxel. El algoritmo asigna cada vóxel a una clase a través de la minimización iterativa de una función de costo, definida como:
+
+\[\label{eq:solve} J= \sum^{N}_{j=1} \]
+
+donde uij representa la pertenencia de un voxel xj al cluster i, vi es el centroide del cluster , ||. || es la distancia euclídea entre los voxels y m es una constante. Esta constante controla el nivel de difusión de la clusterización resultante [Chuang et al., 2006] y toma valores entre 1 < m < infinito. No existen en la literatura, estudios teóricos o computacionales que distingan un m óptimo, aunque un análisis empírico permite determinar que el incremento del valor de m tiende a degradar la pertenencia. El rango de valores útiles, de acuerdo a nuestros experimentos, corresponde a valores entre 1 y 30 aproximadamente. Para la mayor parte de las imágenes analizadas, 1,5 < m < 3,0 permite obtener buenos resultados [Bezdek et al., 1984]. Sin embargo, el valor utilizado en nuestros estudios es de m = 2, ya que todos los experimentos realizados en la bibliografía consultada lo utilizan [Caldairou et al., 2011, Yang et al., 2005, Chuang et al., 2006]. 
+
+La función de costo tiene por objetivo asignar probabilidades altas de pertenencia de un vóxel j a un cluster i si su vector característico asociado xj es similar al centroide vi. Esta similitud entre vectores es cuantificada midiendo la distancia euclídea entre ambos en el espacio de características: si el vector de características es muy disímil respecto al centroide del cluster de estudio, la distancia euclídea entre ambos será alta; si los vectores son similares, la distancia será menor. El resultado del proceso de segmentación es una matriz de pertenencias y una lista con los centroides de cada una de las regiones.
+
+En \ref{lst:fcm-alg} se presenta un pseudocódigo del algoritmo de Fuzzy C-Means.
+
+
+\begin{algorithm}[H]
+Inicializar $c$ \tcc*[r]{cantidad de clusters}
+Inicializar $n$ \tcc*[r]{nivel de difusión}
+Inicializar $\epsilon$\;
+Inicializar $U = u_{ij}$ \tcc*[r]{matriz  de pertenencias inicial}
+$b = 0$\;
+\While{$\delta > \epsilon$ | $b <> looplimit$}{
+Calcular los centroides $v_{i}^{(b)}$ utilizando $U^{(b)}$\;
+Calcular pertenencia de los voxels $U_{b+1}$\;
+Calcular $\delta = $\;
+$b = b+1$\
+}
+\caption{Pseudocódigo del algoritmo de Fuzzy C-Means}
+\label{lst:fcm-alg}
+\end{algorithm}
+
+
+
+Como se describe en el pseudocódigo descrito en el Código X, el algoritmo trabaja de manera iterativa minimizando la función de costo U. En cada iteración se calcula un valor delta ($\delta$) que es la diferencia entre el costo de la iteración anterior y la actual. Cuando $\delta$  es menor al $\epsilon$ predefinido, se considera que el algoritmo ha convergido. En algunas condiciones puede ocurrir que el algoritmo no llegue a la convergencia o que no lo haga en un número práctico de iteraciones. Por este motivo se añade un mecanismo de control que consiste en limitar la cantidad máxima de iteraciones. De esta manera el algoritmo se detiene si la convergencia no se logra antes del límite de iteraciones configurado.
+
+En las siguientes secciones se presenta un estudio de sensibilidad realizado sobre fantomas artificiales con y sin ruido, y con y sin efecto bias, donde se abordarán algunos detalles particulares del algoritmo.
+
+\section{Estudio de sensibilidad sobre fantomas artificiales}
+Con la intención de evaluar el comportamiento del algoritmo en diferentes escenarios que puedan presentarse en las imágenes reales, éste fue aplicado sobre fantomas. Llamamos fantomas a imágenes creadas artificialmente de las cuales conocemos o es sencillo obtener una clusterización de referencia contra la que comparar los resultados del algoritmo propuesto.
+
+Los escenarios planteados involucran dos tipos posibles de inicialización de los centroides del algoritmo: de manera aleatoria, y seleccionados manualmente. Las ejecuciones fueron realizadas en un ambiente controlado, aunque en los casos de inicialización aleatoria de los centroides el resultado es no determinístico. La evaluación fue realizada sobre imágenes con 2 clusters bien diferenciados en términos de sus intensidades, con distintos tipos de borde entre unos y otros, con diferentes niveles de ruido y de intensidades.
+
+\subsection{Imágenes sin ruido}
+La primera serie de pruebas se realizó sobre imágenes sin ruido, con el objetivo de estudiar el comportamiento del algoritmo utilizando intensidades y también incorporando información espacial.
+
+\subsubsection{Imagen artificial con bordes rectos entre clusters}
+La primera imagen utilizada para evaluar el algoritmo consta de dos secciones claramente definidas, diferenciadas por su color. La parte izquierda de la imagen es negra y la derecha es blanca, lo que permite diferenciar con claridad ambos clusters\footnote{El recuadro negro es solo para señalar que la mitad derecha es blanca pero no forma parte de la imagen evaluada}.
+
+\begin{figure}[h]
+\centering
+	\includegraphics[scale=0.4]{mitad_mitad_250x250.png}
+	\caption[The super caption]{The super caption.}
+\end{figure}
+
+La primera ejecución del algoritmo se realizó sin ninguna supervisión por parte del usuario. Los centroides iniciales fueron seleccionados aleatoriamente, la cantidad de iteraciones máxima fue limitada a 200, y el  de convergencia se estableció en un valor muy pequeño, equivalente a 1e-5. Para esta evaluación del algoritmo se trabajó teniendo en cuenta como características sólo las intensidades de la imagen, y en una segunda ejecución se incluyeron las coordenadas (x,y) de cada punto. Luego de las ejecuciones se obtuvieron los mapas probabilísticos correspondientes a cada una de las dos regiones. En la figura 2 se muestra una representación gráfica de dichos mapas. La escala de colores de los mapas probabilísticos presentados varía de azul a rojo, donde el color azul indica una pertenencia nula del píxel al cluster y el color rojo una pertenencia con probabilidad de 1.
+
+Si observamos los mapas obtenidos sin tener en cuenta información espacial (figuras 2-a y 2-b) podemos ver que todos los pixels fueron clusterizados con una probabilidad 1 o 0.
+
+Como era de esperar, el algoritmo diferencia de manera correcta a qué región pertenece cada punto, basándose sólo en las intensidades. Se puede concluir a partir de este resultado que el contraste pronunciado entre las intensidades de la imagen permite lograr una agrupación precisa de los puntos.
+Si observamos las representaciones de los mapas probabilísticos obtenidos teniendo en cuenta la información espacial (figuras 2-c y 2-d), se puede notar que la inclusión de la posición para el cálculo de la distancia entre puntos afecta en gran medida el valor probabilístico de pertenencia de los puntos. Se distingue con claridad el centroide de cada región en el centro de las mismas, con una probabilidad mayor de pertenencia, y se observa que la probabilidad de pertenencia de los diferentes puntos disminuye de manera radial a medida que los mismos se alejan del centroide. La diferenciación entre los dos clusters sigue siendo muy clara, ya que el contraste de intensidades continúa siendo muy alto; sin embargo, también es posible visualizar cómo los puntos más alejados de los centroides tienen una probabilidad considerablemente más baja de pertenencia.
