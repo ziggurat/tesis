@@ -1,11 +1,29 @@
-\chapter{Estado del arte}
-\section{Procesamiento de imágenes}
-Los sistemas de procesamiento de imágenes médicas posibilitan obtener información de interés a partir de estudios de diversa índole, lo que permite a los profesionales médicos mejorar la precisión de sus diagnósticos, planificar tratamientos o cirugías o estudiar la clínica del paciente. El principal objetivo de estos sistemas es obtener una imagen de salida que sea una representación precisa de la señal de entrada, para luego analizarla y extraer de ella la mayor cantidad posible de información de diagnóstico posible (dougherty2009digital). Sin importar el dominio de análisis, el procesamiento de imágenes se compone de 5 etapas, que se pueden observar en la Figura 1 
+% \part{Estado del arte}
+\chapter{Segmentación de imágenes medicas}\label{chapter:segmencation}
+Con el creciente uso de las imágenes médicas para el diagnóstico, planeamiento de tratamientos y estudios clínicos, se ha vuelto casi obligatoria la utilización de computadoras para asistir en el análisis de dichas imágenes. En este contexto, uno de los objetivos del diagnóstico asistido por computadoras es acelerar la obtención de resultados precisos \citep{Sharma2010}. Una de las etapas más importantes en este proceso es la segmentación ya que las etapas posteriores dependen en gran medida de la precisión de sus resultados. Para la delineación de estructuras anatómicas y otras regiones de interés es necesario contar con algoritmos confiables.
+El objetivo de este capítulo es presentar las etapas del procesamiento de imágenes y algunas estrategias de segmentación, así como un relevamiento del estado del arte. En la sección \ref{section:procesamiento} se describen  las etapas del procesamiento de imágenes, enfocadas particularmente en su aplicación a la medicina. Finalmente en la sección \ref{section:algoritmos} se realiza una revisión de los algoritmos de segmentación más comúnmente utilizados sobre imágenes médicas.
 
+\section{Procesamiento de imágenes}\label{section:procesamiento}
+Los sistemas de procesamiento de imágenes médicas posibilitan obtener información de interés a partir de estudios de diversa índole, lo que permite a los profesionales médicos mejorar la precisión de sus diagnósticos y planificar tratamientos o cirugías. El principal objetivo de estos sistemas es obtener una imagen de salida que sea una representación precisa de la señal de entrada, para luego analizarla y extraer de ella la mayor cantidad de información de diagnóstico posible \citep{dougherty2009digital}. Sin importar el dominio de análisis, el procesamiento de imágenes se compone en general de 5 etapas que se pueden observar en la figura \ref{fig:etapas_del_procesamiento}.
 
-La primera etapa del procesamiento de imágenes está constituida por la captura de las mismas. En el ámbito médico existen diferentes modalidades de captura. La resonancia magnética (MR) es una de las técnicas más utilizadas para el diagnóstico y seguimiento de distintas enfermedades (prince2006medical). En la Figura 1 se puede observar un scanner de resonancia magnetica.  En este tipo de modalidad se utilizan campos magnéticos muy potentes para alinear la magnetización nuclear de los átomos  de hidrógeno del agua en el cuerpo. Unos campos de radiofrecuencia (RF) se utilizan luego para alterar sistemáticamente el alineamiento de esa magnetización, provocando que los átomos de hidrógeno generen un campo magnético rotacional detectable por el escáner \citep{novelline2004squire}.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{images/procesamiento.png}
+\caption{Etapas del procesamiento de imágenes}
+\label{fig:etapas_del_procesamiento}
+\end{figure}
+
+La primera etapa del procesamiento de imágenes es la captura. En el ámbito médico existen diferentes modalidades de captura. Una de estas modalidades es la resonancia magnética (RM). La RM es una de las técnicas más utilizadas para el diagnóstico y seguimiento de distintas enfermedades \citep{prince2006medical}. En la figura \ref{fig:scanner:mri} se puede observar un escáner de resonancia magnética.  En este tipo de modalidad se utilizan campos magnéticos muy potentes para alinear la magnetización nuclear de los átomos  de hidrógeno del agua en el cuerpo. Unos campos de radiofrecuencia (RF) se utilizan luego para alterar sistemáticamente el alineamiento de esa magnetización, provocando que los átomos de hidrógeno generen un campo magnético rotacional detectable por el escáner \citep{novelline2004squire}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{images/scanner.jpg}
+\caption{Scanner de resonancia magnética}
+\label{fig:scanner:mri}
+\end{figure}
 
 Esta es una técnica flexible y dinámica que permite obtener imágenes de contraste variable utilizando secuencias de pulso y ajustando los parámetros de captura de la imagen correspondientes al tiempo longitudinal (T1) y al tiempo transversal (T2). El contraste de una imagen de resonancia magnética es un factor dependiente del ajuste de la secuencia de pulsos. Las imágenes obtenidas mediante este procedimiento son generalmente más eficientes para detectar anormalidades en el cerebro durante las etapas tempranas de una enfermedad así como también son excelentes para la detección de tumores cerebrales o infecciones. En particular, MR es muy útil para detectar enfermedades en la materia blanca tales como esclerosis múltiple, encefalopatias, y encefalitis post infecciosa. Los determinantes principales del contraste y la intensidad de la señal son los tiempos de T1 y T2. El contraste es diferente entre imágenes T1 y T2 y las lesiones patológicas pueden separarse en grupos de acuerdo a las características de las dos imágenes mencionadas (T1 y T2):
+
 \begin{table}[hp]
 	\centering
 	\begin{tabular}{c|c c}
@@ -16,7 +34,8 @@ Esta es una técnica flexible y dinámica que permite obtener imágenes de contr
 	\end{tabular} 
 \end{table}
 
-\section{Algoritmos de segmentación}
+
+\section{Algoritmos de segmentación}\label{section:algoritmos}
 La segmentación de imágenes es un proceso a través del cual se divide una imagen en regiones con propiedades similares [pham2000current]. Dichas propiedades son determinadas por el algoritmo utilizado para tal efecto, y pueden involucrar criterios basados en intensidades de gris, características de textura, color o contraste. El objetivo de la segmentación es simplificar o cambiar la representación de una imagen en información significativa y sencilla de analizar [Barghout and Lee, 2003]. Tradicionalmente, la salida de un algoritmo de segmentación consiste en una máscara booleana que representa con 1s los puntos de la imagen que pertenecen a la región de interés, y con 0s cualquier otro punto. En particular, la segmentación de imágenes médicas se utiliza para estudiar estructuras anatómicas o patológicas tales como tumores, lesiones u otras anormalidades. También se aplica para medir el volumen de una región y estudiar, por ejemplo, el crecimiento o reducción de un tumor, y luego ayudar en la planificación de tratamientos de radioterapia y calcular dosis de radiación [Sharma and Aggarwal, 2010]. 
 La segmentación es uno de los problemas más difíciles dentro del procesamiento de imágenes ya que la mayoría de los objetos reales tienen formas, bordes y morfología compleja [Wu and Chung, 2007], ademas de tener que lidiar con los problemas comunes de procesamiento de imagenes como el ruido y los problemas de volumen parcial mencionados en la sección anterior. 
 Los algoritmos de segmentación pueden dividirse en dos grandes grupos, los métodos supervisados, que requieren datos de entrenamientos que el algoritmo utiliza como referencia para realizar la segmentación, y los no supervisados, algoritmos automáticos que realizan un agrupamiento sin tener datos previos [pham2000current]
