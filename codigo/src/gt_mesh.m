@@ -1,5 +1,13 @@
+%% Configure the folders for reading the images and to save the experiments
+
+images_root_folder = '/home/manuel/Tesis/imagenes_3d/'; 
+%images_root_fodler = 'c:/imagenes_3d';
+
+experiment_dest_folder = '/home/manuel/Tesis/exp2/';
+mkdir(strcat(experiment_dest_folder));
+
 clusters = 4;
-nii = load_nii('c:/imagenes_3d/IBSR_nifti_stripped/IBSR_01/IBSR_01_segTRI_fill_ana.nii');
+nii = load_nii(strcat(images_root_folder,'IBSR_nifti_stripped/IBSR_01/IBSR_01_segTRI_fill_ana.nii'));
 
 cluster = cell(1, clusters);
 clean_volume = cell(1, clusters);
@@ -17,8 +25,8 @@ for c = 1 : clusters
     [gt_mesh_nodes{c},gt_mesh_faces{c}]=meshcheckrepair(v,f);    
     clear regions;
     clear holes;
-    %newnode{c} = trasladarEinvertir(newnode{c}, nii.hdr.dime.pixdim);
-    vertface2obj(gt_mesh_nodes{c}, gt_mesh_faces{c}, strcat('c:\Users\Manuel\experimentos2', num2str(c), '.obj'));
+    gt_mesh_nodes_trans{c} = trasladarEinvertir(gt_mesh_nodes{c}, nii.hdr.dime.pixdim);
+    vertface2obj(gt_mesh_nodes_trans{c}, gt_mesh_faces{c}, strcat(experiment_dest_folder, 'gt_mesh', num2str(c), '.obj'));
 end
 clear cluster;
 clear v;
