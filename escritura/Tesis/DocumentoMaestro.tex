@@ -11,7 +11,7 @@
 % \usepackage{caption}
 % \usepackage[font={color=tudelft-dark-blue,bf}]{caption}
 
-\setcounter{secnumdepth}{4}
+\setcounter{secnumdepth}{3}
 
 %% Change cites style
 \bibpunct{[}{]}{,}{a}{,}{;}
@@ -21,7 +21,7 @@
 
 
 %% Use this to remove the section number from the figure numbering
-\renewcommand{\thefigure}{\arabic{figure}}
+%\renewcommand{\thefigure}{\arabic{figure}}
 
 %% Centering and justifyin captions in the center
 \captionsetup{justification=centering}
@@ -37,6 +37,7 @@
 
 %% Include an optional title page.
 \input{Portada}
+\input{Agradecimientos}
 \input{Prefacio}
 \tableofcontents
 
@@ -45,8 +46,9 @@
 
 \input{Introduccion}
 \input{EstadoDelArte}
-\input{Fuzzy}
-\input{ModelosDeformables}
+\input{Metodos}
+\input{Resultados}
+\input{Conclusiones}
 
 
 %% Use letters for the chapter numbers of the appendices.

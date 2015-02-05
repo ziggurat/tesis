@@ -1,5 +1,3 @@
-\chapter{Fuzzy C-Means}\label{chap:fuzzy}
-\section{Introducción}
 \label{Introduccion}
 
 Como se explicó anteriormente, la etapa inicial del enfoque de segmentación propuesto está basado en el método de Fuzzy C-Means. Este algoritmo de clustering no supervisado, que fue introducido por Dunn en 1973 \citep{dunn1973fuzzy} y extendido luego en \citep{bezdek1984fcm}, permite obtener segmentaciones difusas agrupando elementos similares en clusters. Un cluster es un conjunto de elementos que son afines entre sí, de acuerdo a algún criterio. Una de las principales desventajas de los algoritmos de clustering tradicionales radica en que los mismos asumen que cada elemento pertenece inequívocamente a un cluster, ignorando si existe o no alguna similitud con los demás miembros de otros clusters \citep{full1982fuzzy}.
@@ -36,12 +34,12 @@ $b = b+1$\
 Como se describe en el pseudocódigo \ref{lst:fcm-alg}, el algoritmo trabaja de manera iterativa, minimizando la función de costo $U$. En cada iteración se calcula un valor delta ($\delta$) que es la diferencia entre el costo de la iteración anterior y la actual. Cuando $\delta$ es menor a la cota de un epsilon ($\epsilon$) predefinido, se considera que el algoritmo ha convergido. En algunas condiciones puede ocurrir que no llegue a la convergencia o que no lo haga en un número práctico de iteraciones. Por este motivo, se añade un mecanismo de control que consiste en limitar la cantidad máxima de iteraciones. De esta manera el algoritmo se detiene si la convergencia no se logra antes del límite de iteraciones configurado.
 En las siguientes secciones se presenta un estudio de sensibilidad realizado sobre fantomas artificiales con y sin ruido, y además con y sin efecto bias, a partir del cual se abordarán algunos detalles particulares del algoritmo.
 
-\section{Estudio de sensibilidad sobre fantomas artificiales}
+\subsection{Estudio de sensibilidad sobre fantomas artificiales}
 Con la intención de evaluar el comportamiento del algoritmo en diferentes escenarios que puedan presentarse en las imágenes reales, éste fue aplicado inicialmente sobre fantomas. Llamamos fantomas a imágenes creadas artificialmente de las cuales conocemos o es sencillo obtener una clusterización de referencia contra la que comparar los resultados del algoritmo propuesto. Los escenarios planteados involucran dos tipos posibles de inicialización de los centroides del algoritmo: de manera aleatoria y seleccionados manualmente. Las ejecuciones fueron realizadas en un ambiente controlado, aunque en los casos de inicialización aleatoria de los centroides el resultado es no determinístico. La evaluación fue realizada sobre imágenes con dos clusters bien diferenciados, en términos de sus intensidades, con distintos tipos de borde entre unos y otros, con diferentes niveles de ruido y de variación de intensidades.
 
-\subsection{Imágenes sin ruido}
+\subsubsection{Imágenes sin ruido}
 La primera serie de pruebas se realizó sobre imágenes sin ruido, con el objetivo de estudiar el comportamiento del algoritmo utilizando variación de intensidades y también incorporando información espacial.
-\subsubsection{Imagen artificial con bordes rectos entre clusters}
+\paragraph{Imagen artificial con bordes rectos entre clusters}
 La primera imagen utilizada para evaluar el algoritmo (figura \ref{fig:mitad_mitad})  consta de dos secciones claramente definidas, diferenciadas por su color. La parte izquierda de la imagen es negra y la derecha es blanca, lo que permite diferenciar con claridad ambos clusters\footnote{El recuadro negro es solo para señalar que el fondo de la imagen es blanco, pero no es parte de la imagen utilizada en la ejecución de los algoritmos}.
 
 
@@ -81,7 +79,7 @@ Al observar que en las pruebas con información espacial también se obtenían l
 \label{fig:ejecucion_mitad_mitad_iteraciones}
 \end{figure}
 
-\subsubsection{Imagen artificial con bordes curvos entre clusters}
+\paragraph{Imagen artificial con bordes curvos entre clusters}
 El segundo conjunto de pruebas para evaluar el algoritmo fue realizado utilizando una imagen artificial con un círculo negro con fondo blanco  (figura \ref{fig:circulo}).
 
 \begin{figure}[h]
@@ -122,7 +120,7 @@ Al advertir que el resultado final era el mismo que con los centroides aleatorio
 \label{fig:circulo_iteraciones}
 \end{figure}
 
-\subsection{Imágenes con ruido}
+\subsubsection{Imágenes con ruido}
 La siguiente serie de experimentos considera imágenes con ruido sal y pimienta. En la primera evaluación se utilizó una imagen con 1\% de ruido y luego se elevó al 30\% (figura \ref{fig:mitad_mitad_ruido_1p}).
 
 \begin{figure}[H]
@@ -156,7 +154,7 @@ En este caso, si comparamos en detalle las probabilidades obtenidas con y sin la
 \label{fig:mitad_mitad_ruido_zoom}
 \end{figure}
 
-\subsection{Imágenes con bias}
+\subsubsection{Imágenes con bias}
 En las siguientes pruebas utilizamos una imagen con 3 regiones, correspondientes al fondo y a un objeto circular y un anillo alrededor del mismo que presentan bias (figura \ref{fig:circulo_bias}). El bias es una distorsión de la imagen causada por el instrumento de captura. Esta distorsión se presenta generalmente sobre los bordes de los objetos y causa cambios en la intensidad de los píxeles, de manera que el mismo tejido es representado por diferentes valores en la imagen \citep{juntu2005bias}.
 
 \begin{figure}[H]
@@ -184,7 +182,7 @@ Cuando utilizamos coordenadas espaciales para la clasificación de esta imagen, 
 \label{fig:matriz_circulo_bias_espacial}
 \end{figure}
 
-\subsection{Imágenes con bias y ruido}
+\subsubsection{Imágenes con bias y ruido}
 
 En nuestra última prueba utilizamos una imagen con bias y ruido. En esta situación, la clusterización resultante es de menor calidad que en los experimentos anteriores debido a la presencia de una alto porcentaje de ruido así como un biasing pronunciado. 
 
@@ -204,7 +202,7 @@ En los mapas de pertenencia de la figura \ref{fig:circulo_bias_ruido_cluster} se
 \label{fig:circulo_bias_ruido_cluster}
 \end{figure}
 
-\subsection{Análisis de costo y convergencia}
+\subsubsection{Análisis de costo y convergencia}
 En todos los casos analizados, la curva de convergencia de la función costo tiene la forma mostrada en la Figura 17. Siempre hay un periodo inicial con un valor alto de la función costo y luego un punto de inflexión a partir del cual desciende abruptamente y los valores oscilan levemente hasta que el algoritmo se detiene, como se mencionó en la sección \ref{Introduccion}.
 
 \begin{figure}[h]
