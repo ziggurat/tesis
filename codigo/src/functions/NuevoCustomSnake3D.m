@@ -86,13 +86,6 @@ Fgrad(:,:,:,3)=-Fz*2*Options.Sigma2^2;
 % Show the image, contour and force field
 if(Options.Verbose)
      drawnow; pause(0.1);
-     %h=figure; set(h,'render','opengl')
-%      subplot(2,3,1),imshow(squeeze(Eext(:,:,round(end/2))),[]);
-%      subplot(2,3,2),imshow(squeeze(Eext(:,round(end/2),:)),[]);
-%      subplot(2,3,3),imshow(squeeze(Eext(round(end/2),:,:)),[]);
-%      subplot(2,3,4),imshow(squeeze(Fext(:,:,round(end/2),:))+0.5);
-%      subplot(2,3,5),imshow(squeeze(Fext(:,round(end/2),:,:))+0.5);
-%      subplot(2,3,6),imshow(squeeze(Fext(round(end/2),:,:,:))+0.5);
      h=figure; set(h,'render','opengl'); hold on;
      %patch(i,'facecolor',[1 0 0],'facealpha',0.1);
      ind=find(I(:)>0);
@@ -106,6 +99,11 @@ end
 
 fprintf('Starting iterations...\n');
 tic
+
+%Variables para ver convergencia
+Vant = zeros(size(FV.vertices));
+averageDisplacement = zeros(Options.Iterations,1);
+
 for i=1:Options.Iterations
     
     % Re calculo fuerza de inflacion
@@ -114,7 +112,7 @@ for i=1:Options.Iterations
     Fint=CustomSnakeInternalForceMatrix3D(FV,Options.A,Options.B,Options.Gamma);
     % fprintf('Finished internal force matrix...\n');
     
-    FV=NuevoCustomSnakeMoveIteration3D(I,FV,Fint,Fgrad,mu,sigma,Options.Gamma,Options.C,Options.D,Options.K);
+    FV=NuevoCustomSnakeMoveIteration3D(I,FV,Fint,Fgrad,Options.mu,Options.sigma,Options.Gamma,Options.C,Options.D,Options.K);
     fprintf('.');    
     
     % ACA IBA VERBOSE
@@ -127,7 +125,18 @@ for i=1:Options.Iterations
         end
     end
     
+    %Calculo diferencia, para convergencia
+    Diff = FV.vertices - Vant;
+    averageDisplacement(i) = mean(sqrt(sum(abs(Diff).^2,2)));    
+    disp(averageDisplacement(i));
+    %Guardo los nuevos vertices como anteriores
+    Vant = FV.vertices;
+    
 end
+save(strcat(Options.destFolder, Options.params, '.txt'), 'averageDisplacement');
+%Esto me dibuja el grafico de convergencia
+%figure, loglog(averageDisplacement);
+
 fprintf('\n');
 fprintf('Finished iterations...\n');
 toc

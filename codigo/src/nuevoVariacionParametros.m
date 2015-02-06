@@ -1,54 +1,64 @@
-dest_folder = '/home/manuel/Tesis/nuevoSnake/';
-%mkdir(strcat(dest_folder));
+% Codigo para generar variables necesarias para snakes, a partir de lo
+% generado por test3D
+% FV=struct;
+% FV.vertices=mesh_nodes{4};
+% FV.faces=mesh_faces{4};
+% I=prob_matrix_cell{4};
+% Options=struct;
+% Options.mu=mu{4};
+% Options.sigma=sigma{4};
 
-Options=struct;
-% con 0.04 ya redondea bastante
-Options.A=0.01;
-% con 0.04 ya redondea bastante
-Options.B=0.01;
-%en 0.1 se despelota mal, anda mas o menos bien con 0.004
-Options.C=0.004;
-% con 0.5 empeora, con 0.04 casi no modifica
-Options.D=0.1;
-% Entre 3 y 5 no cambia nada
+
+dest_folder = '/home/manuel/Tesis/masTeValeQueAndes/snakeConSigmayMu/';
+mkdir(strcat(dest_folder));
+
+Options.A=0;
+Options.B=0;
+Options.C=0;
+Options.D=0;
 Options.K=4;
 Options.Gamma=1;
-Options.Iterations=60;
+Options.Iterations=6;
 %no puede ser 0
 Options.Sigma1=2;
 %no puede ser 0
 Options.Sigma2=2;
-% FV = struct;
-% FV.vertices = mesh_nodes{1};
-% FV.faces = mesh_faces{1};
-% I=prob_matrix_cell{1};
 
-experiment_dest_folder = strcat(dest_folder,'expAnidados/');
-mkdir(strcat(experiment_dest_folder));
-while Options.A <= 0.03
-    while Options.B <=0.03
-        while Options.C <=0.005
-            while Options.D <= 0.4
-                params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
-                FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+FV2 = NuevoCustomSnake3D(I,FV,Options);                    
 
-                FV3 = FV2;
-                FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+FV3 = FV2;
+FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
 
-                vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,'snakes_', num2str(2),'_',params, '.obj'));    
-                clear FV2;
-                clear FV3;
-                Options.D = Options.D + 0.1;
-            end
-            Options.D = 0.1; 
-            Options.C = Options.C + 0.001;
-        end
-        Options.C = 0.004;
-        Options.B = Options.B + 0.005;
-    end
-    Options.B = 0.01;
-    Options.A = Options.A + 0.005;
-end
+vertface2obj(FV3.vertices, FV3.faces, strcat(dest_folder,params,'.obj'));    
+
+
+% experiment_dest_folder = strcat(dest_folder,'expAnidados/');
+% mkdir(strcat(experiment_dest_folder));
+% while Options.A <= 0.03
+%     while Options.B <=0.03
+%         while Options.C <=0.005
+%             while Options.D <= 0.4
+%                 params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+%                 FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+% 
+%                 FV3 = FV2;
+%                 FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+% 
+%                 vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,'snakes_', num2str(2),'_',params, '.obj'));    
+%                 clear FV2;
+%                 clear FV3;
+%                 Options.D = Options.D + 0.1;
+%             end
+%             Options.D = 0.1; 
+%             Options.C = Options.C + 0.001;
+%         end
+%         Options.C = 0.004;
+%         Options.B = Options.B + 0.005;
+%     end
+%     Options.B = 0.01;
+%     Options.A = Options.A + 0.005;
+% end
 
 
 % experiment_dest_folder = strcat(dest_folder,'expDeIt/');

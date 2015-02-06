@@ -1,39 +1,124 @@
-dest_folder = '/home/manuel/Tesis/nuevoSnake/';
+dest_folder = '/home/manuel/Tesis/masTeValeQueAndes/snakeConSigmayMu/';
 %mkdir(strcat(dest_folder));
 
-Arreglo = [0.0001,0.0005,0.001,0.005,0.01,0.05,0.1,0.5];
+ArregloK = [0.5,1];
+ArregloInt = [20,50,100];
+ArregloC = [1,10,20];
+ArregloD = [10,30,60];
 
-Options=struct;
-% Entre 3 y 5 no cambia nada
-Options.K=4;
+%Options.K=2;
 Options.Gamma=1;
-Options.Iterations=60;
 %no puede ser 0
 Options.Sigma1=2;
 %no puede ser 0
 Options.Sigma2=2;
+Options.Iterations=100;
 
-experiment_dest_folder = strcat(dest_folder,'expConArreglo/');
-mkdir(strcat(experiment_dest_folder));
-for a=1:numel(Arreglo)
-    Options.A = Arreglo(a);
-    for b=1:numel(Arreglo)
-        Options.B = Arreglo(b);
-        for c=1:numel(Arreglo)
-            Options.C = Arreglo(c);
-            for d=1:numel(Arreglo)
-                Options.D = Arreglo(d);
-                params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
-                FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+experiment_dest_folder = strcat(dest_folder,'expNacho/');
+%mkdir(strcat(experiment_dest_folder));
 
-                FV3 = FV2;
-                FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+% for k=1:numel(ArregloK)
+%     Options.K = ArregloK(k);
+%     for int=1:numel(ArregloInt)
+%         Options.A = ArregloInt(int);
+%         Options.B = ArregloInt(int);
+%         for c=1:numel(ArregloC)
+%             Options.C = ArregloC(c);
+%             for d=1:numel(ArregloD)
+%                 Options.D = ArregloD(d);
+%                 params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+%                 FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+% 
+%                 FV3 = FV2;
+%                 FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+% 
+%                 vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,params, '.obj'));    
+%                 clear FV2;
+%                 clear FV3;
+%             end
+%         end
+%     end
+% end
 
-                vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,'snakes_', num2str(2),'_',params, '.obj'));    
-                clear FV2;
-                clear FV3;
-            end
-        end
-    end
-end
+
+Options.A = 0.1;
+Options.B = 0.1;
+Options.C = 0.1;
+Options.D = 1;
+Options.K = 0.005;
+Options.Iterations = 100;
+
+params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+
+FV3 = FV2;
+FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+
+vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,params, '.obj'));    
+clear FV2;
+clear FV3;
+
+% Options.A = 0.05;
+% Options.B = 0.05;
+% Options.C = 0.05;
+% Options.D = 0.05;
+% 
+% params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+% FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+% 
+% FV3 = FV2;
+% FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+% 
+% vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,params, '.obj'));    
+% clear FV2;
+% clear FV3;
+% 
+% Options.A = 0.005;
+% Options.B = 0.005;
+% Options.C = 0.01;
+% Options.D = 0.01;
+% 
+% params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+% FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+% 
+% FV3 = FV2;
+% FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+% 
+% vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,params, '.obj'));    
+% clear FV2;
+% clear FV3;
+% 
+% Options.A = 0.05;
+% Options.B = 0.05;
+% Options.C = 0.1;
+% Options.D = 0.1;
+% 
+% params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+% FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+% 
+% FV3 = FV2;
+% FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+% 
+% vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,params, '.obj'));    
+% clear FV2;
+% clear FV3;
+
+% Options.A = 1;
+% Options.B = 1;
+% Options.C = 0.8;
+% Options.D = 2;
+% Options.K = 0.2;
+% 
+% params = strcat('it',num2str(Options.Iterations),',A',num2str(Options.A),',B',num2str(Options.B),',C',num2str(Options.C),',D',num2str(Options.D),',K',num2str(Options.K),',G',num2str(Options.Gamma));                    
+% FV2 = NuevoCustomSnake3D(I,FV,Options);                    
+% 
+% FV3 = FV2;
+% FV3.vertices = trasladarEinvertir(FV2.vertices, nii.hdr.dime.pixdim);
+% 
+% vertface2obj(FV3.vertices, FV3.faces, strcat(experiment_dest_folder,params, '.obj'));    
+% clear FV2;
+% clear FV3;
+
+
+
 

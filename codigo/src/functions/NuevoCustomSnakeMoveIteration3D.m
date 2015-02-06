@@ -41,23 +41,25 @@ Fext3=repmat(dot(Fext1,N,2),1,3).*N;
 IV = interp3(I, V(:,2), V(:,1), V(:,3));
 IV(isnan(IV))=0;
 
-muV= interp3(mu, V(:,2), V(:,1), V(:,3));
-muV(isnan(muV))=0;
+% muV= interp3(mu, V(:,2), V(:,1), V(:,3));
+% muV(isnan(muV))=0;
+% 
+% sigmaV= interp3(sigma, V(:,2), V(:,1), V(:,3));
+% sigmaV(isnan(sigmaV))=0;
 
-sigmaV= interp3(sigma, V(:,2), V(:,1), V(:,3));
-sigmaV(isnan(sigmaV))=0;
 
-Einf = ones(size(I)) * -1;
-Einf((IV - muV)<= (k*sigmaV))=1;
+Einf = ones(size(IV)) * -1;
+Einf(abs(IV - mu)<= (k*sigma))=1;
+
 %Einf (( I - imfilter(I, fspecial3('average',[3 3 3])) ) < ( Options.K * stdfilt(I, ones(3,3,3)) )) = 1;
 % inflar=(IV - muV)<= (k*sigmaV);
 % IV(inflar)=1;
 % IV(1-inflar)=-1;
 
-Finf_ = interp3(Einf, V(:,2), V(:,1), V(:,3));
-Finf_ = cat(2, Finf_, Finf_, Finf_);
-
-Finf = repmat(dot(Finf_,N,2),1,3) .* N;
+% Finf_ = interp3(Einf, V(:,2), V(:,1), V(:,3));
+Finf_ = cat(2, Einf, Einf, Einf);
+% 
+Finf = N .* Finf_;
 
 %Calculo la nueva posicion de los vertices
 V(:,1) = Fint \ (gamma * V(:,1) - c * Finf(:,1) - d * Fext3(:,1)); 
