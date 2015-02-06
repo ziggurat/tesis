@@ -2,7 +2,7 @@ dest_folder = '/home/manuel/Tesis/masTeValeQueAndes/snakeConSigmayMu/';
 %mkdir(strcat(dest_folder));
 
 ArregloK = [0.001,0.005,0.01,0.02];
-ArregloInt = [0.02,0.05,0,08,0.1];
+ArregloInt = [0.02,0.05,0.08,0.1];
 ArregloC = [0.02,0.05,0,08,0.1];
 ArregloD = [0.1,0.5];
 
@@ -14,9 +14,9 @@ Options.Sigma1=2;
 Options.Sigma2=2;
 Options.Iterations=100;
 
-experiment_dest_folder = strcat(dest_folder,'expNacho/');
+experiment_dest_folder = strcat(dest_folder,'conArreglo/');
 Options.destFolder = experiment_dest_folder;
-%mkdir(strcat(experiment_dest_folder));
+mkdir(strcat(experiment_dest_folder));
 
 for k=1:numel(ArregloK)
     Options.K = ArregloK(k);

@@ -104,7 +104,14 @@ tic
 Vant = zeros(size(FV.vertices));
 averageDisplacement = zeros(Options.Iterations,1);
 
-for i=1:Options.Iterations
+i = 1;
+despAnt = Inf;
+despAct = 0;
+while ((i < Options.Iterations) && (abs(despAnt - despAct) > 0.001))
+    
+	despAnt = despAct;
+
+%for i=1:Options.Iterations
     
     % Re calculo fuerza de inflacion
     % fprintf('Start internal force matrix re calculation...\n');
@@ -128,12 +135,14 @@ for i=1:Options.Iterations
     %Calculo diferencia, para convergencia
     Diff = FV.vertices - Vant;
     averageDisplacement(i) = mean(sqrt(sum(abs(Diff).^2,2)));    
+    despAct = averageDisplacement(i);
     disp(averageDisplacement(i));
     %Guardo los nuevos vertices como anteriores
     Vant = FV.vertices;
+    i = i + 1;
     
 end
-save(strcat(Options.destFolder, Options.params, '.txt'), 'averageDisplacement');
+%save(strcat(Options.destFolder, Options.params, '.txt'), 'averageDisplacement');
 %Esto me dibuja el grafico de convergencia
 %figure, loglog(averageDisplacement);
 
