@@ -3,7 +3,7 @@
 images_root_folder = '/home/manuel/Tesis/imagenes_3d/'; 
 %images_root_fodler = 'c:/imagenes_3d';
 
-experiment_dest_folder = '/home/manuel/Tesis/exp2/';
+experiment_dest_folder = '/home/manuel/Tesis/';
 mkdir(strcat(experiment_dest_folder));
 
 clusters = 4;

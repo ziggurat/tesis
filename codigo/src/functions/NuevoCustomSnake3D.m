@@ -62,14 +62,6 @@ end
 % The surface faces must always be clockwise (because of the balloon force)
 FV=MakeContourClockwise3D(FV);
 
-% Calculo media (mu) y desvio estandar (sigma) para cada voxel de la imagen
-mu=imfilter(I, fspecial3('average',[3 3 3]));
-sigma=stdfilt(I, ones(3,3,3));
-sigma(sigma==0)=1;
-
-%Einf = ones(size(I)) * -1;
-%Einf (( I - imfilter(I, fspecial3('average',[3 3 3])) ) < ( Options.K * stdfilt(I, ones(3,3,3)) )) = 1;
-
 % Calculo energia de gradiente
 Egrad = EnergiaGradiente(I,Options.Sigma1);
 
@@ -82,21 +74,6 @@ Fgrad(:,:,:,1)=-Fx*2*Options.Sigma2^2;
 Fgrad(:,:,:,2)=-Fy*2*Options.Sigma2^2;
 Fgrad(:,:,:,3)=-Fz*2*Options.Sigma2^2;
 
-% ACA IBA VERBOSE
-% Show the image, contour and force field
-if(Options.Verbose)
-     drawnow; pause(0.1);
-     h=figure; set(h,'render','opengl'); hold on;
-     %patch(i,'facecolor',[1 0 0],'facealpha',0.1);
-     ind=find(I(:)>0);
-     [ix,iy,iz]=ind2sub(size(Fgrad),ind);
-     plot3(ix,iy,iz,'b.');
-     hold on;
-     h=patch(FV,'facecolor',[1 0 0],'facealpha',0.1);
-     drawnow; pause(0.1);
-end
-
-
 fprintf('Starting iterations...\n');
 tic
 
@@ -107,7 +84,7 @@ averageDisplacement = zeros(Options.Iterations,1);
 i = 1;
 despAnt = Inf;
 despAct = 0;
-while ((i < Options.Iterations) && (abs(despAnt - despAct) > 0.001))
+while (((i < 15) || (abs(despAnt - despAct) > 0.001))&&(abs(despAnt - despAct) > 0.00001)&&(i<Options.Iterations))
     
 	despAnt = despAct;
 
@@ -142,6 +119,8 @@ while ((i < Options.Iterations) && (abs(despAnt - despAct) > 0.001))
     i = i + 1;
     
 end
+Options.ItReal = i;
+disp(i);
 %save(strcat(Options.destFolder, Options.params, '.txt'), 'averageDisplacement');
 %Esto me dibuja el grafico de convergencia
 %figure, loglog(averageDisplacement);

@@ -1,12 +1,10 @@
 function Egrad = EnergiaGradiente(I,Sigma)
-% Eextern = ExternalForceImage3D(I,Wline, Wedge,Sigma)
-% 
 % inputs, 
 %  I : The image
 %  Sigma : Sigma used to calculated image derivatives 
 %  D : peso para fuerza de gradiente
 % outputs,
-%  Eextern : Fuerza de gradiente
+%  Egrad : Fuerza de gradiente
 
 
 Ix=ImageDerivatives3D(I,Sigma,'x');

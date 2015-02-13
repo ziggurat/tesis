@@ -18,7 +18,7 @@ Options.C=0;
 Options.D=0;
 Options.K=4;
 Options.Gamma=1;
-Options.Iterations=6;
+Options.Iterations=15;
 %no puede ser 0
 Options.Sigma1=2;
 %no puede ser 0
