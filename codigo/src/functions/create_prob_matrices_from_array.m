@@ -1,13 +1,14 @@
-function [ center, U, obj_fcn, prob_matrix_cell ] = create_prob_matrices_from_array( image_array, cluster_qty )
+function [ center, U, obj_fcn, prob_matrix_cell ] = create_prob_matrices_from_array( image_array, features, cluster_qty )
     % Recibe como parametro de entrada una matriz que representa una imagen
     % 2D o 3D y la cantidad de clusters en los cuales dividir la imagen.
     % Retorna un cell de matrices de probabilidades (una por cluster).    
     dimensions = size(image_array);
+    fuzzy_input = add_features_to_image(image_array, features);
     %single_image_array = zeros(dimensions, 'single');
-    single_image_array = single(image_array);
-    flat_array = single_image_array(:);
-    flat_array = normalize_array(flat_array);
-    [center, U, obj_fcn] = fcm_custom(flat_array, cluster_qty, [2.0, 50, 1e-2,1]);
+    %single_image_array = single(image_array);
+    %flat_array = single_image_array(:);
+    flat_array = normalize_array(fuzzy_input);
+    [center, U, obj_fcn] = fcm_custom(flat_array, cluster_qty, [2.0, 30, 1e-2,1]);
     
     % Creo un cell del tama�o de la cantidad de clusters
     prob_matrix_cell = cell(1, cluster_qty);
