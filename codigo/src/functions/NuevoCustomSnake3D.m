@@ -85,7 +85,7 @@ i = 1;
 despAnt = Inf;
 despAct = 0;
 while (((i < 15) || (abs(despAnt - despAct) > 0.001))&&(abs(despAnt - despAct) > 0.00001)&&(i<Options.Iterations))
-    
+%while (i<Options.Iterations)   
 	despAnt = despAct;
 
 %for i=1:Options.Iterations
@@ -119,10 +119,12 @@ while (((i < 15) || (abs(despAnt - despAct) > 0.001))&&(abs(despAnt - despAct) >
     i = i + 1;
     
 end
-Options.ItReal = i;
 disp(i);
 %save(strcat(Options.destFolder, Options.params, '.txt'), 'averageDisplacement');
 %Esto me dibuja el grafico de convergencia
+% figure, plot(averageDisplacement);
+% axis([1 Options.Iterations 0 0.06]);
+
 %figure, loglog(averageDisplacement);
 
 fprintf('\n');

@@ -51,6 +51,13 @@ IV(isnan(IV))=0;
 Einf = ones(size(IV)) * -1;
 Einf(abs(IV - mu)<= (k*sigma))=1;
 
+%para evaluar como funciona la fuerza de inflacion
+% dif=IV-mu;
+% fprintf('diferencia ');
+% disp(dif);
+% fprintf('sigma ');
+% disp(sigma);
+
 %Einf (( I - imfilter(I, fspecial3('average',[3 3 3])) ) < ( Options.K * stdfilt(I, ones(3,3,3)) )) = 1;
 % inflar=(IV - muV)<= (k*sigmaV);
 % IV(inflar)=1;
@@ -62,9 +69,9 @@ Finf_ = cat(2, Einf, Einf, Einf);
 Finf = N .* Finf_;
 
 %Calculo la nueva posicion de los vertices
-V(:,1) = Fint \ (gamma * V(:,1) - c * Finf(:,1) - d * Fext3(:,1)); 
-V(:,2) = Fint \ (gamma * V(:,2) - c * Finf(:,2) - d * Fext3(:,2));
-V(:,3) = Fint \ (gamma * V(:,3) - c * Finf(:,3) - d * Fext3(:,3));
+V(:,1) = Fint \ (gamma * V(:,1) + c * Finf(:,1) - d * Fext3(:,1)); 
+V(:,2) = Fint \ (gamma * V(:,2) + c * Finf(:,2) - d * Fext3(:,2));
+V(:,3) = Fint \ (gamma * V(:,3) + c * Finf(:,3) - d * Fext3(:,3));
 
 % V(:,1) = V(:,1) - gamma*(Ften(:,1)+Fflex(:,1)- c*Finf(:,1)- d * Fext3(:,1)); 
 % V(:,2) = V(:,2) - gamma*(Ften(:,2)+Fflex(:,2)- c*Finf(:,2) - d * Fext3(:,2));
