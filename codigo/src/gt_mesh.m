@@ -1,9 +1,9 @@
 %% Configure the folders for reading the images and to save the experiments
 
-images_root_folder = '/home/manuel/Tesis/imagenes_3d/'; 
+images_root_folder = '/home/cescuderol/Documents/tesis/tesis/'; 
 %images_root_fodler = 'c:/imagenes_3d';
 
-experiment_dest_folder = '/home/manuel/Tesis/';
+experiment_dest_folder = '/home/cescuderol/Documents/tesis/tesis/resultados_02_14/';
 mkdir(strcat(experiment_dest_folder));
 
 clusters = 4;

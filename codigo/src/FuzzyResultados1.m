@@ -6,10 +6,10 @@ close all;
 images_root_folder = '/home/cescuderol/Documents/tesis/tesis/'; 
 %images_root_fodler = 'c:/imagenes_3d';
 
-experiment_dest_folder = '/home/cescuderol/Documents/tesis/tesis/resultados_02_14/';
+experiment_dest_folder = '/home/cescuderol/Documents/tesis/tesis/resultados_02_14/IBSR3/';
 mkdir(strcat(experiment_dest_folder));
 
-nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_01/IBSR_01_segTRI_fill_ana.nii'));
+nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_03/IBSR_03_segTRI_fill_ana.nii'));
 
 
 clusters = 4;
@@ -37,7 +37,7 @@ end
 clear clean_volume;
 
 clear nii;
-nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_01/IBSR_01_ana_strip.nii'));
+nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_03/IBSR_03_ana_strip.nii'));
 
 
 % Run Fuzzy with intensities only
@@ -49,81 +49,82 @@ features = cell(1,0);
 [~, ~, ~, prob_matrix_cell] = create_prob_matrices_from_array(nii.img, features, clusters);
 [umbraladas, ~, ~] = split_images(prob_matrix_cell);
 clean_volume = cell(1, clusters);
-mesh_nodes_nofeatures = cell(1, clusters);
-mesh_faces_nofeatures = cell(1, clusters);
-mesh_nodes_nofeatures_trans = cell(1, clusters);
+nofeatures.nodes = cell(1, clusters);
+nofeatures.faces = cell(1, clusters);
+nofeatures.trans_nodes = cell(1, clusters);
 for i = 1 : clusters    
     clean_volume{i} = fillholes3d(umbraladas{i},1);    
         
     [v,f,~,~] = v2s(clean_volume{i},0.01, 0.1, 'simplify');
-    [mesh_nodes_nofeatures{i},mesh_faces_nofeatures{i}]=meshcheckrepair(v,f);
-    mesh_nodes_nofeatures_trans{c} = trasladarEinvertir(gt_mesh_nodes{c}, nii.hdr.dime.pixdim);
-    vertface2obj(mesh_nodes_nofeatures_trans{c}, mesh_faces_nofeatures{c}, strcat(experiment_dest_folder, 'mesh_faces_nofeatures_', num2str(c), '.obj'));
+    [nofeatures.nodes{i},nofeatures.faces{i}]=meshcheckrepair(v,f);
+    nofeatures.trans_nodes{i} = trasladarEinvertir(nofeatures.nodes{i}, nii.hdr.dime.pixdim);
+    vertface2obj(nofeatures.trans_nodes{i}, nofeatures.faces{i}, strcat(experiment_dest_folder, 'nofeatures_', num2str(i), '.obj'));
 end
 clear clean_volume;
 clear features;
 
 % Run fuzzy with intensity + gaussian
-features = cell(1,0);
+features = cell(1,1);
 features{1} = imgaussian(nii.img, 2);
 
 [~, ~, ~, prob_matrix_cell] = create_prob_matrices_from_array(nii.img, features, clusters);
 [umbraladas, ~, ~] = split_images(prob_matrix_cell);
 clean_volume = cell(1, clusters);
-mesh_nodes_gaussian = cell(1, clusters);
-mesh_faces_gaussian = cell(1, clusters);
-mesh_nodes_gaussian_trans = cell(1, clusters);
+gaussian.nodes = cell(1, clusters);
+gaussian.faces = cell(1, clusters);
+gaussian.trans_nodes = cell(1, clusters);
 for i = 1 : clusters    
     clean_volume{i} = fillholes3d(umbraladas{i},1);    
         
     [v,f,~,~] = v2s(clean_volume{i},0.01, 0.1, 'simplify');
-    [mesh_nodes_gaussian{i},mesh_faces_gaussian{i}]=meshcheckrepair(v,f);
-    mesh_nodes_gaussian_trans{c} = trasladarEinvertir(gt_mesh_nodes{c}, nii.hdr.dime.pixdim);
-    vertface2obj(mesh_nodes_gaussian_trans{c}, mesh_faces_gaussian{c}, strcat(experiment_dest_folder, 'mesh_faces_gaussian_', num2str(c), '.obj'));
+    [gaussian.nodes{i},gaussian.faces{i}]=meshcheckrepair(v,f);
+    gaussian.trans_nodes{i} = trasladarEinvertir(gaussian.nodes{i}, nii.hdr.dime.pixdim);
+    vertface2obj(gaussian.trans_nodes{i}, gaussian.faces{i}, strcat(experiment_dest_folder, 'gaussian_', num2str(i), '.obj'));
 end
 clear clean_volume;
 clear features;
 
 % Run fuzzy with intensity + gradient
-features = cell(1,0);
+features = cell(1,1);
 features{1} = gradient(double(nii.img));
 
 [~, ~, ~, prob_matrix_cell] = create_prob_matrices_from_array(nii.img, features, clusters);
 [umbraladas, ~, ~] = split_images(prob_matrix_cell);
 clean_volume = cell(1, clusters);
-mesh_nodes_gradient = cell(1, clusters);
-mesh_faces_gradient = cell(1, clusters);
-mesh_nodes_gradient_trans = cell(1, clusters);
+gradient.nodes = cell(1, clusters);
+gradient.faces = cell(1, clusters);
+gradient.trans_nodes = cell(1, clusters);
 for i = 1 : clusters    
     clean_volume{i} = fillholes3d(umbraladas{i},1);    
         
     [v,f,~,~] = v2s(clean_volume{i},0.01, 0.1, 'simplify');
-    [mesh_nodes_gradient{i},mesh_faces_gradient{i}]=meshcheckrepair(v,f);
-    mesh_nodes_gradient_trans{c} = trasladarEinvertir(gt_mesh_nodes{c}, nii.hdr.dime.pixdim);
-    vertface2obj(mesh_nodes_gradient_trans{c}, mesh_faces_gaussian{c}, strcat(experiment_dest_folder, 'mesh_nodes_gradient_trans_', num2str(c), '.obj'));
+    [gradient.nodes{i},gradient.faces{i}]=meshcheckrepair(v,f);
+    gradient.trans_nodes{i} = trasladarEinvertir(gradient.nodes{i}, nii.hdr.dime.pixdim);
+    vertface2obj(gradient.trans_nodes{i}, gradient.faces{i}, strcat(experiment_dest_folder, 'gradient_', num2str(i), '.obj'));
 end
 clear clean_volume;
 clear features;
 
 % Run fuzzy with intensity + gaussian + gradient
-features = cell(1,0);
+features = cell(1,2);
 features{1} = gradient(double(nii.img));
 features{2} = imgaussian(nii.img, 2);
 
 [~, ~, ~, prob_matrix_cell] = create_prob_matrices_from_array(nii.img, features, clusters);
 [umbraladas, ~, ~] = split_images(prob_matrix_cell);
 clean_volume = cell(1, clusters);
-mesh_nodes_gaussian_gradient = cell(1, clusters);
-mesh_faces_gaussian_gradient = cell(1, clusters);
-mesh_nodes_gaussian_gradient_trans = cell(1, clusters);
+gaussian_gradient.nodes = cell(1, clusters);
+gaussian_gradient.faces = cell(1, clusters);
+gaussian_gradient.trans_nodes = cell(1, clusters);
 for i = 1 : clusters    
     clean_volume{i} = fillholes3d(umbraladas{i},1);    
         
     [v,f,~,~] = v2s(clean_volume{i},0.01, 0.1, 'simplify');
-    [mesh_nodes_gaussian_gradient{i},mesh_faces_gaussian_gradient{i}]=meshcheckrepair(v,f);
-    mesh_nodes_gaussian_gradient_trans{c} = trasladarEinvertir(gt_mesh_nodes{c}, nii.hdr.dime.pixdim);
-    vertface2obj(mesh_nodes_gaussian_gradient_trans{c}, mesh_faces_gaussian{c}, strcat(experiment_dest_folder, 'mesh_nodes_gaussian_gradient_trans_', num2str(c), '.obj'));
+    [gaussian_gradient.nodes{i},gaussian_gradient.faces{i}]=meshcheckrepair(v,f);
+    gaussian_gradient.trans_nodes{i} = trasladarEinvertir(gaussian_gradient.nodes{i}, nii.hdr.dime.pixdim);
+    vertface2obj(gaussian_gradient.trans_nodes{i}, gaussian_gradient.faces{i}, strcat(experiment_dest_folder, 'gaussian_gradient_', num2str(i), '.obj'));
 end
 clear clean_volume;
 clear features;
 
+save(strcat(experiment_dest_folder, 'mallas_03.mat'));

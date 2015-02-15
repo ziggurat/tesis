@@ -1,4 +1,4 @@
-function [ points ] = createRayGridFromMesh( vertices1, vertices2, step )
+function [ points, directionVec ] = createRayGridFromMesh( vertices1, vertices2, step )
 %CREATERAYGRIDFROMMESH Summary of this function goes here
 %   Detailed explanation goes here
     
