@@ -4,7 +4,7 @@ function [ distances ] = customRaySurf( p0, v0, nodes, faces, gapOffset)
     moda = zeros(1,3);
     p(1,1:2) = p0(1:2) + gapOffset * -0.25;
     p(2,1:2) = p0(1:2) + gapOffset * 0.25;
-    p(3,1:2) = p0(1:2) + gapOffset;    
+    p(3,1:2) = p0(1:2) + gapOffset * 0.5;    
     parfor i=1:3
         [ti,~,~,id]=raytrace(p(i,:),v0,nodes,faces);
         if isempty(id) continue; end
@@ -21,5 +21,8 @@ function [ distances ] = customRaySurf( p0, v0, nodes, faces, gapOffset)
         distances = [];
     else
         distances = results{cellIndex};
+    end
+    if (mod(max(size(distances)),2) ~= 0)
+        distances = [];
     end
 end
