@@ -1,13 +1,22 @@
 clear all;
 close all;
 
-var1 = '/home/cescuderol/Documents/tesis/tesis/resultados_02_14/IBSR1/mallas_01.mat';
-load(var1);
+load('/home/cescuderol/Documents/tesis/tesis/resultados_02_14/IBSR2/mallas_02.mat');
 
-distances(1).nofeatures = volumeForExperimentOnly(nofeatures, 2, gt_mesh, 2, 1);
-distances(1).gaussian = volumeForExperimentOnly(gaussian, 2, gt_mesh, 2, 1);
-distances(1).gradient = volumeForExperimentOnly(gradient, 2, gt_mesh, 2, 1);
-distances(1).all = volumeForExperimentOnly(all, 2, gt_mesh, 2, 1);
+% nofeatures{1} = gt_mesh_nodes_trans{1} = fondo
+% nofeatures{2} = gt{4}
+% nofeatures{3} = gt{3}
+% nofeatures{4} = gt{2}
+distances.nofeatures = cell(1,4);
+distances.nofeatures{1} = volumeForExperimentOnly(nofeatures, 2, gt_mesh, 4, 1);
+distances.nofeatures{2} = volumeForExperimentOnly(nofeatures, 3, gt_mesh, 3, 1);
+distances.nofeatures{3} = volumeForExperimentOnly(nofeatures, 4, gt_mesh, 2, 1);
 
-
-var2 = '/home/cescuderol/Documents/tesis/tesis/resultados_02_14/IBSR2/mallas_02.mat';
+% gaussian{3} = gt_mesh_nodes_trans{1} = fondo
+% gaussian{1} = gt{3}
+% gaussian{2} = gt{2}
+% gaussian{4} = gt{4}
+distances.gaussian = cell(1,4);
+distances.gaussian{1} = volumeForExperimentOnly(gaussian, 1, gt_mesh, 3, 1);
+distances.gaussian{2} = volumeForExperimentOnly(gaussian, 2, gt_mesh, 2, 1);
+distances.gaussian{3} = volumeForExperimentOnly(gaussian, 4, gt_mesh, 4, 1);

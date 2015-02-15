@@ -3,13 +3,13 @@ close all;
 
 % Configure the folders for reading the images and to save the experiments %%
 
-images_root_folder = '/home/cescuderol/Documents/tesis/tesis/'; 
+images_root_folder = '/home/manuel/Tesis/imagenes_3d/'; 
 %images_root_fodler = 'c:/imagenes_3d';
 
-experiment_dest_folder = '/home/cescuderol/Documents/tesis/tesis/resultados_02_14/IBSR3/';
+experiment_dest_folder = '/home/manuel/Tesis/resultados_02_14/IBSR2/';
 mkdir(strcat(experiment_dest_folder));
 
-nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_03/IBSR_03_segTRI_fill_ana.nii'));
+nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_02/IBSR_02_segTRI_fill_ana.nii'));
 
 
 clusters = 4;
@@ -37,7 +37,7 @@ end
 clear clean_volume;
 
 clear nii;
-nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_03/IBSR_03_ana_strip.nii'));
+nii = load_nii(strcat(images_root_folder, 'IBSR_nifti_stripped/IBSR_02/IBSR_02_ana_strip.nii'));
 
 
 % Run Fuzzy with intensities only
@@ -91,22 +91,22 @@ features{1} = gradient(double(nii.img));
 [~, ~, ~, prob_matrix_cell] = create_prob_matrices_from_array(nii.img, features, clusters);
 [umbraladas, ~, ~] = split_images(prob_matrix_cell);
 clean_volume = cell(1, clusters);
-gradient.nodes = cell(1, clusters);
-gradient.faces = cell(1, clusters);
-gradient.trans_nodes = cell(1, clusters);
+mgradient.nodes = cell(1, clusters);
+mgradient.faces = cell(1, clusters);
+mgradient.trans_nodes = cell(1, clusters);
 for i = 1 : clusters    
     clean_volume{i} = fillholes3d(umbraladas{i},1);    
         
     [v,f,~,~] = v2s(clean_volume{i},0.01, 0.1, 'simplify');
-    [gradient.nodes{i},gradient.faces{i}]=meshcheckrepair(v,f);
-    gradient.trans_nodes{i} = trasladarEinvertir(gradient.nodes{i}, nii.hdr.dime.pixdim);
-    vertface2obj(gradient.trans_nodes{i}, gradient.faces{i}, strcat(experiment_dest_folder, 'gradient_', num2str(i), '.obj'));
+    [mgradient.nodes{i},mgradient.faces{i}]=meshcheckrepair(v,f);
+    mgradient.trans_nodes{i} = trasladarEinvertir(mgradient.nodes{i}, nii.hdr.dime.pixdim);
+    vertface2obj(mgradient.trans_nodes{i}, mgradient.faces{i}, strcat(experiment_dest_folder, 'gradient_', num2str(i), '.obj'));
 end
 clear clean_volume;
 clear features;
 
 % Run fuzzy with intensity + gaussian + gradient
-features = cell(1,2);
+features = cell(2,1);
 features{1} = gradient(double(nii.img));
 features{2} = imgaussian(nii.img, 2);
 
@@ -127,4 +127,4 @@ end
 clear clean_volume;
 clear features;
 
-save(strcat(experiment_dest_folder, 'mallas_03.mat'));
+save(strcat(experiment_dest_folder, 'mallas_02.mat'));
