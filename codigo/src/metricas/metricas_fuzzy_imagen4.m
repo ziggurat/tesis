@@ -1,6 +1,6 @@
 clear all;
 close all;
-root_path = '/home/manuel/Tesis/versionado_git/results';
+root_path = '/home/cescuderol/Documents/tesis/results';
 %root_path = '/home/manuel/Tesis/versionado_git/';
 
 load(strcat(root_path, '/mallas_04.mat'));
@@ -22,17 +22,21 @@ load(strcat(root_path, '/mallas_04.mat'));
 
 %No Features
 
-distances.nofeatures = cell(1,4);
-distances.nofeatures{1} = volumeForExperimentOnly(Todo_nofeatures{1}, GT{4}.mesh, 4, 1);
-distances.nofeatures{2} = volumeForExperimentOnly(Todo_nofeatures{2}, GT{3}.mesh, 3, 1);
-distances.nofeatures{3} = volumeForExperimentOnly(Todo_nofeatures{3}, GT{2}.mesh, 2, 1);
+distances.nofeatures = cell(1,3);
+distances.nofeatures{1} = volumeForExperimentOnly(Todo_nofeatures{2}, GT{4}.mesh, 4, 1);
+save(strcat(root_path, '/metrica_fuzzy_04.mat'), 'distances');
+distances.nofeatures{2} = volumeForExperimentOnly(Todo_nofeatures{3}, GT{3}.mesh, 3, 1);
+save(strcat(root_path, '/metrica_fuzzy_04.mat'), 'distances');
+distances.nofeatures{3} = volumeForExperimentOnly(Todo_nofeatures{1}, GT{2}.mesh, 2, 1);
+save(strcat(root_path, '/metrica_fuzzy_04.mat'), 'distances');
 
 % Gaussian
 
-distances.gaussian = cell(1,4);
-distances.gaussian{1} = volumeForExperimentOnly(Todo_gaussian{2}, GT{4}.mesh, 4, 1);
-distances.gaussian{2} = volumeForExperimentOnly(Todo_gaussian{3}, GT{3}.mesh, 3, 1);
-distances.gaussian{3} = volumeForExperimentOnly(Todo_gaussian{4}, GT{2}.mesh, 2, 1);
-
-
+distances.gaussian = cell(1,3);
+distances.gaussian{1} = volumeForExperimentOnly(Todo_gaussian{1}, GT{4}.mesh, 4, 1);
 save(strcat(root_path, '/metrica_fuzzy_04.mat'), 'distances');
+distances.gaussian{2} = volumeForExperimentOnly(Todo_gaussian{3}, GT{3}.mesh, 3, 1);
+save(strcat(root_path, '/metrica_fuzzy_04.mat'), 'distances');
+distances.gaussian{3} = volumeForExperimentOnly(Todo_gaussian{4}, GT{2}.mesh, 2, 1);
+save(strcat(root_path, '/metrica_fuzzy_04.mat'), 'distances');
+
