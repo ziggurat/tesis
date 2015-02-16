@@ -1,4 +1,4 @@
-function [ quality_indicator ] = meshVolumeQualityInd( p0, v0, nodes, faces, nodes2, faces2, gapSize )
+function [ quality_indicator, diff_volume, union_volume ] = meshVolumeQualityInd( p0, v0, nodes, faces, nodes2, faces2, gapSize )
     display('Start volume diff calculation');
     tic;    
     len=size(p0,1);
@@ -21,6 +21,9 @@ function [ quality_indicator ] = meshVolumeQualityInd( p0, v0, nodes, faces, nod
     union_volume = sum(union_volume_array) * gapSize^2;
     quality_indicator = 1 - (diff_volume / union_volume);
     toc;
+    display(strcat('Diff volume is: ', num2str(diff_volume)));
+    display(strcat('Union volume is: ', num2str(union_volume)));
+    display(strcat('Volume metric is: ', num2str(quality_indicator)));
     display('Finished volume diff calculation');
 end
 
