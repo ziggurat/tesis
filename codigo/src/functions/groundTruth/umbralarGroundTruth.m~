@@ -1,0 +1,13 @@
+function [ regiones ] = umbralarGroundTruth( GroundTruthImage )
+%UMBRALARGROUNDTRUTH Summary of this function goes here
+%   Detailed explanation goes here
+    intensidades = unique(GroundTruthImage);
+    regiones = cell(1, intensidades);
+    for (i = 1 : intensidades)
+        regiones{i} GroundTruthImage(GroundTruthImage)
+    end
+    GT.umbralado{c}(GT.umbralado{c} ~= c-1) = 255;
+    GT.umbralado{c}(GT.umbralado{c} == c-1) = 1;
+    GT.umbralado{c}(GT.umbralado{c} == 255) = 0;
+end
+
