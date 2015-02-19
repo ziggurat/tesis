@@ -14,5 +14,20 @@ La idea es discretizar dos de las tres dimensiones, generando una matriz de $ N 
 
 Para cada rayo, los segmentos que atraviesan las dos mallas son clasificados como \emph{in}, encontrandose estos segmentos entre las mallas. La suma de las longitudes de estos segmentos por el área de la celda es una aproximación del volumen encerrado entre las dos mallas. Cuanto mas granular es la discretización (es decir, celdas mas pequeñas) el error de aproximación será menor.
 \section{Evaluación cuantitativa}
+\begin{table}[h]
+	\begin{tabular}{
+			>{\columncolor[HTML]{BBDAFF}}l lllll}
+		FMC   & \cellcolor[HTML]{BBDAFF} & \cellcolor[HTML]{BBDAFF} & \cellcolor[HTML]{BBDAFF} & \cellcolor[HTML]{BBDAFF} & \cellcolor[HTML]{BBDAFF} \\
+		ISBR1 & 66.81\%                  & 64.26\%                  & 67.32\%                  & 73.25\%                  & 73.29\%                  \\
+		ISBR2 & 73.30\%                  & 70.16\%                  & 72.81\%                  & 74.53\%                  & 74.27\%                  \\
+		ISBR3 & 68.93\%                  & 67.92\%                  & 68.68\%                  & 73.70\%                  & 73.74\%                  \\
+		ISBR4 & 64.22\%                  & 69.54\%                  & 62.03\%                  & 70.38\%                  & 68.96\%                  \\
+		ISBR5 & 71.31\%                  & 68.38\%                  & 70.53\%                  & 73.76\%                  & 73.44\%                  \\
+		ISBR6 & 69.67\%                  & 65.79\%                  & 66.79\%                  & 74.01\%                  & 73.64\%                  \\
+		ISBR7 & 55.76\%                  & 55.90\%                  & 54.83\%                  & 64.71\%                  & 63.94\%                  \\
+		ISBR8 & 59.26\%                  & 59.68\%                  & 58.67\%                  & 68.90\%                  & 67.90\%                  \\
+		ISBR9 & 53.95\%                  & 54.62\%                  & 53.40\%                  & 63.90\%                  & 63.17\%                 
+	\end{tabular}
+\end{table}
 \section{Evaluación cualitativa}
 \section{Discusión}
