@@ -12,6 +12,12 @@
 
 \usepackage{caption}
 \usepackage[font={color=tudelft-dark-blue}]{caption}
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+
+\floatstyle{ruled}
+\newfloat{program}{thp}{lop}
+\floatname{program}{Código}
 
 \setcounter{secnumdepth}{3}
 
@@ -23,7 +29,7 @@
 
 
 %% Use this to remove the section number from the figure numbering
-%\renewcommand{\thefigure}{\arabic{figure}}
+\renewcommand{\thefigure}{\arabic{figure}}
 
 %% Centering and justifyin captions in the center
 \captionsetup{justification=centering}
@@ -62,4 +68,3 @@
 \bibliography{Bibliografia}
 
 \end{document}
-

@@ -11,7 +11,7 @@ En la siguiente sección (\ref{section:descripcion_general}) se resume, en térm
 El esquema de segmentación propuesto es un pipeline de procesamiento dividido en etapas, en donde la salida de cada etapa es la entrada de la etapa siguiente (Figura \ref{fig:esquema_de_segmentacion}).
 
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.3]{images/pipeline_de_segmentacion.jpg}
 	\caption{Esquema de segmentación}
@@ -23,10 +23,27 @@ Para la primer etapa, se utiliza el algoritmo de Fuzzy C-Means (Sección \ref{se
 \section{Segmentación por Fuzzy C-Means}\label{section:segmentacion_fuzzy}
 \input{Fuzzy}
 \section{Extracción de mallas}\label{section:extraccion_de_mallas}
+Para obtener una superficie cerrada que se pueda utilizar como entrada para el algoritmo de Modelos Deformables, es necesario extraer el contorno del objeto de interés a partir de las matrices de probabilidades que se obtuvieron utilizando el algoritmo de Fuzzy C-Means. En la Figura zt se pueden observar los pasos que se realizan para obtener esta malla. En primer lugar, se realiza un umbralado de los mapas probabilísticos a fin de obtener volúmenes binarios que incluyan aquellos puntos que pertenecen a cada región de interés. Posteriormente, se aplica un algoritmo de rellenado de huecos y de limpieza de ruido para reducir posibles perturbaciones que puedan generar mallas discontinuas o con objetos aislados. Finalmente, se extrae una malla de superficie a partir del contorno de cada volumen.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{images/pipeline_de_obtencion_de_malla.jpg}
+	\caption{Pipeline de obtención de malla}
+	\label{fig:pipe_obtencion_malla}
+\end{figure}
+
+En las siguientes secciones se detalla cada una de estas operaciones.
+
+\subsection{Umbralado}
+El primer paso es realizar un umbralado de los mapas probabilísticos, con el objeto de obtener c volúmenes binarios (uno por cada cluster) indicando si cada punto pertenece o no al cluster asociado al mismo. Para lograr esto, el método evalúa cada punto de la imagen, comparando las probabilidades del punto en las matrices de probabilidades obtenidas por Fuzzy C-Means, y asignándolo a aquel cluster que presente mayor probabilidad. En caso de que exista igualdad de probabilidades, se decidió tomar el cluster que haya sido evaluado primero.
+
+Como se puede observar en la figura xyz, el umbralado aplicado al mapa de probabilidades donde se ve en tonos rojos las probabilidades altas de pertenencia y en tonos azules las probabilidades bajas, resulta en un volumen binario, donde en blanco se representa el objeto de interés y en negro lo que no pertenece a éste.
+
+
 \section{Modelos deformables}\label{section:modelos_deformables}
 El esquema de segmentación propuesto contempla la utilización de Modelos Deformables (también llamados Contornos Activos) para mejorar la segmentación, mediante la integración de información espacial a la aproximación inicial obtenida con el algoritmo de Fuzzy C-Means. El objetivo es obtener una superficie cerrada y suave, que logre ajustarse lo más posible a las estructuras de interés.
 
-Inicialmente se describen las caracteristicas del modelo clásico de Contornos Activos en 2D \citep{kass1988snakes} (Sección \ref{section:modelo_continuo_contornos_activos}). Luego se presenta su aproximación numérica discreta en 2D y 3D (Sección \ref{section:modelo_discreto_contornos_activos}), propuesta por \cite{} [mcinerney2000t] y considerada en este trabajo. Por último, se incorpora un análisis de sensibilidad para mostrar el comportamiento de los diferentes parámetros del algoritmo (Sección \ref{section:estudio_de_sensibilidad}).
+Inicialmente se describen las características del modelo clásico de Contornos Activos en 2D \citep{kass1988snakes} (Sección \ref{section:modelo_continuo_contornos_activos}). Luego se presenta su aproximación numérica discreta en 2D y 3D (Sección \ref{section:modelo_discreto_contornos_activos}), propuesta por \cite{mcinerney2000t} y considerada en este trabajo. Por último, se incorpora un análisis de sensibilidad para mostrar el comportamiento de los diferentes parámetros del algoritmo (Sección \ref{section:estudio_de_sensibilidad}).
 
 \subsection{Modelo continuo de Contornos Activos en 2D}\label{section:modelo_continuo_contornos_activos}
 
@@ -34,14 +51,14 @@ En el esquema original de Modelos Deformables en 2D se busca definir un contorno
 
 $$ v(s) = (x(s), y(s)), s \in [0,1] $$
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.05]{images/grafico_snake_parametrico.jpg}
 	\caption{Curva paramétrica}
 	\label{fig:curva_parametrica}
 \end{figure}
 
-Esta curva se desplaza sobre el espacio de la imagen, a partir de su posición inicial, mediante la acción de una serie de fuerzas internas y externas, con el objetivo de minimizar un funcional de energía asociada $E(Ec.x)$. Este funcional está definido por dos componentes: una energía interna que controla las características intrínsecas de la curva, las cuales definen la deformación y capacidad de adaptarse al objeto de interés; y una energía externa, que guia o “empuja” esta curva, basándose en información extraída a partir de la imagen:
+Esta curva se desplaza sobre el espacio de la imagen, a partir de su posición inicial, mediante la acción de una serie de fuerzas internas y externas, con el objetivo de minimizar un funcional de energía asociada $E(Ec.x)$. Este funcional está definido por dos componentes: una energía interna que controla las características intrínsecas de la curva, las cuales definen la deformación y capacidad de adaptarse al objeto de interés; y una energía externa, que guía o “empuja” esta curva, basándose en información extraída a partir de la imagen:
 
 $$ E(v) = E_{int}(v) + E_{ext}(v) Ec.x $$
 
@@ -49,7 +66,7 @@ La energía interna restringe la deformación de la curva, y está dada por:
 
 $$ E_{int}(v) = \int_{0}^{1} w_{1}(s) \left| \dfrac{\delta v}{\delta s} \right|^{2} + w_{2}(s) \left|\dfrac{\delta^{2}v}{\delta s^2} \right|^{2} ds $$
 
-La primera componente se asocia a la energía de tensión, que es la que controla el estiramiento y hace que el contorno se comporte como una cuerda. La segunda componente introduce características de rigidez a la curva, asegurando la obtención de un contorno suave. Los parámetros no negativos w1(s) y w2(s) determinan el nivel de tensión y rigidez del contorno, respectivamente. Al variar estos coeficientes, la curva puede cambiar su comportamiento durante la evolución: si se establece un valor 0 para uno o ambos parámetros en un punto s, se permitirá discontinuidad en ese punto. Estos parámetros pueden depender de s si se pretende que la tensión/flexión varíe en ciertos puntos de la curva, aunque en la práctica se les suele asociar valores constantes.
+La primera componente se asocia a la energía de tensión, que es la que controla el estiramiento y hace que el contorno se comporte como una cuerda. La segunda componente introduce características de rigidez a la curva, asegurando la obtención de un contorno suave. Los parámetros no negativos $w_{1}(s)$ y $w_{2}(s)$ determinan el nivel de tensión y rigidez del contorno, respectivamente. Al variar estos coeficientes, la curva puede cambiar su comportamiento durante la evolución: si se establece un valor 0 para uno o ambos parámetros en un punto s, se permitirá discontinuidad en ese punto. Estos parámetros pueden depender de s si se pretende que la tensión/flexión varíe en ciertos puntos de la curva, aunque en la práctica se les suele asociar valores constantes.
 
 Por otro lado, la energía externa está dada por:
 
@@ -59,11 +76,11 @@ y representa la energía potencial del modelo, definida a partir de un campo de 
 La forma del contorno alcanzará su estado final cuando las fuerzas internas y externas se equilibren, minimizando $E$.
 
 \subsection{Modelo discreto de Contornos Activos}\label{section:modelo_discreto_contornos_activos}
-Las ecuaciones definidas en el modelo contínuo no poseen una solución analítica, por lo que es necesario aplicar métodos numéricos para obtener una aproximación. Para esto, se busca discretizar el modelo en espacio y tiempo, muestreando la curva o superficie a intervalos regulares y considerando alguna representación discreta del mismo.
+Las ecuaciones definidas en el modelo continuo no poseen una solución analítica, por lo que es necesario aplicar métodos numéricos para obtener una aproximación. Para esto, se busca discretizar el modelo en espacio y tiempo, muestreando la curva o superficie a intervalos regulares y considerando alguna representación discreta del mismo.
 
-Una posible discretización es la que se propone en \cite{} [mcinerney2000t]. Para trabajar en 2 dimensiones, se define un contorno cerrado bidimensional formado por $n$ nodos conectados en serie por $n$ arcos (Figura \ref{fig:modelo_continuo_snakes}), donde se asocia a cada nodo una posición $s_{i}(t) = (x_{i}(t),y_{i}(t))$, junto a un vector normal y las componentes de fuerza que actúan sobre él, estableciendo además la condición de frontera $s_{0}(t)=s_{n}(t)$ para garantizar una curva cerrada.
+Una posible discretización es la que se propone en \citep{mcinerney2000t}. Para trabajar en 2 dimensiones, se define un contorno cerrado bidimensional formado por $n$ nodos conectados en serie por $n$ arcos (Figura \ref{fig:modelo_continuo_snakes}), donde se asocia a cada nodo una posición $s_{i}(t) = (x_{i}(t),y_{i}(t))$, junto a un vector normal y las componentes de fuerza que actúan sobre él, estableciendo además la condición de frontera $s_{0}(t)=s_{n}(t)$ para garantizar una curva cerrada.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.6]{images/ovalo_continuo_vs_discreto.jpg}
 	\caption{(a) Modelo continuo de Snakes. (b) Aproximación discreta del modelo}
@@ -78,11 +95,11 @@ $$ \gamma_{i}s_{i} - a\alpha_{i}(t) + b\beta_{i}(t) = c\rho_{i}(t) + df_{i}(t)  
 
 donde $\alpha$, $\beta$, $\rho$  y $f$ son magnitudes vectoriales que representan las fuerzas de tensión, flexión, inflación y gradiente, respectivamente, y $\gamma_{i}$ es un coeficiente de amortiguación que regula la velocidad $s_{i}$ del $i$-ésimo nodo.
 
-La energía interna permite que el modelo se comporte como una membrana elástica, donde la fuerza de tensión restringe el estiramiento de la superficie, mientras que la fuerza de flexión representa la resistencia a deformaciones de curvatura. Por otro lado, la energía externa guía a la malla hacia los bordes de la region de interés, donde la fuerza de inflación actúa en direccion al vector normal, inflando o desinflando dependiendo de la similitud con alguna característica de la región en el vértice, mientras que la fuerza de gradiente actúa en dirección opuesta al vector normal, para detener el avance de la malla al acercarse a los bordes. 
+La energía interna permite que el modelo se comporte como una membrana elástica, donde la fuerza de tensión restringe el estiramiento de la superficie, mientras que la fuerza de flexión representa la resistencia a deformaciones de curvatura. Por otro lado, la energía externa guía a la malla hacia los bordes de la región de interés, donde la fuerza de inflación actúa en dirección al vector normal, inflando o desinflando dependiendo de la similitud con alguna característica de la región en el vértice, mientras que la fuerza de gradiente actúa en dirección opuesta al vector normal, para detener el avance de la malla al acercarse a los bordes. 
 
 La superficie detiene su deformación cuando ningún desplazamiento individual excede un cierto error de convergencia, o cuando se alcanza un número máximo de pasos preestablecidos.
 
-El modelo discreto utilizado en nuestra implementación se basa en el planteado por \cite{} [mcinerney2000t], que propone utilizar el método de integración explícito de Euler, aproximando de esta forma una solución numérica a la Ecuación Diferencial de la siguiente forma:
+El modelo discreto utilizado en nuestra implementación se basa en el planteado por \citep{mcinerney2000t}, que propone utilizar el método de integración explícito de Euler, aproximando de esta forma una solución numérica a la Ecuación Diferencial de la siguiente forma:
 
 $$ S^{(t+\Delta t)}_{i} = S_{i}^{t} - \Delta t.\gamma(a\alpha_{i}^{t} + b\beta_{i}^{t} - c\rho_{i}^{t} - df_{i}^{t}) $$
 
@@ -90,23 +107,30 @@ Como se describió anteriormente, el algoritmo de deformación se inicializa con
 
 Por último, se aplican todas las fuerzas a cada vértice de la malla, ponderándolas en función de los parámetros de calibración ($a$, $b$, $c$ y $d$) para obtener la nueva posición de la malla, se incrementa la cantidad de pasos y se verifica el criterio de finalización.
 
-El pseudocódigo del procedimiento usado se puede ver en la Figura nnn.
+El pseudocódigo del procedimiento usado se puede ver en el Pseudocódigo \ref{alg:modelos_deformables}.
 
-Mientras NO se supere la cantidad de pasos o NO converjan todos los vértices
-Calcular la fuerza de tensión para todos los vértices
-Calcular la fuerza de flexión para todos los vértices
-Obtener el vector normal en todos los vértices (ponderado por los vectores normales de los triángulos adyacentes)
-Calcular la fuerza de inflación para todos los vértices
-Obtener el vector gradiente para todos los vértices
-Calcular la fuerza de gradiente para todos los vértices
-Actualizar la posición de todos los vértices, aplicando las fuerzas calculadas, y ponderando con los coeficientes de calibración.
-Incrementar en 1 la cantidad de pasos
+\begin{program}
+\begin{verbatim}
 
+Mientras steps < MAX_STEPS O NO haya convergencia
+  - Calcular la fuerza de tensión para todos los vértices
+  - Calcular la fuerza de flexión para todos los vértices
+  - Obtener el vector normal en todos los vértices (ponderado por 
+      los vectores normales de los triángulos adyacentes)
+  - Calcular la fuerza de inflación para todos los vértices
+  - Obtener el vector gradiente para todos los vértices
+  - Calcular la fuerza de gradiente para todos los vértices
+  - Actualizar la posición de todos los vértices, aplicando las 
+      fuerzas calculadas, y ponderando con los coeficientes de calibración.
+\end{verbatim}
+\caption{Pseudocódigo de Modelos deformables}
+\label{alg:modelos_deformables}
+\end{program}
 
 En las siguientes subsecciones se explica en detalle las consideraciones tenidas en cuenta para la implementación de las diferentes fuerzas.
 
 \subsubsection{Energía interna}\label{section:energia_interna}
-Como se explicó para el modelo continuo, la energía interna brinda al modelo las características de deformación de una membrana elástica. Los terminos iy ide la ecuación diferencial se corresponden a la fuerza de tensión y flexión. La primera representa la resistencia de la superficie al estiramiento, e intenta preservar una distancia uniforme entre los nodos, mientras que la fuerza de flexión representa la resistencia a la deformación de la curvatura, lo que permite generar una superficie suave. Ambas fuerzas se aplican sobre cada vértice i de la malla, y se calculan a partir del operador Laplaciano y Laplaciano cuadrático, como aproximación a la segunda y cuarta derivada respecto de la posicion de vértice [mcinerney2000t]. Para aproximar la derivada para calcular la \emph{fuerza de tensión}, se utiliza el operador “sombrilla”, tomando en cuenta la topología de una malla local alrededor del vértice $i$, a partir de la siguiente ecuación:
+Como se explicó para el modelo continuo, la energía interna brinda al modelo las características de deformación de una membrana elástica. Los terminos $\alpha_{i}$ y $\beta_{i}$ de la ecuación diferencial se corresponden a la fuerza de tensión y flexión. La primera representa la resistencia de la superficie al estiramiento, e intenta preservar una distancia uniforme entre los nodos, mientras que la fuerza de flexión representa la resistencia a la deformación de la curvatura, lo que permite generar una superficie suave. Ambas fuerzas se aplican sobre cada vértice i de la malla, y se calculan a partir del operador Laplaciano y Laplaciano cuadrático, como aproximación a la segunda y cuarta derivada respecto de la posicion de vértice \citep{mcinerney2000t}. Para aproximar la derivada para calcular la \emph{fuerza de tensión}, se utiliza el operador “sombrilla”, tomando en cuenta la topología de una malla local alrededor del vértice $i$, a partir de la siguiente ecuación:
 
 $$ \alpha_{i}(t) = \dfrac{1}{m}\sum_{j\in N(i)} s_{j}(t) - s_{i}(t) $$
 
@@ -129,7 +153,7 @@ $$ F(I(s)) = \begin{cases} 1 & \text{si } I(s) \geq T \\ -1 & \text{en otro caso
 
 siendo $T$ un umbral definido sobre las intensidades de la imagen. Esta funcion Fhace que la malla se contraiga cuando la intensidad del vértice es menor al umbral $T$.
 
-Para evitar que el modelo sea afectado por el ruido y se filtre a través de otras regiones, se puede incorporar estadística sobre las intensidades de la region considerada [ivins1994statistical] definiendo la función $F$ como:
+Para evitar que el modelo sea afectado por el ruido y se filtre a través de otras regiones, se puede incorporar estadística sobre las intensidades de la region considerada \citep{ivins1994statistical} definiendo la función $F$ como:
 
 $$ F(I(s)) = \begin{cases} 1 & \text{si } \left|I(s) - \mu \right| \leq k\sigma \\ -1 & \text{en otro caso} \end{cases} $$
 
@@ -163,13 +187,13 @@ Dado que el algoritmo de Modelos deformables depende de múltiples parámetros, 
 \subsubsection{Cantidad de pasos y error de convergencia}
 La cantidad de pasos hace referencia a la cantidad de iteraciones del método de integración de Euler necesarios para la resolución de la ecuación diferencial que define el comportamiento de la superficie activa. Es de esperar que, luego de un cierto número de iteraciones, el método converja y no existan grandes cambios en la solución. Así, es posible definir un error de convergencia $\epsilon$ experimentalmente, tal que el mismo represente el mínimo desplazamiento promedio tolerado para los nodos de la malla. Cuando dos sucesivas iteraciones alteran las posiciones de los vértices en un promedio inferior al dado por el error $\epsilon$, se asume que el modelo converge y se retorna la solución. El desplazamiento promedio se obtiene calculando la media de las normas euclídeas de los vectores de desplazamiento en cada iteración, para cada nodo que compone la malla que está siendo deformada.
 
-Dado que en el esquema propuesto el algoritmo de Modelos Deformables se inicializa con una malla cercana a los bordes de la región de interés, se espera que el número de iteraciones necesario para que el modelo alcance la convergencia no sea excesivamente grande. En la Figura \ref{fig:convergencia} se ilustra la evolución del desplazamiento promedio de los nodos, respecto a la cantidad de pasos de integración. Como puede observarse, el desplazamiento promedio cae abruptamente en las primeras iteraciones, hasta que se estabiliza con un cierto error de convergencia.
+Dado que en el esquema propuesto el algoritmo de Modelos Deformables se inicializa con una malla cercana a los bordes de la región de interés, se espera que el número de iteraciones necesario para que el modelo alcance la convergencia no sea excesivamente grande. En la Figura \ref{fig:convergencia_snakes} se ilustra la evolución del desplazamiento promedio de los nodos, respecto a la cantidad de pasos de integración. Como puede observarse, el desplazamiento promedio cae abruptamente en las primeras iteraciones, hasta que se estabiliza con un cierto error de convergencia.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.08]{images/grafico_costo_con_carteles.jpg}
+	\includegraphics[scale=0.5]{images/convergencia_snakes.jpg}
 	\caption{Evolución del desplazamiento promedio respecto de la cantidad de iteraciones}
-	\label{fig:convergencia}
+	\label{fig:convergencia_snakes}
 \end{figure}
 
 \subsubsection{Coeficientes de las fuerzas internas}
@@ -178,7 +202,7 @@ los que controlan la rigidez de la superficie activa. Es de esperar que cuando t
 
 En la Figura \ref{fig:sensibilidad4} se presenta el corte axial de tres superficies diferentes, obtenidas éstas fijando los parámetros $c=0.15$, $d=1.5$ y $k=2$, variando únicamente el valor de ayb (en particular, $a=b=0.005, 0.5 \text{ y } 1$).
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.05]{images/sensibilidad4.jpg}
 	\caption{Corte de diferentes superficies activas obtenidas con valores de $c=0.15$, $d=1.5$ y $k=2$ fijos, $a$ y $b$ $0.005$ (amarillo), $0.5$ (naranja) y $1$ (rojo). }
@@ -192,7 +216,7 @@ La fuerza de inflación depende de dos parámetros. El parámetro k, que determi
 
 Para evaluar el comportamiento de la malla, según el valor de k, en la Figura \ref{fig:sensibilidad8} podemos observar el corte axial de tres mallas generadas fijando los parámetros $a=b=0.08$, $c=0.15$ y $d=1.5$, variando $k$ con valores $0.5, 2 y 4$.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.05]{images/sensibilidad8.jpg}
 	\caption{Corte de diferentes superficies activas obtenidas con valores $a=b=0.08$, $c=0.15$ y $d=1.5$ fijos,  $k$ de $0.05$ (amarillo), $2$ (naranja) y $4$ (rojo). }
@@ -203,7 +227,7 @@ Se puede observar que la malla roja, con un valor alto de k, se infló sobre val
 
 Por otro lado, en la Figura \ref{fig:sensibilidad6}, se puede apreciar el corte coronal de tres mallas generadas fijando los valores $a=b=0.08$, $d=1$ y $k=4$,  variando los valores de $c$ con $0.05$, $0.2$ y $0.5$.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.05]{images/sensibilidad9.jpg}
 	\caption{(a)Corte de diferentes superficies activas obtenidas con valores de $a=b=0.08$, $d=1$ y $k=4$ fijos, $c$ de $0.05$ (amarillo), $0.2$ (naranja) y $0.5$ (rojo). (b) y ( c) Acercamientos en diferentes zonas del corte}
@@ -215,7 +239,7 @@ En general, la malla asociada a un valor alto de  $c$ (roja) es más amplia que 
 \subsubsection{Coeficiente de la fuerza gradiente}
 El parametro $d$ influye sobre la fuerza de gradiente. En la Figura \ref{fig:sensibilidad6} se presenta un corte axial de cuatro mallas generadas con valores fijos de $a=b=0.08$, $c=0.15$ y $k=4$ y variando los valores de $d$ con $0.5$ (verde), $1$ (amarillo), $4$ (naranja) y $10$ (rojo).
 
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.05]{images/sensibilidad6.jpg}
 	\caption{(a) Corte de diferentes superficies activas obtenidas con valores de $a=b=0.08$, $c=0.15$ y $k=4$ fijos, $d$ $0.5$ (verde), $1$ (amarillo), $4$ (naranja) y $10$ (rojo). (b) y ( c) Acercamientos en diferentes zonas del corte}
@@ -223,4 +247,3 @@ El parametro $d$ influye sobre la fuerza de gradiente. En la Figura \ref{fig:sen
 \end{figure}
 
 En este caso la malla obtenida con un valor alto de $d$ (roja) se mantiene más contraída sobre los bordes de la imagen, y a medida que se reduce este valor (mallas naranja, amarilla y verde) se aleja de estos. En el acercamiento (b), se puede ver que la malla verde, con valor muy bajo de $d$, se escapa alejándose mucho del borde de la imagen. Por otro lado, en el acercamiento (c) la malla roja con valor muy alto de $d$, no pudo avanzar sobre la convexidad, mientras que con valores más bajos (mallas verde, amarilla y naranja), se observa que las mallas se fueron adaptando a esta forma.
-

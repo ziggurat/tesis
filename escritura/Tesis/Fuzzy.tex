@@ -43,7 +43,7 @@ La primera serie de pruebas se realizó sobre imágenes sin ruido, con el objeti
 La primera imagen utilizada para evaluar el algoritmo (figura \ref{fig:mitad_mitad})  consta de dos secciones claramente definidas, diferenciadas por su color. La parte izquierda de la imagen es negra y la derecha es blanca, lo que permite diferenciar con claridad ambos clusters\footnote{El recuadro negro es solo para señalar que el fondo de la imagen es blanco, pero no es parte de la imagen utilizada en la ejecución de los algoritmos}.
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{images/mitad_mitad_250x250.png}
 \caption{Imagen artificial con borde recto entre clusters}
@@ -54,7 +54,7 @@ La primera ejecución del algoritmo se realizó sin ninguna supervisión por par
 Si observamos los mapas obtenidos sin tener en cuenta información espacial (figuras \ref{fig:ejecucion1_mitad_mitad}-a y \ref{fig:ejecucion1_mitad_mitad}-b), podemos ver que todos los pixels fueron clusterizados con una probabilidad $1$ o $0$. Como era de esperar, el algoritmo diferencia de manera correcta a qué región pertenece cada punto, basándose sólo en las intensidades. Se puede concluir a partir de este resultado que el contraste pronunciado entre las intensidades de la imagen permite lograr una agrupación precisa de los puntos.
 Si observamos las representaciones de los mapas probabilísticos obtenidos teniendo en cuenta la información espacial (figuras \ref{fig:ejecucion1_mitad_mitad}-c y \ref{fig:ejecucion1_mitad_mitad}-d), se puede notar que la inclusión de la posición para el cálculo de la distancia entre puntos afecta en gran medida el valor probabilístico de pertenencia de los puntos. Se distingue con claridad el centroide de cada región en el centro de las mismas, con una probabilidad mayor de pertenencia, y se observa que la probabilidad de pertenencia de los diferentes puntos disminuye de manera radial a medida que los mismos se alejan del centroide. La diferenciación entre los dos clusters sigue siendo muy clara, ya que el contraste de intensidades continúa siendo muy alto; sin embargo, también es posible visualizar cómo los puntos más alejados de los centroides tienen una probabilidad considerablemente más baja de pertenencia. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.08]{images/mitad_mitad_001.jpg}
 \caption{(a-b) Pertenencia al primer y segundo cluster, sin información espacial. (c-d) Pertenencia al primer y segundo cluster, con información espacial.}
@@ -63,7 +63,7 @@ Si observamos las representaciones de los mapas probabilísticos obtenidos tenie
 
 El siguiente conjunto de pruebas realizadas se llevó a cabo utilizando la misma imagen que en los experimentos anteriores (figura \ref{fig:mitad_mitad}), pero seleccionando los centroides iniciales manualmente en lugar de hacerlo al azar. Tanto en la ejecución realizada utilizando sólo las intensidades para el cálculo de la distancia como al agregar las coordenadas de los puntos, el resultado fue exactamente el mismo que en el caso de los centroides al azar (figura \ref{fig:ejecucion_mitad_mitad_centroides_manuales}). Esto es esperable en el caso de las pruebas sin información espacial, ya que la imagen sólo consta de dos intensidades de gris, y cualquier punto de la misma intensidad seleccionado como centroide inicial nos entregará los mismos resultados.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.08]{images/mitad_mitad_001.jpg}
 \caption{Pertenencia al primer y segundo cluster, con selección manual del centroide inicial. (a-b) sin información espacial (c-d) con información espacial.}
@@ -72,7 +72,7 @@ El siguiente conjunto de pruebas realizadas se llevó a cabo utilizando la misma
 
 Al observar que en las pruebas con información espacial también se obtenían los mismos resultados, inclusive  seleccionado los centroides iniciales en esquinas opuestas, realizamos algunas pruebas limitando la cantidad de iteraciones del algoritmo para estudiar cómo es alterado el centroide en cada iteración. El comportamiento observado en la secuencia de imágenes de la figura \ref{fig:ejecucion_mitad_mitad_iteraciones} parece indicar que, al menos para figuras de este tipo, la elección manual de un centroide inicial no afectará la matriz de pertenencias obtenida luego de varias iteraciones, ya que el centroide tiende a desplazarse hacia el centro de la región.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.08]{images/mitad_mitad_iteracion_x1.jpg}
 \caption{Pertenencias al primer cluster, con información espacial y selección manual del centroide inicial. (a) Luego de 1 iteración, (b) luego de 2 iteraciones, ( c) luego de 3 iteraciones, (d) luego de 4 iteraciones.}
@@ -82,7 +82,7 @@ Al observar que en las pruebas con información espacial también se obtenían l
 \paragraph{Imagen artificial con bordes curvos entre clusters}
 El segundo conjunto de pruebas para evaluar el algoritmo fue realizado utilizando una imagen artificial con un círculo negro con fondo blanco  (figura \ref{fig:circulo}).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{images/circulo_250x250.eps}
 \caption{Imagen artificial con bordes curvos entre clusters}
@@ -93,7 +93,7 @@ Las primeras pruebas para esta imagen consideran centroides iniciales aleatorios
 
 Los resultados obtenidos sin información espacial demuestran que el algoritmo es capaz de agrupar los puntos de manera correcta en zonas cerradas cuando existe un fuerte contraste de intensidades entre la zona interior y la exterior (figura \ref{fig:circulo_aleatorio} a y b). Al incluir las coordenadas espaciales los resultados obtenidos son diferentes. Si bien se logra diferenciar con claridad la zona central del fondo en la imagen original, se observa que las probabilidades de los puntos pertenecientes al cluster cerrado son afectadas por la distancia al centroide, que por lo que se puede observar, considerando que los puntos con valores de probabilidad más altos son los mas cercanos a éste, tiende a ubicarse en un punto tangente a la circunferencia (figura \ref{fig:circulo_aleatorio} c y d)
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.08]{images/circulo-001.jpg}
 \caption{Mapas de pertenencia con centroides iniciales aleatorios. (a - b)  sin información espacial (c - d) con información espacial.}
@@ -104,7 +104,7 @@ En la primera representación con información espacial (figura \ref{fig:circulo
 
 Luego se consideró la elección manual de los centroides iniciales: para uno de los clusters se ubicó en la zona central del círculo, mientras que para el otro fue seleccionado en el punto superior izquierdo de la imagen. No se evidencian diferencias en los resultados, y al igual que en el caso aleatorio, cuando se incluye información espacial los valores límites de probabilidades se desplazan hacia un punto tangente del objeto cerrado (figura \ref{fig:circulo_aleatorio_centr_manual}).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.08]{images/circulo-001.jpg}
 \caption{Matriz de pertenencia, con centroide seleccionado manualmente. (a-b) sin información espacial. (c-d) con información espacial}
@@ -113,7 +113,7 @@ Luego se consideró la elección manual de los centroides iniciales: para uno de
 
 Al advertir que el resultado final era el mismo que con los centroides aleatorios,  se realizó el experimento de ejecutar el algoritmo con los centroides elegidos a mano pero con un límite de iteraciones acotado para observar cómo se desplazaban los mismos conforme las iteraciones avanzan. Como se aprecia en la figura \ref{fig:circulo_iteraciones}, inicialmente la circunferencia tiene valores cercanos a $0\%$ de pertenencia (figura \ref{fig:circulo_iteraciones}-a), pero los mismos aumentan a medida que se ejecutan más iteraciones, hasta llegar al resultado final (figura \ref{fig:circulo_iteraciones}-e), que coincide con el presentado en la figura \ref{fig:circulo_aleatorio_centr_manual}. A medida que el algoritmo progresa, el centroide se desplaza hacia un punto del borde de la circunferencia. También se puede ver que la región del fondo no logra ser identificada por el algoritmo, ya que las probabilidades abarcan el rango completo de 0 a 1. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.08]{images/circulo_iteraciones_x1.jpg}
 \caption{Matriz de pertenencia al primer cluster, con información espacial y selección manual de centroides iniciales. (a)Luego de 1 iteración, (b) luego de 10 iteraciones, ( c) luego de 25 iteraciones, (d) luego de 50 iteraciones, (e) luego de 100 iteraciones}
@@ -133,7 +133,7 @@ La siguiente serie de experimentos considera imágenes con ruido sal y pimienta.
 En caso de no incluir las coordenadas espaciales, los puntos de ruido son clasificados con una probabilidad baja de pertenencia a su clúster, debido a la diferencia de intensidad (figura \ref{fig:ruido_1y30}-a). El efecto se profundiza cuando analizamos una imagen con mayor presencia de ruido (figura \ref{fig:ruido_1y30}-b).
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.055]{images/mitad_mitad__ruido_1y_30.jpg}
 \caption{Matriz de pertenencias del cluster 1, sin información espacial. (a) con 1\% de ruido, (b) con 30\% de ruido
@@ -205,10 +205,9 @@ En los mapas de pertenencia de la figura \ref{fig:circulo_bias_ruido_cluster} se
 \subsubsection{Análisis de costo y convergencia}
 En todos los casos analizados, la curva de convergencia de la función costo tiene la forma mostrada en la Figura 17. Siempre hay un periodo inicial con un valor alto de la función costo y luego un punto de inflexión a partir del cual desciende abruptamente y los valores oscilan levemente hasta que el algoritmo se detiene, como se mencionó en la sección \ref{Introduccion}.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{images/FALTA.png}
+\includegraphics[scale=0.07]{images/grafico_costo_con_carteles.jpg}
 \caption{Curva de convergencia}
 \label{fig:convergencia}
 \end{figure}
-

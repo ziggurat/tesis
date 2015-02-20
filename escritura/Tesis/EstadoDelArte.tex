@@ -1,12 +1,11 @@
-% \part{Estado del arte}
 \chapter{Estado del arte}\label{chapter:segmencation}
-Con el creciente uso de las imágenes médicas para el diagnóstico, planeamiento de tratamientos y estudios clínicos, se ha vuelto casi obligatoria la utilización de computadoras para asistir en el análisis de dichas imágenes. En este contexto, uno de los objetivos del diagnóstico asistido por computadoras es acelerar la obtención de resultados precisos \citep{Sharma2010}. Una de las etapas más importantes en este proceso es la segmentación, ya que las etapas posteriores dependen en gran medida de la precisión de sus resultados. Para la delineación de estructuras anatómicas y otras regiones de interés, pues, es necesario contar con algoritmos confiables. 
+Con el creciente uso de las imágenes médicas para el diagnóstico, planeamiento de tratamientos y estudios clínicos, se ha vuelto casi obligatoria la utilización de computadoras para asistir en el análisis de dichas imágenes. En este contexto, uno de los objetivos del diagnóstico asistido por computadoras es acelerar la obtención de resultados precisos \citep{Sharma2010}. Una de las etapas más importantes en este proceso es la segmentación, ya que las etapas posteriores dependen en gran medida de la precisión de sus resultados. Para la delineación de estructuras anatómicas y otras regiones de interés, pues, es necesario contar con algoritmos confiables.
 El objetivo de este capítulo es presentar las etapas del procesamiento de imágenes y algunas estrategias de segmentación, así como un relevamiento general del estado del arte. En la Sección \ref{section:procesamiento} se describen las etapas del procesamiento de imágenes, enfocadas particularmente en su aplicación a la medicina. Finalmente en la Sección \ref{section:algoritmos} se realiza una revisión de los algoritmos de segmentación más comúnmente utilizados sobre imágenes médicas.
 
 \section{Procesamiento de imágenes}\label{section:procesamiento}
 Los sistemas de procesamiento de imágenes médicas posibilitan obtener información de interés a partir de estudios de diversa índole, lo que permite a los profesionales médicos mejorar la precisión de sus diagnósticos y planificar tratamientos o cirugías. El principal objetivo de estos sistemas es obtener una imagen de salida que sea una representación precisa de la señal de entrada, para luego analizarla y extraer de ella la mayor cantidad de información de diagnóstico posible \citep{dougherty2009digital}. Sin importar el dominio de análisis, el procesamiento de imágenes se compone en general de 5 etapas que se pueden observar en la Figura \ref{fig:etapas_del_procesamiento}.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{images/procesamiento.png}
 \caption{Etapas del procesamiento de imágenes}
@@ -15,17 +14,17 @@ Los sistemas de procesamiento de imágenes médicas posibilitan obtener informac
 
 La primera etapa del procesamiento de imágenes es la captura. En el ámbito médico existen diferentes modalidades de captura. Una de estas modalidades es la resonancia magnética (RM). La RM es una de las técnicas más utilizadas para el diagnóstico y seguimiento de distintas enfermedades \citep{prince2006medical}. En la Figura \ref{fig:scanner:mri} se puede observar un escáner de resonancia magnética.  En este tipo de modalidad se utilizan campos magnéticos muy potentes para alinear la magnetización nuclear de los átomos  de hidrógeno del agua en el cuerpo. Unos campos de radiofrecuencia (RF) se utilizan luego para alterar sistemáticamente el alineamiento de esa magnetización, provocando que los átomos de hidrógeno generen un campo magnético rotacional detectable por el escáner \citep{novelline2004squire}.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{images/scanner.jpg}
 \caption{Escáner de resonancia magnética}
 \label{fig:scanner:mri}
 \end{figure}
 
-Esta es una técnica flexible y dinámica que permite obtener imágenes de contraste variable utilizando secuencias de pulso y ajustando los parámetros de captura de la imagen correspondientes al tiempo longitudinal (T1) y al tiempo transversal (T2). Las imágenes obtenidas mediante este procedimiento son generalmente eficientes para detectar anormalidades en el cerebro, durante las etapas tempranas de una enfermedad, así como también resultan excelentes para la detección de tumores cerebrales o infecciones. En particular, la RM es muy útil para detectar enfermedades en la materia blanca tales como esclerosis múltiple, encefalopatias, y encefalitis post infecciosa. Los determinantes principales del contraste y la intensidad de la señal son los tiempos de T1 y T2. El contraste es diferente entre imágenes T1 y T2 y las lesiones patológicas pueden separarse en grupos de acuerdo a las características de las dos imágenes mencionadas (T1 y T2):
+Esta es una técnica flexible y dinámica que permite obtener imágenes de contraste variable utilizando secuencias de pulso y ajustando los parámetros de captura de la imagen correspondientes al tiempo longitudinal (T1) y al tiempo transversal (T2). Las imágenes obtenidas mediante este procedimiento son generalmente eficientes para detectar anormalidades en el cerebro, durante las etapas tempranas de una enfermedad, así como también resultan excelentes para la detección de tumores cerebrales o infecciones. En particular, la RM es muy útil para detectar enfermedades en la materia blanca tales como esclerosis múltiple, encefalopatías, y encefalitis pos infecciosa. Los determinantes principales del contraste y la intensidad de la señal son los tiempos de T1 y T2. El contraste es diferente entre imágenes T1 y T2 y las lesiones patológicas pueden separarse en grupos de acuerdo a las características de las dos imágenes mencionadas (T1 y T2):
 
 
-\begin{table}[h!]
+\begin{table}[H]
 	\centering
 	\begin{tabular}{c|c c}
 	Patología & Contraste en T1 & Contraste en T2   \\ 
@@ -35,9 +34,9 @@ Esta es una técnica flexible y dinámica que permite obtener imágenes de contr
 	\end{tabular} 
 \end{table}
 
-También existen variantes además de las dos modalidades principales de RM: la modalidad FLAIR (Fluid Attenuated Inversion Recovery), que suprime la señal de los fluidos y permite, entre otras cosas, detectar placas de esclerosis múltiple en el cerebro y la RM con realce de contraste de Gadolinio (T1C) que constituye la modalidad estándar para la identificación de tumores \emph{(Scarabino, 2012)}. En la figura \ref{fig:mri_cortes} se pueden observar diferentes cortes de cada una de estas variantes.
+También existen variantes además de las dos modalidades principales de RM: la modalidad FLAIR (Fluid Attenuated Inversion Recovery), que suprime la señal de los fluidos y permite, entre otras cosas, detectar placas de esclerosis múltiple en el cerebro y la RM con realce de contraste de Gadolinio (T1C) que constituye la modalidad estándar para la identificación de tumores \cite{scarabino2012imaging}. En la figura \ref{fig:mri_cortes} se pueden observar diferentes cortes de cada una de estas variantes.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=1]{images/mri-ms-brain-scan.jpg}
 \caption{Cortes de imágenes MR utilizando T1, FLAIR y T2}
@@ -46,7 +45,7 @@ También existen variantes además de las dos modalidades principales de RM: la 
 
 Otra técnica muy utilizada para la captura es la tomografía computada (TC). La palabra tomografía deriva de dos palabras griegas; tomos, que significa corte o sección y grafía, que significa descripción. Un escaneo de TC es una modalidad que utiliza rayos X para obtener información estructural sobre el cuerpo humano. Para realizar este escaneo se utiliza un dispositivo llamado tomógrafo (Figura \ref{fig:tomografo}).
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{images/ge_ct_scanner.jpg}
 \caption{Tomógrafo}
@@ -58,7 +57,7 @@ Cuando las ondas son disparadas al individuo, la radiación que no ha sido absor
 
 Las tomografías son eficientes en casos de trauma y proveen buen detalle óseo y gran sensibilidad para detectar hemorragias agudas. Se han vuelto una herramienta importante en la medicina para suplementar los rayos X tradicionales, los ultrasonidos y las resonancias magnéticas y, aunque es todavía una modalidad bastante costosa, se está estableciendo como el estándar para el diagnóstico de muchas enfermedades. Las tomografías computadas son particularmente utilizadas para el diagnóstico de enfermedades de partes del cuerpo como el cerebro (figura \ref{fig:tomografia_cerebral}), el hígado, el pecho, al abdomen, la pelvis y la columna \citep{sharma2010automated}.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=1]{images/Schiavo_catscan.jpg}
 \caption{Tomografía cerebral}
@@ -69,16 +68,16 @@ Todos los métodos de captura introducen en la imagen resultante algún tipo de 
 
 El problema de volumen parcial es causado por la baja resolución del dispositivo de captura de la imagen. Las resoluciones bajas causan una difusión de la imagen de manera que las actividades altas son distribuidas a las zonas cercanas. En la figura \ref{fig:resolucion} la grilla representa la resolución del dispositivo de captura. En la figura de la izquierda se puede observar como uno de los puntos negros abarca parcialmente más de una unidad de la grilla. En la figura de la derecha podemos observar como ese punto es distribuido en las 4 unidades de la grilla pero con una intensidad menor.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{images/resolution.png}
 \caption{(a) Los puntos negros representan las zonas de actividad alta y la grilla la resolución del dispositivo de captura. (b) La representación de la imagen luego de la captura.}
 \label{fig:resolucion}
 \end{figure}
 
-El efecto producido cuando una zona de interés se propaga a la zona de fondo es denominado spill-out. El efecto inverso, conocido como spill-in, es la contaminación de la representación del área de interés con valores del fondo. En la figura \ref{fig:spill}a se muestra un mapa de la distribución real de una región de interés. En \ref{fig:spill}b se muestra el efecto de spill out, donde el fondo es “contaminado” con valores de la region de interés. En \ref{fig:spill}c se muestra el efecto de spill in, donde la zona de interés es afectada por los valores del fondo. Se puede ver en la figura \ref{fig:spill}d como la imagen final tiene los bordes de la zona de interés poco definidos o difusos.
+El efecto producido cuando una zona de interés se propaga a la zona de fondo es denominado spill-out. El efecto inverso, conocido como spill-in, es la contaminación de la representación del área de interés con valores del fondo. En la figura \ref{fig:spill}a se muestra un mapa de la distribución real de una región de interés. En \ref{fig:spill}b se muestra el efecto de spill out, donde el fondo es “contaminado” con valores de la región de interés. En \ref{fig:spill}c se muestra el efecto de spill in, donde la zona de interés es afectada por los valores del fondo. Se puede ver en la figura \ref{fig:spill}d como la imagen final tiene los bordes de la zona de interés poco definidos o difusos.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.15]{images/spill.jpg}
 \caption{(a) Distribución real de la actividad en la imagen. (b) Spill-out. (c) Spill-in (d) Resultado de la medición de la imagen.}
@@ -89,9 +88,9 @@ Cuando se realiza una captura de imagen hay factores que tienden a producir vari
 
 Habitualmente las imágenes médicas contienen ruido, y esta presencia le da a la imagen una apariencia moteada, granulada, o con efecto “nieve”. Si bien el ruido provoca que la imagen tenga una apariencia no deseable, su efecto es más perjudicial cuando se aplica algún algoritmo automático sobre la imagen para realizar análisis y asistir en diagnósticos. En particular, las imágenes con ruido pueden forzar al algoritmo de segmentación a detectar regiones de manera errónea.
 
-Debido a estos errores introducidos por la captura mencionados anteriormente, es muy importante una etapa de pre-procesamiento de la imagen para intentar eliminar todos los errores posibles de las imágenes previa su entrada a los algoritmos de segmentación. La etapa de pre-procesamiento también tiene por objetivo realzar bordes entre estructuras de interés y/o mejorar algunas propiedades de la imagen, tales como brillo o contraste \emph{[bankman2008handbook]}
+Debido a estos errores introducidos por la captura mencionados anteriormente, es muy importante una etapa de pre-procesamiento de la imagen para intentar eliminar todos los errores posibles de las imágenes previa su entrada a los algoritmos de segmentación. La etapa de pre-procesamiento también tiene por objetivo realzar bordes entre estructuras de interés y/o mejorar algunas propiedades de la imagen, tales como brillo o contraste \citep{bankman2008handbook}
 
-En una tercera etapa se realiza el procesamiento de la imagen utilizando algoritmos de segmentación. El propósito de esta etapa es dividir las imágenes en regiones de interés. Existen varios métodos de segmentación, y la elección de uno de estos métodos depende de las características del problema que se busca resolver. Las diferentes técnicas de segmentación más utilizadas en el estado del arte se analizan en detalle en la Sección \label{section:algoritmos}.
+En una tercera etapa se realiza el procesamiento de la imagen utilizando algoritmos de segmentación. El propósito de esta etapa es dividir las imágenes en regiones de interés. Existen varios métodos de segmentación, y la elección de uno de estos métodos depende de las características del problema que se busca resolver. Las diferentes técnicas de segmentación más utilizadas en el estado del arte se analizan en detalle en la Sección \ref{section:algoritmos}.
 
 Sobre las imágenes segmentadas es posible realizar una extracción de características de interés, como topología, geometría, textura y otros indicadores, dependiendo del dominio de aplicación. Estas características son utilizadas en una etapa posterior de análisis y reporte que resultan útiles para diagnosticar y ayudar en la toma de decisiones médicas \citep{pham2000current}.
 
@@ -111,16 +110,16 @@ Entre los algoritmos más relevantes podemos encontrar el de umbralado, K-means,
 \subsubsection{Umbralado}
 Los algoritmos de segmentación por umbralado,  thresholding en inglés, permiten dividir una imagen escalar en dos regiones de interés mediante la separación de las intensidades \citep{weszka1978survey}. Este tipo de enfoques busca determinar un valor de intensidad, denominado umbral, que es luego utilizado para separar las diferentes regiones que componen la imagen. La segmentación se logra agrupando todos los puntos con mayor intensidad al umbral en una clase, y los restantes en otra.
 
-Los algoritmos por umbralado son simples pero efectivos para segmentar imágenes en las que las estructuras de interés cuentan con intensidades, o alguna otra característica cuantificable bien contrastada \citep{pham2000current}. Normalmente el umbral es introducido por el usuario, pero existen también algunos métodos que permiten obtener el umbral de manera automatica \citep{sahoo1988survey}. Este tipo de enfoque es normalmente utilizado como paso inicial en las operaciones de procesamiento de imágenes, como en \emph{(bao2003noise)}, que utilizan un umbralado basado en ondas para reducir el ruido en imágenes de resonancia magnética.
+Los algoritmos por umbralado son simples pero efectivos para segmentar imágenes en las que las estructuras de interés cuentan con intensidades, o alguna otra característica cuantificable bien contrastada \citep{pham2000current}. Normalmente el umbral es introducido por el usuario, pero existen también algunos métodos que permiten obtener el umbral de manera automática \citep{sahoo1988survey}. Este tipo de enfoque es normalmente utilizado como paso inicial en las operaciones de procesamiento de imágenes, como en \citep{bao2003noise}, que utilizan un umbralado basado en ondas para reducir el ruido en imágenes de resonancia magnética.
 
-La  principal limitación de los algoritmos tradicionales radica en que la imagen sólo se divide en dos clases, y en que no es aplicable a imágenes multiespectrales \citep{pham2000current}. Por otro lado, los algoritmos de umbralado no tienen en cuenta características espaciales de la imagen, lo que hace que sean más sensibles al ruido y a las inhomogeneidades que puedan presentar las intensidades. Por esta razón, se han propuesto variaciones al algoritmo clásico de umbralado para la segmentación de imágenes médicas, como en \citep{zhang2010fast} que utilizan un algoritmo de umbralado 3D adaptativo para segmentar los huesos en imagenes de CT, y en \emph{(jiang2003adaptive)} que proponen un umbralado adaptativo local guiado por conocimiento, para detectar vasos sanguíneos en imágenes de retina.
+La  principal limitación de los algoritmos tradicionales radica en que la imagen sólo se divide en dos clases, y en que no es aplicable a imágenes multiespectrales \citep{pham2000current}. Por otro lado, los algoritmos de umbralado no tienen en cuenta características espaciales de la imagen, lo que hace que sean más sensibles al ruido y a las inhomogeneidades que puedan presentar las intensidades. Por esta razón, se han propuesto variaciones al algoritmo clásico de umbralado para la segmentación de imágenes médicas, como en \citep{zhang2010fast} que utilizan un algoritmo de umbralado 3D adaptativo para segmentar los huesos en imágenes de CT, y en \citep{jiang2003adaptive} que proponen un umbralado adaptativo local guiado por conocimiento, para detectar vasos sanguíneos en imágenes de retina.
 
 \subsubsection{Crecimiento de regiones}
 Los algoritmos de segmentación por crecimiento de regiones permiten extraer una región conectada de una imagen basándose en algún criterio de homogeneidad predefinido \citep{haralick1985image}.
 
 En su versión más simple, esta técnica se inicializa mediante la selección de uno o más puntos, denominados semillas, para cada región que se desea obtener. Luego se incorporan a la región todos los puntos conectados a cada semilla, que poseen características similares. El criterio de crecimiento es una función basada en las similitudes de las características de los puntos, y las características utilizadas para calcular estas similitudes dependen del objetivo del estudio.
 
-Este método mejora respecto al umbralado, ya que tiene en cuenta la conexión espacial, aunque su principal desventaja es que por lo general se requiere la interacción manual del usuario para ubicar las semillas, aunque se han desarrollado algunos enfoques para asignar las semillas de manera automática, como en \emph{(Kumar y Mehta, 2011)} para tumores cerebrales, o en \emph{(Wu et al 2008)} para ubicar semillas automáticamente sobre órganos abdominales.
+Este método mejora respecto al umbralado, ya que tiene en cuenta la conexión espacial, aunque su principal desventaja es que por lo general se requiere la interacción manual del usuario para ubicar las semillas, aunque se han desarrollado algunos enfoques para asignar las semillas de manera automática, como en \citep{kumar2011texture} para tumores cerebrales, o en \citep{wu2008segmentation} para ubicar semillas automáticamente sobre órganos abdominales.
 
 Al igual que los métodos de umbralado, los enfoques basados en crecimiento de regiones no suelen utilizarse por sí solos, sino integrados con otros enfoques de segmentación \citep{freixenet2002yet}.
 
@@ -133,7 +132,7 @@ Las principales ventajas de los modelos deformables son su capacidad para obtene
 
 Una de las principales desventajas de los esquemas tradicionales es la necesidad de un contorno o superficie inicial cercano al deseado. Ante este problema se han desarrollado varias alternativas que lo resuelven, como en \citep{cohen1991active}, que agregan una fuerza adicional que permite que el contorno inicial se infle como un globo hasta llegar a un borde bien marcado.
 
-En el Capítulo \ref{chap:modelos_deformables} se presenta en detalle este algoritmo, donde describimos además su implementación como último paso en la propuesta presentada.
+En el Capítulo \ref{chapter:metodos} se presenta en detalle este algoritmo, donde describimos además su implementación como último paso en la propuesta presentada.
 
 \subsubsection{K-Means}
 Este es un método de clustering o agrupamiento que busca clasificar n objetos en k grupos, donde k es una cantidad conocida a priori. Cada grupo debe tener un centroide que representa el valor medio de sus miembros, el cual inicialmente puede definirse manual o automáticamente. Luego, de manera iterativa, se determina la pertenenciade cada objeto a un cluster, asignándolo al grupo que tenga el centroide más cercano. Luego de asignados todos los objetos a un cluster, se recalculan los centroides, a partir de la media de los objetos pertenecientes a cada grupo. La implementación más común utiliza una técnica de refinamiento iterativo donde se intenta reducir una función de costo y se utiliza la distancia euclídea entre los puntos para definir la pertenencia a un grupo \citep{macqueen1967some}.
@@ -143,12 +142,12 @@ Este algoritmo se ha utilizado en \citep{juang2010mri} para detectar lesiones ce
 \subsubsection{Fuzzy C-Means}
 Fuzzy C-Means es un algoritmo de clustering no supervisado que permite obtener segmentaciones difusas agrupando elementos similares en clusters. Un cluster es un conjunto de elementos que son afines entre sí. Una de las principales desventajas de los algoritmos de clustering tradicionales radica en que los mismos asumen que cada elemento pertenece inequívocamente a un cluster, ignorando si existe o no alguna similaridad con los demás miembros de otros clusters \citep{full1982fuzzy}. Una manera de modelar esta similaridad fue introducida en \citep{zadeh1965fuzzy}, y consiste en representar la semejanza de los puntos que se desean clusterizar con una función, cuyos valores están entre cero y uno. Basado en esta propuesta, y a diferencia de K-Means, en donde cada elemento pertenece o no a un cluster de manera determinante, en el método de Fuzzy C-Means cada elemento posee una probabilidad de pertenencia a cada uno de los clusters.
 
-En el Capítulo \ref{chap:fuzzy} se presenta una explicación detallada de Fuzzy C-Means y además se lo utiliza como primer paso en la propuesta de este trabajo.
+En el Capítulo \ref{section:segmentacion_fuzzy} se presenta una explicación detallada de Fuzzy C-Means y además se lo utiliza como primer paso en la propuesta de este trabajo.
 
 \subsection{Supervisados}
 Los algoritmos supervisados requieren datos de entrenamiento que se obtienen mediante segmentaciones realizadas manualmente, y que luego son utilizados como referencia para realizar nuevas segmentaciones de forma automática \citep{pham2000current}.
 
-En general, los métodos supervisados son costosos, y resulta bastante difícil y a veces hasta imposible, seleccionar y etiquetar correctamente los datos de entrenamiento \emph{[Jain et al., 2000]}. Por otro lado, los datos de entrenamiento generados están asociados a un tipo de imagen en particular, por lo que el esfuerzo para entrenar el algoritmo no es reutilizable para distintos dominios \citep{sharma2010automated}.
+En general, los métodos supervisados son costosos, y resulta bastante difícil y a veces hasta imposible, seleccionar y etiquetar correctamente los datos de entrenamiento \citep{jain2000statistical}. Por otro lado, los datos de entrenamiento generados están asociados a un tipo de imagen en particular, por lo que el esfuerzo para entrenar el algoritmo no es reutilizable para distintos dominios \citep{sharma2010automated}.
 
 A continuación se describen brevemente los principales algoritmos supervisados utilizados para la segmentación de imágenes médicas.
 
