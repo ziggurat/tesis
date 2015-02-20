@@ -1,8 +1,39 @@
-\chapter{Resultados}
-\section{Datos usados}
-\section{Metricas de evaluación de calidad}
+\chapter{Resultados - NO CORREGIR!!!}\label{chap:resultados}
+En este capítulo se presentan los resultados obtenidos al evaluar el esquema de segmentación propuesto sobre un conjunto de imágenes de prueba. El mismo consiste en un subconjunto de RM de cerebro extraídas de un \emph{dataset} ampliamente utilizado en el estado del arte, sobre las cuales se evaluó la capacidad del método de segmentación para detectar materia gris (MG), materia blanca (MB) y líquido cefalorraquídeo (LC). La evaluación de diversas características morfológicas de estos tejidos resulta de vital importancia en numerosas aplicaciones, incluyendo el diagnóstico de enfermedades cerebrales tales como el Alzheimer o la esclerosis múltiple \citep{kovacevic2002robust}.
+
+El algoritmo fue evaluado tanto desde un punto de vista cuantitativo como cualitativo. Cuantitativamente, se estudió la capacidad del método para segmentar los tejidos anteriormente mencionados, comparando las mallas obtenidas con las segmentaciones de referencia disponibles en el \emph{dataset}, por medio de indicadores apropiados. Durante el estudio cualitativo, además, se contrastaron los datos numéricos con lo observado visualmente, y se analizaron cuestiones relativas a la calidad de las mallas resultantes, al aspecto visual de las mismas, y a diversas particularidades que se presentaron en algunos de los casos de estudio.
+En la Sección \ref{section:datos_usados} se presentan los materiales a los cuales se les aplicó el esquema propuesto. En la sección \ref{section:metricas_calidad} se introducen las métricas de evaluación utilizadas en el análisis cuantitativo. En la Sección \ref{section:evaluacion_cuantitativa} se exponen los resultados de la evaluación cuantitativa utilizando el indicador presentado en la Sección \ref{section:metricas_calidad}. Luego se muestra el análisis cualitativo en la Sección \ref{section:evaluacion_cualitativa} y finalmente en la Sección \ref{section:discusion} se discuten las ventajas y desventajas del esquema propuesto así como las mejoras que se podrían aplicar.
+\section{Datos usados}\label{section:datos_usados}
+Como se mencionó, se estudió la capacidad del algoritmo para la identificación y correcta segmentación de los tres principales tejidos cerebrales: materia blanca, materia gris y líquido cefalorraquídeo. 
+
+Las imágenes utilizadas son un subconjunto de 9 resonancias magnéticas correspondientes al \emph{dataset} Internet Brain Segmentation Repository (ISBR), liberado por el Center for Morphometric Analysis del Massachusetts General Hospital con el objetivo de proveer un conjunto de datos estándar para la evaluación de algoritmos de segmentación de tejidos cerebrales \citep{rohlfing2012image, valverde2015comparison}. 
+
+Tradicionalmente conocido en la literatura como ISBR18, el \emph{dataset} está compuesto por 18 MRIs modalidad T1-w de sujetos sin ninguna patología, con una distancia inter-slide de 1.5 mm y una resolución de 256 x 128 x 256 vóxeles, provistas en formato NIfTI-1. En la Figura \ref{fig:ISBR18} se presenta, a modo de ejemplo, un corte de cada uno de los 9 estudios seleccionados para la evaluación del algoritmo. Según puede observarse, el cráneo ha sido removido de las imágenes para evitar errores en la segmentación. Por otro lado, cabe destacar la variabilidad que existe entre las imágenes, en lo que respecta a artefactos, distribución de las intensidades, presencia y ausencia de bordes, ruido, etc. Esto permitió estudiar la capacidad del algoritmo para lidiar con la multiplicidad de casos que puedan llegar a presentarse en la práctica clínica.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/FALTA.png}
+	\caption{Cortes de las MRI de IBSR18 utilizadas para la evaluación del método de segmentación propuesto.}
+	\label{fig:ISBR18}
+\end{figure}
+
+El conjunto de datos provee también volúmenes de referencias, también denominados ground truths (GT), como el que se observa en la Figura \ref{fig:GT}(b) para una de las imágenes, los cuales son utilizados en la comunidad científica para la evaluación de resultados. Cada imagen posee uno de estos volúmenes asociado, en donde la materia blanca, la materia gris, el líquido cefalorraquídeo y el fondo se representan con intensidades bien diferenciadas. Así, resulta muy sencillo elaborar por umbralado las máscaras binarias correspondientes a cada tejido (Figura \ref{fig:GT}(b)). A partir de estas máscaras es que se extraen las mallas de superficie que luego son utilizadas para realizar la comparación con la segmentación obtenida utilizando el indicador presentado en la sección 1.2.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/FALTA.png}
+	\caption{(a) corte axial de la imagen IBSR07 (b) Máscaras binarias correspondiente al GT asociado (en rojo la materia blanca, en verde el líquido cefalorraquídeo y en azul la materia gris)}
+	\label{fig:GT}
+\end{figure}
+
+\section{Metricas de evaluación de calidad}\label{section:metricas_calidad}
+Para evaluar cuantitativamente la calidad de las mallas obtenidas, se realizó una comparación entre la malla resultante del esquema propuesto y la malla generada a partir de la segmentación de referencia. La técnica utilizada para realizar el cálculo de la diferencia entre las superficies utiliza un método basado en una aproximación discreta del volumen encerrado entre las mallas \citep{d2008indicador}.
+
+Entonces, para estudiar los resultados obtenidos por el algoritmo se consideró el indicador de calidad de la segmentación conocido como coeficiente Dice, dado por la ecuación:
 
 $$ Q = \dfrac{V_{R}\bigcup V_{S}}{V_{R}\bigcap V_{S}}$$
+
+donde $V_{S}$ es el volumen encerrado por la superficie segmentada $S$ y $V_{R}$ es el encerrado por la superficie de referencia $R$. Esta métrica alcanza el valor 1 cuando ambos volúmenes coinciden, y es cercana a 0 cuando los volúmenes son completamente difusos. El cálculo numérico de la unión y la intersección del volumen encerrado por las superficies se realizó utilizando una implementación propia de un método basado en la discretización del espacio y el uso del test del rayo \cite{foley1994introduction, d2008indicador}. La estrategia consiste en la discretización de dos de las tres dimensiones de la imagen, generando una matriz de $ N \times M $ celdas, desde las cuales se disparan rayos paralelos entre sí. Estos rayos intersectan o no las superficies, generando una serie de segmentos como se muestra en la Figura \ref{fig:discretizacionvolumen}.
 
 \begin{figure}[H]
 \centering
@@ -11,7 +42,9 @@ $$ Q = \dfrac{V_{R}\bigcup V_{S}}{V_{R}\bigcap V_{S}}$$
 \label{fig:discretizacionvolumen}
 \end{figure}
 
-\section{Evaluación cuantitativa}
+Para cada rayo, se suman las longitudes de los segmentos que atraviesan las mallas correspondientes a $V_{R}$ y $V_{S}$. Luego, esta suma por el área de la celda es una aproximación del volumen encerrado entre las dos mallas. Cuanto más granular es la discretización (es decir, celdas más pequeñas) el error de aproximación será menor.
+
+\section{Evaluación cuantitativa}\label{section:evaluacion_cuantitativa}
 
 \begin{table}[h]
 	\centering
@@ -110,5 +143,5 @@ $$ Q = \dfrac{V_{R}\bigcup V_{S}}{V_{R}\bigcap V_{S}}$$
 \end{figure}
 
 
-\section{Evaluación cualitativa}
-\section{Discusión}
+\section{Evaluación cualitativa}\label{section:evaluacion_cualitativa}
+\section{Discusión}\label{section:discusion}

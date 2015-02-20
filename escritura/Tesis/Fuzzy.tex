@@ -13,23 +13,24 @@ donde $u_{ij}$ representa la pertenencia de un punto $x_j$ al cluster $i$, $v_i$
 La función de costo tiene por objetivo asignar probabilidades altas de pertenencia de un punto $j$ a un cluster $i$ si su vector característico asociado $x_j$ es similar al centroide $v_i$. Esta similitud entre vectores es cuantificada midiendo la distancia euclídea entre ambos en el espacio de características: si el vector de características es muy disímil respecto al centroide del cluster de estudio, la distancia euclídea entre ambos será alta; si los vectores son similares, la distancia será menor. El resultado del proceso de segmentación es una matriz de pertenencias o mapas probabilísticos, y una lista con los centroides de cada una de las regiones.
 
 
-
-\begin{algorithm}[H]
-Inicializar $c$ \tcc*[r]{cantidad de clusters}
-Inicializar $n$ \tcc*[r]{nivel de difusión}
-Inicializar $\epsilon$\;
-Inicializar $U = u_{ij}$ \tcc*[r]{matriz  de pertenencias inicial}
-$b = 0$\;
-\While{$\delta > \epsilon$ | $b <> looplimit$}{
-Calcular los centroides $v_{i}^{(b)}$ utilizando $U^{(b)}$\;
-Calcular pertenencia de los voxels $U_{b+1}$\;
-Calcular $\delta = $\;
-$b = b+1$\
-}
-\caption{Pseudocódigo del algoritmo de Fuzzy C-Means}
-\label{lst:fcm-alg}
-\end{algorithm}
-
+\begin{program}[H]
+	\begin{lstlisting}[mathescape]
+	  $c = $ cantidad de clusters
+	  $n = $ nivel de difusion
+	  $\epsilon= $ condicion de corte
+	  loop_limit = iteraciones maximas	  
+	  Inicializar $U = [u_{ij}]$
+	  b = 0
+	  -- Mientras $\delta > \epsilon$ o $ b < $ loop_limit
+	    Calcular los centroides $v_{i}(b)$ utilizando $U(b)$
+	    Calcular la pertenencia de los puntos $U(b+1)$
+	    Calcular $\delta = \left| U(b)-U(b+1) \right|$
+	    $ b = b+1 $
+	  --
+	\end{lstlisting}
+	\caption{Pseudocódigo del algoritmo de Fuzzy C-Means}
+	\label{lst:fcm-alg}
+\end{program}
 
 Como se describe en el pseudocódigo \ref{lst:fcm-alg}, el algoritmo trabaja de manera iterativa, minimizando la función de costo $U$. En cada iteración se calcula un valor delta ($\delta$) que es la diferencia entre el costo de la iteración anterior y la actual. Cuando $\delta$ es menor a la cota de un epsilon ($\epsilon$) predefinido, se considera que el algoritmo ha convergido. En algunas condiciones puede ocurrir que no llegue a la convergencia o que no lo haga en un número práctico de iteraciones. Por este motivo, se añade un mecanismo de control que consiste en limitar la cantidad máxima de iteraciones. De esta manera el algoritmo se detiene si la convergencia no se logra antes del límite de iteraciones configurado.
 En las siguientes secciones se presenta un estudio de sensibilidad realizado sobre fantomas artificiales con y sin ruido, y además con y sin efecto bias, a partir del cual se abordarán algunos detalles particulares del algoritmo.
@@ -39,7 +40,7 @@ Con la intención de evaluar el comportamiento del algoritmo en diferentes escen
 
 \subsubsection{Imágenes sin ruido}
 La primera serie de pruebas se realizó sobre imágenes sin ruido, con el objetivo de estudiar el comportamiento del algoritmo utilizando variación de intensidades y también incorporando información espacial.
-\paragraph{Imagen artificial con bordes rectos entre clusters}
+
 La primera imagen utilizada para evaluar el algoritmo (figura \ref{fig:mitad_mitad})  consta de dos secciones claramente definidas, diferenciadas por su color. La parte izquierda de la imagen es negra y la derecha es blanca, lo que permite diferenciar con claridad ambos clusters\footnote{El recuadro negro es solo para señalar que el fondo de la imagen es blanco, pero no es parte de la imagen utilizada en la ejecución de los algoritmos}.
 
 
@@ -79,7 +80,6 @@ Al observar que en las pruebas con información espacial también se obtenían l
 \label{fig:ejecucion_mitad_mitad_iteraciones}
 \end{figure}
 
-\paragraph{Imagen artificial con bordes curvos entre clusters}
 El segundo conjunto de pruebas para evaluar el algoritmo fue realizado utilizando una imagen artificial con un círculo negro con fondo blanco  (figura \ref{fig:circulo}).
 
 \begin{figure}[H]

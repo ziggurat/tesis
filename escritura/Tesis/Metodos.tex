@@ -22,8 +22,8 @@ Para la primer etapa, se utiliza el algoritmo de Fuzzy C-Means (Sección \ref{se
 
 \section{Segmentación por Fuzzy C-Means}\label{section:segmentacion_fuzzy}
 \input{Fuzzy}
-\section{Extracción de mallas}\label{section:extraccion_de_mallas}
-Para obtener una superficie cerrada que se pueda utilizar como entrada para el algoritmo de Modelos Deformables, es necesario extraer el contorno del objeto de interés a partir de las matrices de probabilidades que se obtuvieron utilizando el algoritmo de Fuzzy C-Means. En la Figura zt se pueden observar los pasos que se realizan para obtener esta malla. En primer lugar, se realiza un umbralado de los mapas probabilísticos a fin de obtener volúmenes binarios que incluyan aquellos puntos que pertenecen a cada región de interés. Posteriormente, se aplica un algoritmo de rellenado de huecos y de limpieza de ruido para reducir posibles perturbaciones que puedan generar mallas discontinuas o con objetos aislados. Finalmente, se extrae una malla de superficie a partir del contorno de cada volumen.
+\section{Extracción de mallas - NO CORREGIR!!!!!}\label{section:extraccion_de_mallas}
+Para obtener una superficie cerrada que se pueda utilizar como entrada para el algoritmo de Modelos Deformables, es necesario extraer el contorno del objeto de interés a partir de las matrices de probabilidades que se obtuvieron utilizando el algoritmo de Fuzzy C-Means. En la Figura \ref{fig:pipe_obtencion_malla} se pueden observar los pasos que se realizan para obtener esta malla. En primer lugar, se realiza un umbralado de los mapas probabilísticos a fin de obtener volúmenes binarios que incluyan aquellos puntos que pertenecen a cada región de interés. Posteriormente, se aplica un algoritmo de rellenado de huecos y de limpieza de ruido para reducir posibles perturbaciones que puedan generar mallas discontinuas o con objetos aislados. Finalmente, se extrae una malla de superficie a partir del contorno de cada volumen.
 
 \begin{figure}[H]
 	\centering
@@ -130,11 +130,11 @@ Mientras steps < MAX_STEPS O NO haya convergencia
 En las siguientes subsecciones se explica en detalle las consideraciones tenidas en cuenta para la implementación de las diferentes fuerzas.
 
 \subsubsection{Energía interna}\label{section:energia_interna}
-Como se explicó para el modelo continuo, la energía interna brinda al modelo las características de deformación de una membrana elástica. Los terminos $\alpha_{i}$ y $\beta_{i}$ de la ecuación diferencial se corresponden a la fuerza de tensión y flexión. La primera representa la resistencia de la superficie al estiramiento, e intenta preservar una distancia uniforme entre los nodos, mientras que la fuerza de flexión representa la resistencia a la deformación de la curvatura, lo que permite generar una superficie suave. Ambas fuerzas se aplican sobre cada vértice i de la malla, y se calculan a partir del operador Laplaciano y Laplaciano cuadrático, como aproximación a la segunda y cuarta derivada respecto de la posicion de vértice \citep{mcinerney2000t}. Para aproximar la derivada para calcular la \emph{fuerza de tensión}, se utiliza el operador “sombrilla”, tomando en cuenta la topología de una malla local alrededor del vértice $i$, a partir de la siguiente ecuación:
+Como se explicó para el modelo continuo, la energía interna brinda al modelo las características de deformación de una membrana elástica. Los términos $\alpha_{i}$ y $\beta_{i}$ de la ecuación diferencial se corresponden a la fuerza de tensión y flexión. La primera representa la resistencia de la superficie al estiramiento, e intenta preservar una distancia uniforme entre los nodos, mientras que la fuerza de flexión representa la resistencia a la deformación de la curvatura, lo que permite generar una superficie suave. Ambas fuerzas se aplican sobre cada vértice i de la malla, y se calculan a partir del operador Laplaciano y Laplaciano cuadrático, como aproximación a la segunda y cuarta derivada respecto de la posición de vértice \citep{mcinerney2000t}. Para aproximar la derivada para calcular la \emph{fuerza de tensión}, se utiliza el operador “sombrilla”, tomando en cuenta la topología de una malla local alrededor del vértice $i$, a partir de la siguiente ecuación:
 
 $$ \alpha_{i}(t) = \dfrac{1}{m}\sum_{j\in N(i)} s_{j}(t) - s_{i}(t) $$
 
-donde $N_{i}$ representa al conjunto de vértices $s_{j}$ vecinos al vertice $s_{i}$, y $m$ es el número de vértices  vecinos.
+donde $N_{i}$ representa al conjunto de vértices $s_{j}$ vecinos al vértice $s_{i}$, y $m$ es el número de vértices  vecinos.
 
 En el caso de la \emph{fuerza de flexión}, el Laplaciano cuadrático puede aproximarse nuevamente aplicando el operador “sombrilla”, pero en este caso se aplica sobre los valores de la fuerza de tensión en cada vértice, resultando:
 
@@ -151,9 +151,9 @@ donde $n_{i}$ es el vector normal unitario a la superficie para el nodo $i$, mie
 
 $$ F(I(s)) = \begin{cases} 1 & \text{si } I(s) \geq T \\ -1 & \text{en otro caso} \end{cases}  $$
 
-siendo $T$ un umbral definido sobre las intensidades de la imagen. Esta funcion Fhace que la malla se contraiga cuando la intensidad del vértice es menor al umbral $T$.
+siendo $T$ un umbral definido sobre las intensidades de la imagen. Esta función $F$ hace que la malla se contraiga cuando la intensidad del vértice es menor al umbral $T$.
 
-Para evitar que el modelo sea afectado por el ruido y se filtre a través de otras regiones, se puede incorporar estadística sobre las intensidades de la region considerada \citep{ivins1994statistical} definiendo la función $F$ como:
+Para evitar que el modelo sea afectado por el ruido y se filtre a través de otras regiones, se puede incorporar estadística sobre las intensidades de la región considerada \citep{ivins1994statistical} definiendo la función $F$ como:
 
 $$ F(I(s)) = \begin{cases} 1 & \text{si } \left|I(s) - \mu \right| \leq k\sigma \\ -1 & \text{en otro caso} \end{cases} $$
 
@@ -163,7 +163,7 @@ En la presente implementación se utiliza esta definición de fuerza, pero para 
 
 $$ F(P(s)) = \begin{cases} 1 & \text{si } \left|\rho(s) - \mu_{p} \right| \leq k\sigma_{p} \\ -1 & \text{en otro caso} \end{cases}  $$
 
-donde $\rho(s)$ es una función que asocia a cada nodo scon su probabilidad de acuerdo al mapa probabilístico obtenido como resultado del método Fuzzy c-Means, $\mu_{p}$ la media de las probabilidades dentro de la región de interés, y $\sigma_{p}$ el desvío estándar de estas probabilidades en la región.
+donde $\rho(s)$ es una función que asocia a cada nodo $s$ con su probabilidad de acuerdo al mapa probabilístico obtenido como resultado del método Fuzzy c-Means, $\mu_{p}$ la media de las probabilidades dentro de la región de interés, y $\sigma_{p}$ el desvío estándar de estas probabilidades en la región.
 
 Para detener el avance del modelo ante bordes bien marcados, se incluye la \emph{fuerza de gradiente}, que se define como:
 

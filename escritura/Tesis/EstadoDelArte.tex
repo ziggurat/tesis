@@ -1,4 +1,4 @@
-\chapter{Estado del arte}\label{chapter:segmencation}
+\chapter{Estado del arte}\label{chapter:estado_del_arte}
 Con el creciente uso de las imágenes médicas para el diagnóstico, planeamiento de tratamientos y estudios clínicos, se ha vuelto casi obligatoria la utilización de computadoras para asistir en el análisis de dichas imágenes. En este contexto, uno de los objetivos del diagnóstico asistido por computadoras es acelerar la obtención de resultados precisos \citep{Sharma2010}. Una de las etapas más importantes en este proceso es la segmentación, ya que las etapas posteriores dependen en gran medida de la precisión de sus resultados. Para la delineación de estructuras anatómicas y otras regiones de interés, pues, es necesario contar con algoritmos confiables.
 El objetivo de este capítulo es presentar las etapas del procesamiento de imágenes y algunas estrategias de segmentación, así como un relevamiento general del estado del arte. En la Sección \ref{section:procesamiento} se describen las etapas del procesamiento de imágenes, enfocadas particularmente en su aplicación a la medicina. Finalmente en la Sección \ref{section:algoritmos} se realiza una revisión de los algoritmos de segmentación más comúnmente utilizados sobre imágenes médicas.
 
@@ -38,7 +38,7 @@ También existen variantes además de las dos modalidades principales de RM: la 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=1]{images/mri-ms-brain-scan.jpg}
+\includegraphics[scale=0.2]{images/t1_t2_flair.jpg}
 \caption{Cortes de imágenes MR utilizando T1, FLAIR y T2}
 \label{fig:mri_cortes}
 \end{figure}
@@ -47,7 +47,7 @@ Otra técnica muy utilizada para la captura es la tomografía computada (TC). La
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{images/ge_ct_scanner.jpg}
+\includegraphics[scale=0.5]{images/ge_ct_scanner.jpg}
 \caption{Tomógrafo}
 \label{fig:tomografo}
 \end{figure}
@@ -79,7 +79,7 @@ El efecto producido cuando una zona de interés se propaga a la zona de fondo es
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.15]{images/spill.jpg}
+\includegraphics[scale=0.2]{images/spill.jpg}
 \caption{(a) Distribución real de la actividad en la imagen. (b) Spill-out. (c) Spill-in (d) Resultado de la medición de la imagen.}
 \label{fig:spill}
 \end{figure}
@@ -169,4 +169,4 @@ En \citep{taher2011lung} se utilizan ANN para segmentar imágenes color de esput
 \subsubsection{SVM (Support Vector Machine)}
 Las SVMs son modelos de aprendizaje supervisado para realizar análisis de datos y reconocimiento de patrones. Generalmente son utilizados para clasificación y análisis de regresión. La idea principal de la SVM es obtener una superficie (o hiperplano) capaz de separar las diferentes clases en las que se puede agrupar una distribución de datos en un espacio N-dimensional, utilizando para ello un proceso de optimización basado en la obtención de vectores que definen los límites de las clases. Estos vectores se denominan normalmente vectores soporte o support vectors \citep{cortes1995support}. Si consideramos, para el caso de la segmentación binaria, a la imagen de entrada como dos conjuntos de vectores en un espacio N-dimensional, asociados cada uno a una etiqueta diferente, el objetivo del algoritmo SVM es construir un hiperplano de separación en ese espacio, el cual permita maximizar el margen de distancia entre ambos conjuntos de datos \citep{scholkopf1999advances}.
 
-Este algoritmo de clasificación  se ha utilizado para análisis de diferentes imagenes médicas, como en \citep{el2002support}, donde se utiliza el algoritmo para detectar  microcalcificaciones en mamografías digitales o en \citep{maglogiannis2004characterization}, en el cual se aplica una metodología basada en SVMs para analizar y caracterizar imágenes digitales de lesiones de piel.
+Este algoritmo de clasificación  se ha utilizado para análisis de diferentes imágenes médicas, como en \citep{el2002support}, donde se utiliza el algoritmo para detectar  microcalcificaciones en mamografías digitales o en \citep{maglogiannis2004characterization}, en el cual se aplica una metodología basada en SVMs para analizar y caracterizar imágenes digitales de lesiones de piel.
