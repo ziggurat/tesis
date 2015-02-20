@@ -1,18 +1,16 @@
 \chapter{Resultados}
 \section{Datos usados}
 \section{Metricas de evaluación de calidad}
-Para calcular la calidad de las mallas obtenidas se realizó una comparación entre la malla resultante del esquema propuesto y la malla generada a partir de la segmentación de referencia. La herramienta utilizada para realizas el calculo de dicho volumen utiliza un metodo basado en una aproximación discreta del volumen encerrado entre las partes de las mallas.
 
-La idea es discretizar dos de las tres dimensiones, generando una matriz de $ N x M $ celdas, desde las cuales se disparan rayos paralelos entre sí. Estos rayos intersectan o no las superficies, generando una serie de segmentos como se muestra en la Figura \ref{fig:discretizacionvolumen}. 
+$$ Q = \dfrac{V_{R}\bigcup V_{S}}{V_{R}\bigcap V_{S}}$$
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{images/disctretizacion.png}
-\caption{Discretización del espacio y generación de rayos}
+\includegraphics[scale=0.7]{images/calculo_indicador.png}
+\caption{Segmentos que atraviesan las dos mallas}
 \label{fig:discretizacionvolumen}
 \end{figure}
 
-Para cada rayo, los segmentos que atraviesan las dos mallas son clasificados como \emph{in}, encontrandose estos segmentos entre las mallas. La suma de las longitudes de estos segmentos por el área de la celda es una aproximación del volumen encerrado entre las dos mallas. Cuanto mas granular es la discretización (es decir, celdas mas pequeñas) el error de aproximación será menor.
 \section{Evaluación cuantitativa}
 
 \begin{table}[h]
@@ -48,6 +46,13 @@ Para cada rayo, los segmentos que atraviesan las dos mallas son clasificados com
 	\label{table:resultados_gris}
 \end{table}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/BoxPlotMG.png}
+	\caption{Medianas, percentiles y varianza para la segmentación de la materia gris}
+	\label{fig:boxplotMG}
+\end{figure}
+
 \begin{table}[h]
 	\centering
 	\begin{tabular}{l|cll|clll}
@@ -69,6 +74,13 @@ Para cada rayo, los segmentos que atraviesan las dos mallas son clasificados com
 	\label{table:resultados_blanca}
 \end{table}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/BoxPlotMB.png}
+	\caption{Medianas, percentiles y varianza para la segmentación de la materia blanca}
+	\label{fig:boxplotMB}
+\end{figure}
+
 \begin{table}[h]
 	\centering
 	\begin{tabular}{l|cll|clll}
@@ -89,6 +101,13 @@ Para cada rayo, los segmentos que atraviesan las dos mallas son clasificados com
 	\caption{Coeficientes Dice, media y desvío estándar para la segmentación del líquido cefalorraquídeo}
 	\label{table:resultados_liquido}
 \end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/BoxPlotLC.png}
+	\caption{Medianas, percentiles y varianza para la segmentación del líquido cefalorraquídeo}
+	\label{fig:boxplotLC}
+\end{figure}
 
 
 \section{Evaluación cualitativa}
