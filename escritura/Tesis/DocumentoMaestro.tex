@@ -1,7 +1,7 @@
 \documentclass[spanish, table]{tudelft-report}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\selectlanguage{spanish} 
+\selectlanguage{spanish}
 \usepackage[spanish,onelanguage, ruled, linesnumbered]{algorithm2e}
 %\usepackage[onelanguage, Algoritmo]{algorithm}
 \usepackage{algorithmicx}
@@ -24,11 +24,21 @@
 \newfloat{program}{thp}{lop}
 \floatname{program}{Código}
 
+\makeatletter
+% package indentfirst says \let\@afterindentfalse\@afterindenttrue
+% and we revert this modification, reinstating the original definitio
+% of \@afterindentfalse
+\def\@afterindentfalse{\let\if@afterindent\iffalse}
+\makeatother
+
+\linespread{1.3}
+
 \setcounter{secnumdepth}{3}
 
 %% Change cites style
 \bibpunct{[}{]}{,}{a}{,}{;}
 
+\raggedbottom
 
 \begin{document}
 

@@ -13,7 +13,7 @@
 \ExecuteOptions{english}
 \ProcessOptions\relax
 
-\LoadClass[10pt]{book}
+\LoadClass[12pt]{book}
 
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
