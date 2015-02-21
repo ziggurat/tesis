@@ -1,10 +1,9 @@
 \chapter*{Resumen}
 \setheader{Resumen}
+La utilización de imágenes médicas tridimensionales ha crecido notablemente en los últimos años debido a la gran cantidad de información que proveen, dando lugar a aplicaciones muy diversas, tales como la planificación de tratamientos médicos, la cirugía asistida por imágenes y la investigación en ciencia clínica. Una de las áreas relacionadas a su procesamiento que más está siendo explorada actualmente, consiste en la segmentación de estructuras anatómicas o patológicas que existen en ellas, para su posterior caracterización y análisis.
 
-\begin{flushright}
-{\makeatletter\itshape
-    \@author \\
-    31 de febrero de 2102
-\makeatother}
-\end{flushright}
+En este trabajo se propone un enfoque híbrido que integra Fuzzy C-Means y Modelos Deformables para la segmentación de imágenes médicas tridimensionales. La combinación de ambas estrategias permite, por un lado, incorporar información provista por múltiples descriptores al esquema de fuerzas de Snakes (mediante el uso de los mapas de probabilidades obtenidos por Fuzzy C-Means); y, por el otro, perfeccionar la segmentación incorporando información relativa a la distribución de los voxeles en la estructura de interés (tomando ventaja de las características de conectividad de las membranas deformables del método de superficies activas).
+
+Para estudiar el comportamiento del método propuesto, se realizó un análisis experimental sobre un conjunto de imágenes MRI T1-w de cerebros sanos, y se evaluaron las segmentaciones para materia blanca, materia gris y líquido cefalorraquídeo. Los resultados obtenidos fueron estudiados de manera cualitativa y cuantitativa mediante indicadores de calidad.
+
 

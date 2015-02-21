@@ -1,18 +1,18 @@
 \chapter{Estado del arte}\label{chapter:estado_del_arte}
 Con el creciente uso de las imágenes médicas para el diagnóstico, planeamiento de tratamientos y estudios clínicos, se ha vuelto casi obligatoria la utilización de computadoras para asistir en el análisis de dichas imágenes. En este contexto, uno de los objetivos del diagnóstico asistido por computadoras es acelerar la obtención de resultados precisos \citep{Sharma2010}. Una de las etapas más importantes en este proceso es la segmentación, ya que las etapas posteriores dependen en gran medida de la precisión de sus resultados. Para la delineación de estructuras anatómicas y otras regiones de interés, pues, es necesario contar con algoritmos confiables.
-El objetivo de este capítulo es presentar las etapas del procesamiento de imágenes y algunas estrategias de segmentación, así como un relevamiento general del estado del arte. En la Sección \ref{section:procesamiento} se describen las etapas del procesamiento de imágenes, enfocadas particularmente en su aplicación a la medicina. Finalmente en la Sección \ref{section:algoritmos} se realiza una revisión de los algoritmos de segmentación más comúnmente utilizados sobre imágenes médicas.
+El objetivo de este capítulo es presentar las etapas del procesamiento de imágenes y algunas estrategias de segmentación, así como un relevamiento general del estado del arte. En la Sección \ref{section:procesamiento} se describen las etapas del procesamiento de imágenes, enfocadas particularmente en su aplicación a la medicina. Finalmente, en la Sección \ref{section:algoritmos} se realiza una revisión de los algoritmos de segmentación más comúnmente utilizados sobre imágenes médicas.
 
 \section{Procesamiento de imágenes}\label{section:procesamiento}
 Los sistemas de procesamiento de imágenes médicas posibilitan obtener información de interés a partir de estudios de diversa índole, lo que permite a los profesionales médicos mejorar la precisión de sus diagnósticos y planificar tratamientos o cirugías. El principal objetivo de estos sistemas es obtener una imagen de salida que sea una representación precisa de la señal de entrada, para luego analizarla y extraer de ella la mayor cantidad de información de diagnóstico posible \citep{dougherty2009digital}. Sin importar el dominio de análisis, el procesamiento de imágenes se compone en general de 5 etapas que se pueden observar en la Figura \ref{fig:etapas_del_procesamiento}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{images/procesamiento.png}
+\includegraphics[scale=0.3]{images/Procesamiento_de_imagenes.jpg}
 \caption{Etapas del procesamiento digital de imágenes médicas.}
 \label{fig:etapas_del_procesamiento}
 \end{figure}
 
-La primera etapa del procesamiento de imágenes es la captura. En el ámbito médico existen diferentes modalidades de captura. Una de estas modalidades es la resonancia magnética (RM). La RM es una de las técnicas más utilizadas para el diagnóstico y seguimiento de distintas enfermedades \citep{prince2006medical}. En la Figura \ref{fig:scanner:mri} se puede observar un escáner de resonancia magnética.  En este tipo de modalidad se utilizan campos magnéticos muy potentes para alinear la magnetización nuclear de los átomos  de hidrógeno del agua en el cuerpo. Unos campos de radiofrecuencia (RF) se utilizan luego para alterar sistemáticamente el alineamiento de esa magnetización, provocando que los átomos de hidrógeno generen un campo magnético rotacional detectable por el escáner \citep{novelline2004squire}.
+La primera etapa del procesamiento de imágenes es la captura. En el ámbito médico existen diferentes modalidades de captura. Una de estas modalidades es la resonancia magnética (RM) la cual es una de las técnicas más utilizadas para el diagnóstico y seguimiento de distintas enfermedades \citep{prince2006medical}. En la Figura \ref{fig:scanner:mri} se puede observar un escáner de resonancia magnética.  En este tipo de modalidad se utilizan campos magnéticos muy potentes para alinear la magnetización nuclear de los átomos  de hidrógeno del agua en el cuerpo. Unos campos de radiofrecuencia (RF) se utilizan luego para alterar sistemáticamente el alineamiento de esa magnetización, provocando que los átomos de hidrógeno generen un campo magnético rotacional detectable por el escáner \citep{novelline2004squire}.
 
 \begin{figure}[H]
 \centering
@@ -21,7 +21,7 @@ La primera etapa del procesamiento de imágenes es la captura. En el ámbito mé
 \label{fig:scanner:mri}
 \end{figure}
 
-Esta es una técnica flexible y dinámica que permite obtener imágenes de contraste variable utilizando secuencias de pulso y ajustando los parámetros de captura de la imagen correspondientes al tiempo longitudinal (T1) y al tiempo transversal (T2). Las imágenes obtenidas mediante este procedimiento son generalmente eficientes para detectar anormalidades en el cerebro, durante las etapas tempranas de una enfermedad, así como también resultan excelentes para la detección de tumores cerebrales o infecciones. En particular, la RM es muy útil para detectar enfermedades en la materia blanca tales como esclerosis múltiple, encefalopatías, y encefalitis pos infecciosa. Los determinantes principales del contraste y la intensidad de la señal son los tiempos de T1 y T2. El contraste es diferente entre imágenes T1 y T2 y las lesiones patológicas pueden separarse en grupos de acuerdo a las características de las dos imágenes mencionadas (T1 y T2):
+Esta es una técnica flexible y dinámica que permite obtener imágenes de contraste variable utilizando secuencias de pulso y ajustando los parámetros de captura de la imagen correspondientes al tiempo longitudinal (T1) y al tiempo transversal (T2). Las imágenes obtenidas mediante este procedimiento son generalmente eficientes para detectar anormalidades en el cerebro, durante las etapas tempranas de una enfermedad, así como también resultan excelentes para la detección de tumores cerebrales o infecciones. En particular, la RM es muy útil para el diagnostico de enfermedades en la materia blanca tales como esclerosis múltiple, encefalopatías, y encefalitis pos infecciosa. Los determinantes principales del contraste y la intensidad de la señal son los tiempos de T1 y T2. El contraste es diferente entre imágenes T1 y T2 y las lesiones patológicas pueden separarse en grupos de acuerdo a las características de las dos imágenes mencionadas (T1 y T2):
 
 
 \begin{table}[H]
@@ -36,7 +36,7 @@ Esta es una técnica flexible y dinámica que permite obtener imágenes de contr
 	\label{tab:colores_por_MRI}
 \end{table}
 
-También existen variantes además de las dos modalidades principales de RM: la modalidad FLAIR (Fluid Attenuated Inversion Recovery), que suprime la señal de los fluidos y permite, entre otras cosas, detectar placas de esclerosis múltiple en el cerebro y la RM con realce de contraste de Gadolinio (T1C) que constituye la modalidad estándar para la identificación de tumores \cite{scarabino2012imaging}. En la figura \ref{fig:mri_cortes} se pueden observar diferentes cortes de cada una de estas variantes.
+También existen variantes además de las dos modalidades principales de RM: la modalidad FLAIR (Fluid Attenuated Inversion Recovery), que suprime la señal de los fluidos y permite, entre otras cosas, detectar placas de esclerosis múltiple en el cerebro y la RM con realce de contraste de Gadolinio (T1C) que constituye la modalidad estándar para la identificación de tumores (\citep{scarabino2012imaging}). En la figura \ref{fig:mri_cortes} se pueden observar diferentes cortes de cada una de estas variantes.
 
 \begin{figure}[H]
 \centering
@@ -68,7 +68,7 @@ Las tomografías son eficientes en casos de trauma y proveen buen detalle óseo 
 
 Todos los métodos de captura introducen en la imagen resultante algún tipo de error. Los problemas más comunes encontrados en las tomografías y las resonancias magnéticas son el efecto de volumen parcial y el ruido. Estos errores son más o menos frecuentes dependiendo de la modalidad de captura de la imagen así como el área de aplicación. Por ejemplo, los efectos de volumen parcial son más comunes en capturas de imágenes de cerebro, mientras que en capturas de imágenes del tórax es corriente encontrar otros artefactos debido al movimiento del individuo.
 
-El problema de volumen parcial es causado por la baja resolución del dispositivo de captura de la imagen. Las resoluciones bajas causan una difusión de la imagen de manera que las actividades altas son distribuidas a las zonas cercanas. En la figura \ref{fig:resolucion} la grilla representa la resolución del dispositivo de captura. En la figura de la izquierda se puede observar como uno de los puntos negros abarca parcialmente más de una unidad de la grilla. En la figura de la derecha podemos observar como ese punto es distribuido en las 4 unidades de la grilla pero con una intensidad menor.
+El problema de volumen parcial es causado por la baja resolución del dispositivo de captura de la imagen. Las resoluciones bajas causan una difusión de la imagen, de manera que las actividades altas son distribuidas a las zonas cercanas. En la figura \ref{fig:resolucion} la grilla representa la resolución del dispositivo de captura. En la figura de la izquierda se puede observar cómo uno de los puntos negros abarca parcialmente más de una unidad de la grilla. En la figura de la derecha podemos observar como ese punto es distribuido en las 4 unidades de la grilla pero con una intensidad menor.
 
 \begin{figure}[H]
 \centering
@@ -102,15 +102,15 @@ La segmentación de imágenes es un proceso a través del cual se divide una ima
 En particular, la segmentación de imágenes médicas se utiliza para estudiar estructuras anatómicas o patológicas tales como tumores, lesiones u otras anormalidades. También se aplica para medir el volumen de una región y estudiar, por ejemplo, el crecimiento o reducción de un tumor, y luego ayudar en la planificación de tratamientos de radioterapia y calcular dosis de radiación \citep{sharma2010automated}.
 
 La segmentación es uno de los problemas más difíciles dentro del procesamiento de imágenes ya que la mayoría de los objetos reales tienen formas, bordes y morfología compleja \citep{wu2007segmentation}, ademas de tener que lidiar con los problemas comunes de procesamiento de imágenes como el ruido y los problemas de volumen parcial mencionados en la sección anterior. 
-Los algoritmos de segmentación pueden dividirse en dos grandes grupos, los métodos supervisados, que requieren datos de entrenamientos que el algoritmo utiliza como referencia para realizar la segmentación, y los no supervisados, que son algoritmos automáticos que realizan un agrupamiento sin tener datos previos \citep{pham2000current}.
+Los algoritmos de segmentación pueden dividirse en dos grandes grupos: los métodos supervisados, que requieren datos de entrenamientos que el algoritmo utiliza como referencia para realizar la segmentación, y los no supervisados, que son algoritmos automáticos que realizan un agrupamiento sin tener datos previos \citep{pham2000current}.
 En las siguientes subsecciones se explicarán algunos de los principales algoritmos de segmentación relevados del estado del arte para cada grupo.
 
-\subsection{No supervisados}
+\subsection{Algoritmos no supervisados}
 Los algoritmos de segmentación no supervisados consiguen realizar un agrupamiento sin interacción de un usuario para contar con datos de entrenamiento. Sin embargo, suele ser necesaria su intervención, ya sea para realizar la identificación inicial de las clases o para realizar una clasificación posterior, que permita asignar etiquetas a cada región segmentada \citep{clarke1995mri}.
-Entre los algoritmos más relevantes podemos encontrar el de umbralado, K-means, Fuzzy C-means, crecimiento de regiones y modelos deformables. A continuación se detalla brevemente su funcionamiento y aplicaciones, en particular sobre imágenes médicas.
+Entre los algoritmos más relevantes podemos encontrar el umbralado, K-means, Fuzzy C-means, crecimiento de regiones y modelos deformables. A continuación se detalla brevemente su funcionamiento y aplicaciones, en particular sobre imágenes médicas.
 
 \subsubsection{Umbralado}
-Los algoritmos de segmentación por umbralado,  thresholding en inglés, permiten dividir una imagen escalar en dos regiones de interés mediante la separación de las intensidades \citep{weszka1978survey}. Este tipo de enfoques busca determinar un valor de intensidad, denominado umbral, que es luego utilizado para separar las diferentes regiones que componen la imagen. La segmentación se logra agrupando todos los puntos con mayor intensidad al umbral en una clase, y los restantes en otra.
+Los algoritmos de segmentación por umbralado,  \emph{thresholding} en inglés, permiten dividir una imagen escalar en dos regiones de interés mediante la separación de las intensidades \citep{weszka1978survey}. Este tipo de enfoques busca determinar un valor de intensidad, denominado umbral, que es luego utilizado para separar las diferentes regiones que componen la imagen. La segmentación se logra agrupando todos los puntos con mayor intensidad al umbral en una clase, y los restantes en otra.
 
 Los algoritmos por umbralado son simples pero efectivos para segmentar imágenes en las que las estructuras de interés cuentan con intensidades, o alguna otra característica cuantificable bien contrastada \citep{pham2000current}. Normalmente el umbral es introducido por el usuario, pero existen también algunos métodos que permiten obtener el umbral de manera automática \citep{sahoo1988survey}. Este tipo de enfoque es normalmente utilizado como paso inicial en las operaciones de procesamiento de imágenes, como en \citep{bao2003noise}, que utilizan un umbralado basado en ondas para reducir el ruido en imágenes de resonancia magnética.
 
@@ -146,7 +146,7 @@ Fuzzy C-Means es un algoritmo de clustering no supervisado que permite obtener s
 
 En el Capítulo \ref{section:segmentacion_fuzzy} se presenta una explicación detallada de Fuzzy C-Means y además se lo utiliza como primer paso en la propuesta de este trabajo.
 
-\subsection{Supervisados}
+\subsection{Algoritmos supervisados}
 Los algoritmos supervisados requieren datos de entrenamiento que se obtienen mediante segmentaciones realizadas manualmente, y que luego son utilizados como referencia para realizar nuevas segmentaciones de forma automática \citep{pham2000current}.
 
 En general, los métodos supervisados son costosos, y resulta bastante difícil y a veces hasta imposible, seleccionar y etiquetar correctamente los datos de entrenamiento \citep{jain2000statistical}. Por otro lado, los datos de entrenamiento generados están asociados a un tipo de imagen en particular, por lo que el esfuerzo para entrenar el algoritmo no es reutilizable para distintos dominios \citep{sharma2010automated}.

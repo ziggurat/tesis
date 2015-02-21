@@ -1,11 +1,11 @@
-\chapter{Métodos}\label{chapter:metodos}
-Este capítulo tiene por objetivo presentar el esquema de segmentación propuesto en este trabajo.  El mismo está basado en la combinación de un algoritmo de Fuzzy C-Means con un esquema de Modelos Deformables. Esta integración permite incorporar fácilmente la información de múltiples descriptores extraídos a partir de una imagen al método de Superficies Activas, y al mismo tiempo establecer restricciones espaciales sobre la malla obtenida utilizando Fuzzy C-Means.
+\chapter{Esquema de segmentación propuesto}\label{chapter:metodos}
+Este capítulo tiene por objetivo presentar el esquema de segmentación propuesto en este trabajo.  El mismo está basado en la combinación de un algoritmo de Fuzzy C-Means con un esquema de Modelos Deformables. Esta integración permite incorporar fácilmente la información de distintos descriptores extraídos a partir de una imagen al método de Superficies Activas, y al mismo tiempo establecer restricciones espaciales sobre la malla obtenida utilizando Fuzzy C-Means.
  
-La primera etapa de esta propuesta, basada en Fuzzy c-Means se inicializa con la imagen a segmentar, indicando la cantidad de regiones que se desean segmentar en la misma (clusters). El resultado es un mapa probabilístico por cluster, que indica para cada punto de la imagen, su probabilidad de pertenencia a dicho cluster.
+La primera etapa de esta propuesta, basada en Fuzzy c-Means se inicializa con la imagen original, indicando la cantidad de regiones que se desean segmentar en la misma (clusters). El resultado es un mapa probabilístico por cluster, que indica para cada punto de la imagen, su probabilidad de pertenencia a dicho cluster.
 
-A partir de estos mapas probabilísticos, y luego de seleccionar la región que se busca segmentar, se realiza un umbralado y extracción del contorno del objeto para obtener una malla inicial, que es utilizada luego como entrada para el esquema de Modelos Deformables. El algoritmo toma la malla de entrada y la deforma utilizando para ello información que obtiene de la matriz de probabilidades obtenida por Fuzzy C-Means.
+A partir de estos mapas probabilísticos, y luego de seleccionar la región de interés, se realiza un umbralado y extracción del contorno del objeto para obtener una malla inicial, que es utilizada luego como entrada para el esquema de Superficies Activas. El algoritmo toma la malla de entrada y la deforma utilizando para ello información que obtiene de la matriz de probabilidades obtenida por Fuzzy C-Means.
 
-En la siguiente sección (\ref{section:descripcion_general}) se resume, en términos generales, el esquema propuesto. En la Sección \ref{section:segmentacion_fuzzy} se hace especial hincapié en el algoritmo de Fuzzy c-Means, en la Sección \ref{section:extraccion_de_mallas} se explican los pasos para realizar la extracción de la malla de superficie, mientras que en la Sección \ref{section:modelos_deformables} se detalla el algoritmo de modelos deformables.
+En la siguiente sección (\ref{section:descripcion_general}) se resume, en términos generales, el esquema propuesto. En la Sección \ref{section:segmentacion_fuzzy} se hace especial hincapié en el algoritmo de Fuzzy c-Means, en la Sección \ref{section:extraccion_de_mallas} se explican los pasos para realizar la extracción de la malla de superficie, mientras que en la Sección \ref{section:modelos_deformables} se detalla el algoritmo de Snakes utilizado.
 
 \section{Descripción general}\label{section:descripcion_general}
 El esquema de segmentación propuesto es un pipeline de procesamiento dividido en etapas, en donde la salida de cada etapa es la entrada de la etapa siguiente (Figura \ref{fig:esquema_de_segmentacion}).
@@ -13,31 +13,45 @@ El esquema de segmentación propuesto es un pipeline de procesamiento dividido e
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{images/pipeline_de_segmentacion.jpg}
+	\includegraphics[scale=0.4]{images/pipeline_de_segmentacion.jpg}
 	\caption{Esquema de segmentación}
 	\label{fig:esquema_de_segmentacion}
 \end{figure}
 
-Para la primer etapa, se utiliza el algoritmo de Fuzzy C-Means (Sección \ref{section:segmentacion_fuzzy}), que, dada una imagen tridimensional y el número de regiones en las que se espera se divida la misma, permite obtener una serie de mapas probabilísticos que describen con cuánta probabilidad un punto pertenece o no a una determinada región de interés. A partir de estos mapas se realizan una serie de operaciones que permiten obtener un volumen inicial, binario y uniforme, de cada segmento. Estos volúmenes son sometidos posteriormente a un método de extracción de mallas, que permite obtener una geometría basada en triángulos que recubre completamente a cada región (Sección \ref{section:extraccion_de_mallas}). Finalmente, una de las mallas es escogida por el usuario, para ser refinada utilizando un esquema de Modelos Deformables (Sección \ref{section:modelos_deformables}). El resultado es una superficie suave que recubre a la región de interés y que se asemeja significativamente a la estructura real del objeto.
+Para la primera etapa se utiliza el algoritmo de Fuzzy C-Means (Sección \ref{section:segmentacion_fuzzy}). Este algoritmo, dada una imagen tridimensional y el número de regiones en las que se espera se divida la misma, obtiene una serie de mapas probabilísticos que describen con cuánta probabilidad un punto pertenece o no a una determinada región de interés. A partir de estos mapas se realizan una serie de operaciones que permiten obtener un volumen inicial, binario y uniforme, de cada segmento. Estos volúmenes son sometidos posteriormente a un método de extracción de mallas, que permite obtener una geometría basada en triángulos que recubre completamente a cada región (Sección \ref{section:extraccion_de_mallas}). Finalmente, una de las mallas es escogida por el usuario, para ser refinada utilizando un esquema de Modelos Deformables (Sección \ref{section:modelos_deformables}). El resultado es una superficie suave que recubre a la región de interés y que se asemeja significativamente a la estructura real del objeto.
 
 \section{Segmentación por Fuzzy C-Means}\label{section:segmentacion_fuzzy}
 \input{Fuzzy}
-\section{Extracción de mallas - NO CORREGIR!!!!!}\label{section:extraccion_de_mallas}
+\section{Extracción de mallas}\label{section:extraccion_de_mallas}
 Para obtener una superficie cerrada que se pueda utilizar como entrada para el algoritmo de Modelos Deformables, es necesario extraer el contorno del objeto de interés a partir de las matrices de probabilidades que se obtuvieron utilizando el algoritmo de Fuzzy C-Means. En la Figura \ref{fig:pipe_obtencion_malla} se pueden observar los pasos que se realizan para obtener esta malla. En primer lugar, se realiza un umbralado de los mapas probabilísticos a fin de obtener volúmenes binarios que incluyan aquellos puntos que pertenecen a cada región de interés. Posteriormente, se aplica un algoritmo de rellenado de huecos y de limpieza de ruido para reducir posibles perturbaciones que puedan generar mallas discontinuas o con objetos aislados. Finalmente, se extrae una malla de superficie a partir del contorno de cada volumen.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.3]{images/pipeline_de_obtencion_de_malla.jpg}
+	\includegraphics[scale=0.4]{images/pipeline_de_obtencion_de_malla.jpg}
 	\caption{Pipeline de obtención de malla}
 	\label{fig:pipe_obtencion_malla}
 \end{figure}
 
 En las siguientes secciones se detalla cada una de estas operaciones.
 
-\subsection{Umbralado}
+\subsection{Umbralado}\label{section:umbralado}
 El primer paso es realizar un umbralado de los mapas probabilísticos, con el objeto de obtener c volúmenes binarios (uno por cada cluster) indicando si cada punto pertenece o no al cluster asociado al mismo. Para lograr esto, el método evalúa cada punto de la imagen, comparando las probabilidades del punto en las matrices de probabilidades obtenidas por Fuzzy C-Means, y asignándolo a aquel cluster que presente mayor probabilidad. En caso de que exista igualdad de probabilidades, se decidió tomar el cluster que haya sido evaluado primero.
 
-Como se puede observar en la figura xyz, el umbralado aplicado al mapa de probabilidades donde se ve en tonos rojos las probabilidades altas de pertenencia y en tonos azules las probabilidades bajas, resulta en un volumen binario, donde en blanco se representa el objeto de interés y en negro lo que no pertenece a éste.
+Como se puede observar en la Figura \ref{fig:umbralado}, el umbralado aplicado al mapa de probabilidades donde se ve en tonos rojos las probabilidades altas de pertenencia y en tonos azules las probabilidades bajas, resulta en un volumen binario, donde en blanco se representa el objeto de interés y en negro lo que no pertenece a éste.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{images/umbralado.png}
+	\caption{Umbralado del mapa de probabilidades}
+	\label{fig:umbralado}
+\end{figure}
+
+
+\subsection{Rellenado de huecos}
+En algunos casos, luego del umbralado prevalecen pequeños huecos dentro del volumen binario. Para que el algoritmo de mallado no extraiga una superficie de estas zonas no deseadas, eliminamos los pequeños huecos que quedaron dentro del área de interés. Aplicamos un método de eliminación de huecos que consiste en marcar como pertenecientes a la zona de interés aquellos grupos de voxeles que hayan sido previamente asignados al fondo pero que no están conectados al mismo \citep{soille2003morphological}. Para estudiar la conexión con el fondo se realizó un recorrido del volumen binario desde el fondo hacia la región de interés.
+
+\subsection{Extracción de la malla}
+El último paso es obtener el contorno del objeto de interés en forma de una lista de puntos vinculados. Estos puntos se obtienen a partir del volumen binario utilizando un enfoque de simplificación de superficie \cite{fang2009tetrahedral}, que permite obtener una malla que vincula los puntos mediante triángulos. Inicialmente se obtiene una representación de la superficie desde el volumen tridimensional. Esto se logra identificando cuando hay un cambio de blanco a negro o de negro a blanco en el volumen binario. Una vez obtenida esta información, se procede a generar una lista de puntos y una lista de triplas de puntos que representan cada triángulo.
 
 
 \section{Modelos deformables}\label{section:modelos_deformables}
@@ -49,7 +63,12 @@ Inicialmente se describen las características del modelo clásico de Contornos 
 
 En el esquema original de Modelos Deformables en 2D se busca definir un contorno, conocido como Snake, que delimita a la región de interés. Matemáticamente, un Snake se define como una curva paramétrica (Figura \ref{fig:curva_parametrica}):
 
-$$ v(s) = (x(s), y(s)), s \in [0,1] $$
+%
+\begin{equation}	
+	v(s) = (x(s), y(s)), s \in [0,1]
+\end{equation}
+%
+
 
 \begin{figure}[H]
 	\centering
@@ -58,20 +77,32 @@ $$ v(s) = (x(s), y(s)), s \in [0,1] $$
 	\label{fig:curva_parametrica}
 \end{figure}
 
-Esta curva se desplaza sobre el espacio de la imagen, a partir de su posición inicial, mediante la acción de una serie de fuerzas internas y externas, con el objetivo de minimizar un funcional de energía asociada $E(Ec.x)$. Este funcional está definido por dos componentes: una energía interna que controla las características intrínsecas de la curva, las cuales definen la deformación y capacidad de adaptarse al objeto de interés; y una energía externa, que guía o “empuja” esta curva, basándose en información extraída a partir de la imagen:
+Esta curva se desplaza sobre el espacio de la imagen, a partir de su posición inicial, mediante la acción de una serie de fuerzas internas y externas, con el objetivo de minimizar un funcional de energía asociada $E$ (Ecuación \ref{eq:Ecx}). Este funcional está definido por dos componentes: una energía interna que controla las características intrínsecas de la curva, las cuales definen la deformación y capacidad de adaptarse al objeto de interés; y una energía externa, que guía o “empuja” esta curva, basándose en información extraída a partir de la imagen:
 
-$$ E(v) = E_{int}(v) + E_{ext}(v) Ec.x $$
+
+%
+\begin{equation}
+	E(v) = E_{int}(v) + E_{ext}(v)
+\label{eq:Ecx}
+\end{equation}
+%
+
 
 La energía interna restringe la deformación de la curva, y está dada por:
 
-$$ E_{int}(v) = \int_{0}^{1} w_{1}(s) \left| \dfrac{\delta v}{\delta s} \right|^{2} + w_{2}(s) \left|\dfrac{\delta^{2}v}{\delta s^2} \right|^{2} ds $$
-
+%
+\begin{equation}
+E_{int}(v) = \int_{0}^{1} w_{1}(s) \left| \dfrac{\delta v}{\delta s} \right|^{2} + w_{2}(s) \left|\dfrac{\delta^{2}v}{\delta s^2} \right|^{2} ds
+\end{equation}
+%
 La primera componente se asocia a la energía de tensión, que es la que controla el estiramiento y hace que el contorno se comporte como una cuerda. La segunda componente introduce características de rigidez a la curva, asegurando la obtención de un contorno suave. Los parámetros no negativos $w_{1}(s)$ y $w_{2}(s)$ determinan el nivel de tensión y rigidez del contorno, respectivamente. Al variar estos coeficientes, la curva puede cambiar su comportamiento durante la evolución: si se establece un valor 0 para uno o ambos parámetros en un punto s, se permitirá discontinuidad en ese punto. Estos parámetros pueden depender de s si se pretende que la tensión/flexión varíe en ciertos puntos de la curva, aunque en la práctica se les suele asociar valores constantes.
 
 Por otro lado, la energía externa está dada por:
-
-$$ E_{ext}(v) = \int_{0}^{1} P(v(s))ds $$
-
+%
+\begin{equation}
+	E_{ext}(v) = \int_{0}^{1} P(v(s))ds
+\end{equation}
+%
 y representa la energía potencial del modelo, definida a partir de un campo de potenciales $P$ que se diseñan de forma tal que sus mínimos locales coincidan con extremos de los elementos de interés (intensidad, bordes u otra característica de la imagen que resulte relevante para el dominio del problema). De este modo se busca poder delimitar la superficie de interés lo más correctamente posible. Generalmente, los bordes presentes en la imagen actúan como atractores del contorno, pudiendo detener la expansión provocada por las fuerzas aplicadas. De manera similar, y mediante el uso de algún criterio específico de homogeneidad, es posible forzar que la curva se expanda en regiones con propiedades similares, y que detenga su avance cuando esta homogeneidad se interrumpe (por ejemplo, ante la presencia de bordes).
 La forma del contorno alcanzará su estado final cuando las fuerzas internas y externas se equilibren, minimizando $E$.
 
@@ -91,8 +122,11 @@ Partiendo de esta representación discreta en 2 dimensiones, resulta sencillo ex
 
 La superficie activa evoluciona mediante desplazamientos de sus nodos $s_{i}$, a través de la ecuación de movimiento de Lagrange:
 
-$$ \gamma_{i}s_{i} - a\alpha_{i}(t) + b\beta_{i}(t) = c\rho_{i}(t) + df_{i}(t)  $$
-
+%
+\begin{equation}
+\gamma_{i}s_{i} - a\alpha_{i}(t) + b\beta_{i}(t) = c\rho_{i}(t) + df_{i}(t)
+\end{equation}
+%
 donde $\alpha$, $\beta$, $\rho$  y $f$ son magnitudes vectoriales que representan las fuerzas de tensión, flexión, inflación y gradiente, respectivamente, y $\gamma_{i}$ es un coeficiente de amortiguación que regula la velocidad $s_{i}$ del $i$-ésimo nodo.
 
 La energía interna permite que el modelo se comporte como una membrana elástica, donde la fuerza de tensión restringe el estiramiento de la superficie, mientras que la fuerza de flexión representa la resistencia a deformaciones de curvatura. Por otro lado, la energía externa guía a la malla hacia los bordes de la región de interés, donde la fuerza de inflación actúa en dirección al vector normal, inflando o desinflando dependiendo de la similitud con alguna característica de la región en el vértice, mientras que la fuerza de gradiente actúa en dirección opuesta al vector normal, para detener el avance de la malla al acercarse a los bordes. 
@@ -101,8 +135,11 @@ La superficie detiene su deformación cuando ningún desplazamiento individual e
 
 El modelo discreto utilizado en nuestra implementación se basa en el planteado por \citep{mcinerney2000t}, que propone utilizar el método de integración explícito de Euler, aproximando de esta forma una solución numérica a la Ecuación Diferencial de la siguiente forma:
 
-$$ S^{(t+\Delta t)}_{i} = S_{i}^{t} - \Delta t.\gamma(a\alpha_{i}^{t} + b\beta_{i}^{t} - c\rho_{i}^{t} - df_{i}^{t}) $$
-
+%
+\begin{equation}
+S^{(t+\Delta t)}_{i} = S_{i}^{t} - \Delta t.\gamma(a\alpha_{i}^{t} + b\beta_{i}^{t} - c\rho_{i}^{t} - df_{i}^{t})
+\end{equation}
+%
 Como se describió anteriormente, el algoritmo de deformación se inicializa con una malla obtenida a partir del volumen segmentado mediante el método de Fuzzy C-Means y se aplica iterativamente hasta alcanzar la convergencia del modelo. Para realizar la deformación, en cada paso se obtienen las fuerzas (tensión, flexión, inflación y gradiente) sobre cada vértice de la malla, realizando una interpolación trilineal. En particular, para obtener la fuerza de inflación, se calculan además los vectores normales a la superficie en cada vértice. 
 
 Por último, se aplican todas las fuerzas a cada vértice de la malla, ponderándolas en función de los parámetros de calibración ($a$, $b$, $c$ y $d$) para obtener la nueva posición de la malla, se incrementa la cantidad de pasos y se verifica el criterio de finalización.
@@ -132,53 +169,81 @@ En las siguientes subsecciones se explica en detalle las consideraciones tenidas
 \subsubsection{Energía interna}\label{section:energia_interna}
 Como se explicó para el modelo continuo, la energía interna brinda al modelo las características de deformación de una membrana elástica. Los términos $\alpha_{i}$ y $\beta_{i}$ de la ecuación diferencial se corresponden a la fuerza de tensión y flexión. La primera representa la resistencia de la superficie al estiramiento, e intenta preservar una distancia uniforme entre los nodos, mientras que la fuerza de flexión representa la resistencia a la deformación de la curvatura, lo que permite generar una superficie suave. Ambas fuerzas se aplican sobre cada vértice i de la malla, y se calculan a partir del operador Laplaciano y Laplaciano cuadrático, como aproximación a la segunda y cuarta derivada respecto de la posición de vértice \citep{mcinerney2000t}. Para aproximar la derivada para calcular la \emph{fuerza de tensión}, se utiliza el operador “sombrilla”, tomando en cuenta la topología de una malla local alrededor del vértice $i$, a partir de la siguiente ecuación:
 
-$$ \alpha_{i}(t) = \dfrac{1}{m}\sum_{j\in N(i)} s_{j}(t) - s_{i}(t) $$
-
+%
+\begin{equation}
+\alpha_{i}(t) = \dfrac{1}{m}\sum_{j\in N(i)} s_{j}(t) - s_{i}(t)
+\end{equation}
+%
 donde $N_{i}$ representa al conjunto de vértices $s_{j}$ vecinos al vértice $s_{i}$, y $m$ es el número de vértices  vecinos.
 
 En el caso de la \emph{fuerza de flexión}, el Laplaciano cuadrático puede aproximarse nuevamente aplicando el operador “sombrilla”, pero en este caso se aplica sobre los valores de la fuerza de tensión en cada vértice, resultando:
 
-$$ \beta_{i}(t) = \dfrac{1}{m} \sum_{j\in N(i)} \alpha_{j}(t) - \alpha_{i}(t)  $$
-
+%
+\begin{equation}
+\beta_{i}(t) = \dfrac{1}{m} \sum_{j\in N(i)} \alpha_{j}(t) - \alpha_{i}(t)
+\end{equation}
+%
 \subsubsection{Energia externa}\label{section:energia_externa}
 La energía externa es la que guía a la malla hacia la frontera de la región de interés, y está formada por las fuerzas de inflación y de gradiente, que en la ecuación diferencial se representan con los términos $\rho_{i}$ y $f_{i}$, respectivamente.
 
 La \emph{fuerza de inflación} se aplica para empujar la superficie hacia los bordes de la imagen y se describe como: 
 
-$$ \rho_{i}(t) = F(I(s_{i}(t))) n_{i}(t) $$
-
+%
+\begin{equation}
+\rho_{i}(t) = F(I(s_{i}(t))) n_{i}(t)
+\end{equation}
+%
 donde $n_{i}$ es el vector normal unitario a la superficie para el nodo $i$, mientras que $F(I(s_{i}))$ es una función binaria que relaciona $i$ al campo de intensidades de la imagen $I$. La implementación más sencilla de la función $F$ vincula directamente a la fuerza con la intensidad de la imagen de la siguiente forma:
 
-$$ F(I(s)) = \begin{cases} 1 & \text{si } I(s) \geq T \\ -1 & \text{en otro caso} \end{cases}  $$
-
+%
+\begin{equation}
+F(I(s)) = \begin{cases} 1 & \text{si } I(s) \geq T \\ -1 & \text{en otro caso} \end{cases}
+\end{equation}
+%
 siendo $T$ un umbral definido sobre las intensidades de la imagen. Esta función $F$ hace que la malla se contraiga cuando la intensidad del vértice es menor al umbral $T$.
 
 Para evitar que el modelo sea afectado por el ruido y se filtre a través de otras regiones, se puede incorporar estadística sobre las intensidades de la región considerada \citep{ivins1994statistical} definiendo la función $F$ como:
 
-$$ F(I(s)) = \begin{cases} 1 & \text{si } \left|I(s) - \mu \right| \leq k\sigma \\ -1 & \text{en otro caso} \end{cases} $$
-
+%
+\begin{equation}
+F(I(s)) = \begin{cases} 1 & \text{si } \left|I(s) - \mu \right| \leq k\sigma \\ -1 & \text{en otro caso} \end{cases}
+\end{equation}
+%
 donde $\mu$ y $\sigma$ corresponden a la media y al desvío estándar de las intensidades de la región de interés, y $k$ es una constante definida.
 
 En la presente implementación se utiliza esta definición de fuerza, pero para enriquecerla aprovechando la información obtenida por Fuzzy c-Means (que permite incorporar múltiples descriptores extraídos a partir de la imagen), en lugar de definirla sobre $I(s)$, la misma está definida sobre el campo escalar de probabilidades $\rho(s)$ asociado a la región de interés, resultando en:
 
-$$ F(P(s)) = \begin{cases} 1 & \text{si } \left|\rho(s) - \mu_{p} \right| \leq k\sigma_{p} \\ -1 & \text{en otro caso} \end{cases}  $$
-
+%
+\begin{equation}
+F(P(s)) = \begin{cases} 1 & \text{si } \left|\rho(s) - \mu_{p} \right| \leq k\sigma_{p} \\ -1 & \text{en otro caso} \end{cases}
+\end{equation}
+%
 donde $\rho(s)$ es una función que asocia a cada nodo $s$ con su probabilidad de acuerdo al mapa probabilístico obtenido como resultado del método Fuzzy c-Means, $\mu_{p}$ la media de las probabilidades dentro de la región de interés, y $\sigma_{p}$ el desvío estándar de estas probabilidades en la región.
 
 Para detener el avance del modelo ante bordes bien marcados, se incluye la \emph{fuerza de gradiente}, que se define como:
 
-$$ f_{i}(t) = \nabla P(s_{i}(t)) $$
-
+%
+\begin{equation}
+f_{i}(t) = \nabla P(s_{i}(t))
+\end{equation}
+%
 donde $\nabla$ es el operador gradiente y la fuerza potencial $P$ describe como:
 
-$$ P(s) = - \left\| \nabla(G_{\sigma} * I(s)) \right\| $$ \label{eq:zz}
-
+%
+\begin{equation}
+P(s) = - \left\| \nabla(G_{\sigma} * I(s)) \right\| 
+\label{eq:zz}
+\end{equation}
+%
 donde $G_{\sigma} * I(s)$ denota una distribución Gaussiana de suavizado de la imagen con desviación estándar $\sigma$ [mcinerney2000t].
 
 En este trabajo, al igual que para la fuerza de inflación, en lugar de estudiar el gradiente sobre $I(s)$, el mismo se obtiene sobre $p(s)$:
 
-$$ P(s) = - \left\| \nabla(G_{\sigma} * p(s)) \right\| $$
-
+%
+\begin{equation}
+P(s) = - \left\| \nabla(G_{\sigma} * p(s)) \right\|
+\end{equation}
+%
 Así, el gradiente ahora representa variaciones abruptas en las probabilidades. El suavizado gaussiano se mantiene con el objetivo de resolver discontinuidades en las probabilidades que puedan estar asociadas a la presencia de ruido.
 
 \subsection{Estudio de sensibilidad}\label{section:estudio_de_sensibilidad}
@@ -191,7 +256,7 @@ Dado que en el esquema propuesto el algoritmo de Modelos Deformables se iniciali
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{images/convergencia_snakes.jpg}
+	\includegraphics[scale=0.8]{images/convergencia_snakes.jpg}
 	\caption{Evolución del desplazamiento promedio respecto de la cantidad de iteraciones}
 	\label{fig:convergencia_snakes}
 \end{figure}
@@ -200,7 +265,7 @@ Dado que en el esquema propuesto el algoritmo de Modelos Deformables se iniciali
 Los coeficientes $a$ y $b$, que ponderan a las fuerzas de tensión y flexión respectivamente, son
 los que controlan la rigidez de la superficie activa. Es de esperar que cuando toman valores altos, la superficie sea más resistente a las deformaciones que con valores pequeños. 
 
-En la Figura \ref{fig:sensibilidad4} se presenta el corte axial de tres superficies diferentes, obtenidas éstas fijando los parámetros $c=0.15$, $d=1.5$ y $k=2$, variando únicamente el valor de ayb (en particular, $a=b=0.005, 0.5 \text{ y } 1$).
+En la Figura \ref{fig:sensibilidad4} se presenta el corte axial de tres superficies diferentes, obtenidas éstas fijando los parámetros $c=0.15$, $d=1.5$ y $k=2$, variando únicamente el valor de $a$ y $b$ (en particular, $a=b=0.005, 0.5 \text{ y } 1$).
 
 \begin{figure}[H]
 	\centering

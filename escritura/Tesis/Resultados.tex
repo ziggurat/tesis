@@ -1,28 +1,28 @@
-\chapter{Resultados - NO CORREGIR!!!}\label{chap:resultados}
-En este capítulo se presentan los resultados obtenidos al evaluar el esquema de segmentación propuesto sobre un conjunto de imágenes de prueba. El mismo consiste en un subconjunto de RM de cerebro extraídas de un \emph{dataset} ampliamente utilizado en el estado del arte, sobre las cuales se evaluó la capacidad del método de segmentación para detectar materia gris (MG), materia blanca (MB) y líquido cefalorraquídeo (LC). La evaluación de diversas características morfológicas de estos tejidos resulta de vital importancia en numerosas aplicaciones, incluyendo el diagnóstico de enfermedades cerebrales tales como el Alzheimer o la esclerosis múltiple \citep{kovacevic2002robust}.
+\chapter{Resultados}\label{chap:resultados}
+En este capítulo se presentan los resultados obtenidos al evaluar el esquema de segmentación propuesto sobre imágenes de prueba. El mismo consiste en un subconjunto de MRI de cerebro extraídas de un \emph{datase}t ampliamente utilizado en el estado del arte, sobre las cuales se evaluó la capacidad del método de segmentación para detectar materia gris , materia blanca y líquido cefalorraquídeo. La evaluación de diversas características morfológicas de estos tejidos resulta de vital importancia en numerosas aplicaciones, incluyendo el diagnóstico de enfermedades cerebrales tales como el Alzheimer o la esclerosis múltiple \citep{kovacevic2002robust}.
 
 El algoritmo fue evaluado tanto desde un punto de vista cuantitativo como cualitativo. Cuantitativamente, se estudió la capacidad del método para segmentar los tejidos anteriormente mencionados, comparando las mallas obtenidas con las segmentaciones de referencia disponibles en el \emph{dataset}, por medio de indicadores apropiados. Durante el estudio cualitativo, además, se contrastaron los datos numéricos con lo observado visualmente, y se analizaron cuestiones relativas a la calidad de las mallas resultantes, al aspecto visual de las mismas, y a diversas particularidades que se presentaron en algunos de los casos de estudio.
-En la Sección \ref{section:datos_usados} se presentan los materiales a los cuales se les aplicó el esquema propuesto. En la sección \ref{section:metricas_calidad} se introducen las métricas de evaluación utilizadas en el análisis cuantitativo. En la Sección \ref{section:evaluacion_cuantitativa} se exponen los resultados de la evaluación cuantitativa utilizando el indicador presentado en la Sección \ref{section:metricas_calidad}. Luego se muestra el análisis cualitativo en la Sección \ref{section:evaluacion_cualitativa} y finalmente en la Sección \ref{section:discusion} se discuten las ventajas y desventajas del esquema propuesto así como las mejoras que se podrían aplicar.
-\section{Datos usados}\label{section:datos_usados}
-Como se mencionó, se estudió la capacidad del algoritmo para la identificación y correcta segmentación de los tres principales tejidos cerebrales: materia blanca, materia gris y líquido cefalorraquídeo. 
 
-Las imágenes utilizadas son un subconjunto de 9 resonancias magnéticas correspondientes al \emph{dataset} Internet Brain Segmentation Repository (ISBR), liberado por el Center for Morphometric Analysis del Massachusetts General Hospital con el objetivo de proveer un conjunto de datos estándar para la evaluación de algoritmos de segmentación de tejidos cerebrales \citep{rohlfing2012image, valverde2015comparison}. 
+En la Sección \ref{section:datos_usados} se presentan los materiales a los cuales se les aplicó el esquema propuesto. En la Sección \ref{section:metricas_calidad} se introducen las métricas de evaluación utilizadas en el análisis cuantitativo. En la Sección \ref{section:evaluacion_cuantitativa} se exponen los resultados de la evaluación cuantitativa utilizando el indicador presentado en la Sección \ref{section:metricas_calidad} y finalmente en la Sección \ref{section:evaluacion_cualitativa} se muestra el análisis cualitativo.
 
-Tradicionalmente conocido en la literatura como ISBR18, el \emph{dataset} está compuesto por 18 MRIs modalidad T1-w de sujetos sin ninguna patología, con una distancia inter-slide de 1.5 mm y una resolución de 256 x 128 x 256 vóxeles, provistas en formato NIfTI-1. En la Figura \ref{fig:ISBR18} se presenta, a modo de ejemplo, un corte de cada uno de los 9 estudios seleccionados para la evaluación del algoritmo. Según puede observarse, el cráneo ha sido removido de las imágenes para evitar errores en la segmentación. Por otro lado, cabe destacar la variabilidad que existe entre las imágenes, en lo que respecta a artefactos, distribución de las intensidades, presencia y ausencia de bordes, ruido, etc. Esto permitió estudiar la capacidad del algoritmo para lidiar con la multiplicidad de casos que puedan llegar a presentarse en la práctica clínica.
+\section{Materiales}\label{section:datos_usados}
+Como se mencionó, se estudió la capacidad del algoritmo para la identificación y correcta segmentación de los tres principales tejidos cerebrales: materia blanca  (MB), materia gris (MG) y líquido cefalorraquídeo (LC).
+
+Las imágenes utilizadas son un subconjunto de 9 resonancias magnéticas correspondientes al \emph{dataset Internet Brain Segmentation Repository} (IBSR), liberado por el Center for Morphometric Analysis del Massachusetts General Hospital con el objetivo de proveer un conjunto de datos estándar para la evaluación de algoritmos de segmentación de tejidos cerebrales \citep{rohlfing2012image, valverde2015comparison}. Tradicionalmente conocido en la literatura como IBSR18, el \emph{dataset} está compuesto por 18 MRIs modalidad T1-w de sujetos sin ninguna patología, con una distancia inter-slide de 1.5 mm y una resolución de 256 x 128 x 256 vóxeles, provistas en formato NIfTI-1. En la Figura \ref{fig:ISBR18} se presenta, a modo de ejemplo, un corte de cada uno de los 9 estudios seleccionados para la evaluación del algoritmo. Según puede observarse, el cráneo ha sido removido de las imágenes para evitar errores en la segmentación. Por otro lado, cabe destacar la variabilidad que existe entre las imágenes, en lo que respecta a artefactos, distribución de las intensidades, presencia y ausencia de bordes, ruido, etc. Esto permitió estudiar la capacidad del algoritmo para lidiar con la multiplicidad de casos que puedan llegar a presentarse en la práctica clínica.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.7]{images/FALTA.png}
+	\includegraphics[scale=0.6]{images/IBSRsx9.jpg}
 	\caption{Cortes de las MRI de IBSR18 utilizadas para la evaluación del método de segmentación propuesto.}
 	\label{fig:ISBR18}
 \end{figure}
 
-El conjunto de datos provee también volúmenes de referencias, también denominados ground truths (GT), como el que se observa en la Figura \ref{fig:GT}(b) para una de las imágenes, los cuales son utilizados en la comunidad científica para la evaluación de resultados. Cada imagen posee uno de estos volúmenes asociado, en donde la materia blanca, la materia gris, el líquido cefalorraquídeo y el fondo se representan con intensidades bien diferenciadas. Así, resulta muy sencillo elaborar por umbralado las máscaras binarias correspondientes a cada tejido (Figura \ref{fig:GT}(b)). A partir de estas máscaras es que se extraen las mallas de superficie que luego son utilizadas para realizar la comparación con la segmentación obtenida utilizando el indicador presentado en la sección 1.2.
+El conjunto de datos provee también volúmenes de referencias, también denominados \emph{ground truths} (GT), como el que se observa en la Figura \ref{fig:GT}(b) para una de las imágenes, los cuales son utilizados en la comunidad científica para la evaluación de resultados. Cada imagen posee uno de estos volúmenes asociado, en donde la MB, la MG, el LC y el fondo se representan con intensidades bien diferenciadas. Así, resulta muy sencillo elaborar por umbralado las máscaras binarias correspondientes a cada tejido (Figura \ref{fig:GT}(b)). A partir de estas máscaras es que se extraen las mallas de superficie que luego son utilizadas para realizar la comparación con la segmentación obtenida utilizando el indicador presentado en la Sección \ref{section:metricas_calidad}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.7]{images/FALTA.png}
-	\caption{(a) corte axial de la imagen IBSR07 (b) Máscaras binarias correspondiente al GT asociado (en rojo la materia blanca, en verde el líquido cefalorraquídeo y en azul la materia gris)}
+	\includegraphics[scale=0.06]{images/IBSRvsGT.jpg}
+	\caption{(a) corte axial de la imagen IBSR07 (b) Máscaras binarias correspondiente al GT asociado (en rojo la materia blanca, en verde el LC y en azul la MG)}
 	\label{fig:GT}
 \end{figure}
 
@@ -30,10 +30,12 @@ El conjunto de datos provee también volúmenes de referencias, también denomin
 Para evaluar cuantitativamente la calidad de las mallas obtenidas, se realizó una comparación entre la malla resultante del esquema propuesto y la malla generada a partir de la segmentación de referencia. La técnica utilizada para realizar el cálculo de la diferencia entre las superficies utiliza un método basado en una aproximación discreta del volumen encerrado entre las mallas \citep{d2008indicador}.
 
 Entonces, para estudiar los resultados obtenidos por el algoritmo se consideró el indicador de calidad de la segmentación conocido como coeficiente Dice, dado por la ecuación:
-
-$$ Q = \dfrac{V_{R}\bigcup V_{S}}{V_{R}\bigcap V_{S}}$$
-
-donde $V_{S}$ es el volumen encerrado por la superficie segmentada $S$ y $V_{R}$ es el encerrado por la superficie de referencia $R$. Esta métrica alcanza el valor 1 cuando ambos volúmenes coinciden, y es cercana a 0 cuando los volúmenes son completamente difusos. El cálculo numérico de la unión y la intersección del volumen encerrado por las superficies se realizó utilizando una implementación propia de un método basado en la discretización del espacio y el uso del test del rayo \cite{foley1994introduction, d2008indicador}. La estrategia consiste en la discretización de dos de las tres dimensiones de la imagen, generando una matriz de $ N \times M $ celdas, desde las cuales se disparan rayos paralelos entre sí. Estos rayos intersectan o no las superficies, generando una serie de segmentos como se muestra en la Figura \ref{fig:discretizacionvolumen}.
+%
+\begin{equation}
+Q = \dfrac{V_{R}\bigcup V_{S}}{V_{R}\bigcap V_{S}}
+\end{equation}
+%
+donde $V_{S}$ es el volumen encerrado por la superficie segmentada $S$ y $V_{R}$ es el encerrado por la superficie de referencia $R$. Esta métrica alcanza el valor 1 cuando ambos volúmenes coinciden, y es cercana a 0 cuando los volúmenes son completamente difusos. El cálculo numérico de la unión y la intersección del volumen encerrado por las superficies se realizó utilizando una implementación propia de un método basado en la discretización del espacio y el uso del test del rayo \citep{foley1994introduction, d2008indicador}. La estrategia consiste en la discretización de dos de las tres dimensiones de la imagen, generando una matriz de $ N \times M $ celdas, desde las cuales se disparan rayos paralelos entre sí. Estos rayos intersectan o no las superficies, generando una serie de segmentos como se muestra en la Figura \ref{fig:discretizacionvolumen}.
 
 \begin{figure}[H]
 \centering
@@ -42,14 +44,17 @@ donde $V_{S}$ es el volumen encerrado por la superficie segmentada $S$ y $V_{R}$
 \label{fig:discretizacionvolumen}
 \end{figure}
 
-Para cada rayo, se suman las longitudes de los segmentos que atraviesan las mallas correspondientes a $V_{R}$ y $V_{S}$. Luego, esta suma por el área de la celda es una aproximación del volumen encerrado entre las dos mallas. Cuanto más granular es la discretización (es decir, celdas más pequeñas) el error de aproximación será menor.
+Para cada rayo, se suman las longitudes de los segmentos que atraviesan las mallas correspondientes a $V_{R}$ y $V_{S}$, según corresponda. Luego, esta suma por el área de la celda es una aproximación del volumen encerrado entre las dos mallas. Cuanto más granular es la discretización (es decir, celdas más pequeñas) el error de aproximación será menor.
 
 \section{Evaluación cuantitativa}\label{section:evaluacion_cuantitativa}
+Inicialmente se obtuvieron los resultados aplicando de manera aislada la primera parte del esquema de segmentación propuesto, basada en el algoritmo de Fuzzy C-Means (FCM). En todos los casos el método se corrió un máximo de 50 iteraciones, siempre que no se haya alcanzado la convergencia previamente. El valor $\epsilon$ de convergencia empleado fue de $1x10^{-4}$. Tanto la cantidad máxima de iteraciones como $\epsilon$ fueron escogidos conforme el análisis de sensibilidad expuesto en la Sección \ref{section:segmentacion_fuzzy}. Debido a que, como se mencionó en el capítulo correspondiente, la salida del FCM consiste en una segmentación difusa de cada tejido, se aplicó  el método de umbralado descrito en la Sección \ref{section:umbralado} sobre los resultados obtenidos. Posteriormente se generaron mallas de superficie a partir de cada umbralado tal como se explicó en la Sección \ref{section:extraccion_de_mallas}. Los valores de calidad resultantes fueron obtenidos comparando la malla de cada tejido con la correspondiente malla extraída a partir del volumen de referencia provisto en el \emph{dataset}.
+
+Posteriormente se calcularon los indicadores sobre el pipeline completo del método propuesto en este trabajo. Las mallas extraídas a partir del volumen obtenido por umbralado sobre la matriz de probabilidades fueron deformadas utilizando el método de Superficies Activas, considerando para su evolución los mapas probabilísticos correspondientes a cada tejido. Los parámetros del método fueron seleccionados en base a un análisis cualitativo de la malla resultante utilizando una determinada configuración sobre una única imagen, comparándola con la malla obtenida luego del FCM, y posteriormente se ajustaron intentando mejorar el indicador cuantitativo para esa misma imagen. La configuración final obtenida fue fijada posteriormente para el resto de las imágenes del conjunto. Los parámetros que dieron mejores indicadores para cada tejido se presentan en la Tabla \ref{table:parametros_snakes}.
 
 \begin{table}[h]
 	\centering
-	\begin{tabular}{l|llllll}
-		& A y B & C & K & D & Iteraciones & $\epsilon$ \\ \hline
+	\begin{tabular}{c|cccccc}
+		\multicolumn{1}{l|}{} & A y B & C & K & D & It & $\epsilon$ \\ \hline
 		MB & 0.01 & 0.001 & 2 & 1 & 50 & 0.001 \\
 		MG & 0.08 & 0.08 & 6 & 1 & 50 & 0.001 \\
 		LC & 0.05 & 0.08 & 2 & 1 & 50 & 0.001
@@ -58,79 +63,98 @@ Para cada rayo, se suman las longitudes de los segmentos que atraviesan las mall
 	\label{table:parametros_snakes}
 \end{table}
 
+En la Tabla \ref{table:resultados_gris}, Tabla \ref{table:resultados_blanca}, y Tabla \ref{table:resultados_liquido} se presentan los valores de coeficiente Dice obtenidos para la segmentación de MG, MB y LC respectivamente. Se plantearon diferentes experimentos, utilizando como descriptores de la imagen por un lado sólo las intensidades (FCM I), por otro lado las intensidades y la imagen convolucionada con un filtro gaussiano con valor de $\sigma = 2$ (FCM I+G(2)), y por último, las intensidades y la imagen convolucionada con el mismo filtro con $\sigma = 0.5$ (FCM I+G(0.5)). Tomando como base las mallas resultantes, se ejecutó el método de Snakes utilizando la información de la matriz de probabilidad correspondiente al tejido evaluado (SNK I, SNKI+G(0.5), SNKI+G(2)). Adicionalmente se ejecutó el algoritmo de Snakes sobre la información proveniente de la imagen, en lugar de la matriz de probabilidades.
+
 \begin{table}[h]
-		\centering
-	\begin{tabular}{l|cll|clll}
-		& \multicolumn{3}{c|}{Fuzzy} & \multicolumn{4}{c}{Snakes} \\ \cline{2-8} 
-		& Int & Int +G($2$) & Int + G($0.5$) & Int & Int +G($2$) & Int + G($0.5$) & Imagen \\ \hline
-		ISBR1 & 66.81\% & 64.26\% & 67.32\% & 73.25\% & 70.56\% & 73.29\% & 59.39\% \\
-		ISBR2 & 73.30\% & 70.16\% & 72.81\% & 74.53\% & 72.19\% & 74.27\% & 59.55\% \\
-		ISBR3 & 68.93\% & 67.92\% & 68.68\% & 73.70\% & 72.61\% & 73.74\% & 62.79\% \\
-		ISBR4 & 64.22\% & 69.54\% & 62.03\% & 70.38\% & 73.94\% & 68.96\% & 62.83\% \\
-		ISBR5 & 71.31\% & 68.38\% & 70.53\% & 73.76\% & 71.54\% & 73.44\% & 54.03\% \\
-		ISBR6 & 69.67\% & 65.79\% & 66.79\% & 74.01\% & 69.91\% & 73.64\% & 45.88\% \\
-		ISBR7 & 55.76\% & 55.90\% & 54.83\% & 64.71\% & 62.54\% & 63.94\% & 46.25\% \\
-		ISBR8 & 59.26\% & 59.68\% & 58.67\% & 68.90\% & 65.85\% & 67.90\% & 43.10\% \\
-		ISBR9 & 53.95\% & 54.62\% & 53.40\% & 63.90\% & 61.21\% & 63.17\% & 43.43\% \\ \hline
-		Media & 64.80\% & 64.03\% & 63.90\% & 70.79\% & 68.93\% & 70.26\% & 53.03\% \\ \hline
-		Desvio Estandar & 6.98\% & 5.90\% & 6.98\% & 4.12\% & 4.60\% & 4.42\% & 8.39\%
-	\end{tabular}
-	\caption{Coeficientes Dice, media y desvío estándar para la segmentación de la materia gris}
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{r|ccc|cccc}
+			& \cellcolor[HTML]{93D092}FCM I & \cellcolor[HTML]{93D092}\begin{tabular}[c]{@{}c@{}}FCM\\ I+G(2)\end{tabular} & \cellcolor[HTML]{93D092}\begin{tabular}[c]{@{}c@{}}FCM\\ I+G(0.5)\end{tabular} & \cellcolor[HTML]{CBCEFB}SNK I & \cellcolor[HTML]{CBCEFB}\begin{tabular}[c]{@{}c@{}}SNK\\ I+G(2)\end{tabular} & \cellcolor[HTML]{CBCEFB}\begin{tabular}[c]{@{}c@{}}SNK\\ I+G(0.5)\end{tabular} & \cellcolor[HTML]{CBCEFB}Imagen \\ \hline
+			ISBR1 & 0.6681 & 0.6426 & 0.6732 & 0.7325 & 0.7056 & \textbf{0.7329} & 0.5939 \\
+			ISBR2 & 0.7330 & 0.7016 & 0.7281 & \textbf{0.7453} & 0.7219 & 0.7427 & 0.5955 \\
+			ISBR3 & 0.6893 & 0.6792 & 0.6868 & 0.7370 & 0.7261 & \textbf{0.7374} & 0.6279 \\
+			ISBR4 & 0.6422 & 0.6954 & 0.6203 & 0.7038 & \textbf{0.7394} & 0.6896 & 0.6283 \\
+			ISBR5 & 0.7131 & 0.6838 & 0.7053 & \textbf{0.7376} & 0.7154 & 0.7344 & 0.5403 \\
+			ISBR6 & 0.6967 & 0.6579 & 0.6679 & \textbf{0.7401} & 0.6991 & 0.7364 & 0.4588 \\
+			ISBR7 & 0.5576 & 0.5590 & 0.5483 & \textbf{0.6471} & 0.6254 & 0.6394 & 0.4625 \\
+			ISBR8 & 0.5926 & 0.5968 & 0.5867 & \textbf{0.6890} & 0.6585 & 0.6790 & 0.4310 \\
+			ISBR9 & 0.5395 & 0.5462 & 0.5340 & \textbf{0.6390} & 0.6121 & 0.6317 & 0.4343 \\ \hline
+			Media & 0.6480 & 0.6403 & 0.6390 & \textbf{0.7079} & 0.6893 & 0.7026 & 0.5303 \\ \hline
+			Desvio Estandar & 0.0698 & 0.0590 & 0.0698 & \textbf{0.0412} & 0.0460 & 0.0442 & 0.0839 \\ \hline
+		\end{tabular}
+	}
+	\caption{Coeficientes Dice obtenidos para cada imagen de prueba, media y desvío estándar para la segmentación de la MG}
 	\label{table:resultados_gris}
 \end{table}
+
+
+Tras la ejecución del algoritmo de Snakes utilizando los resultados del FCM con intensidades y con el filtro gaussiano para la segmentación de MG se observa que, para todos los casos, el indicador de calidad mejora. Para las pruebas efectuadas sobre las 9 imágenes se obtuvo un incremento promedio de 6 puntos porcentuales en la métrica del Snakes sobre el FCM solo con intensidades, un incremento promedio de 4.9 puntos porcentuales para la ejecución de Snakes sobre las intensidades junto con el filtro gaussiano con $\sigma = 2$ y un aumento de 6.3 puntos porcentuales, en promedio, para el Snakes aplicado sobre los resultados del FCM con intensidades más el filtro gaussiano con $\sigma = 0.5$. Adicionalmente, los desvíos son menores en todos los casos para las ejecuciones de Snakes respecto a sus correspondientes corridas de FCM. Esto indica una menor variabilidad de los resultados, generando valores dentro de un rango acotado. Otro indicador positivo es el hecho de que, inclusive al utilizar los mismos parámetros para todas las imágenes, se observa una reducción del desvío, lo que indica que los resultados son estables sin necesidad de una adaptación de los parámetros a cada imagen en particular. 
+
+También se puede apreciar que en los casos en los que el FCM dio indicadores bajos, como en las imágenes IBSR7, 8 y 9, la mejora obtenida con Snakes supera los 9 puntos. Esto señala una tendencia del modelo de Snakes a mejorar mallas de baja calidad, como las que en estos casos fueron generadas desde el FCM.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{images/BoxPlotMG.png}
-	\caption{Medianas, percentiles y varianza para la segmentación de la materia gris}
+	\caption{Boxplot presentando la distribución estadística  de los indicadores calculados para la segmentación de la MG, para todas las configuraciones del método seleccionadas.
+		}
 	\label{fig:boxplotMG}
 \end{figure}
 
+En la Figura \ref{fig:boxplotMG} se presenta un análisis sencillo sobre el comportamiento de los indicadores de calidad para la segmentación de MG para cada método. El gráfico muestra que FCM tiene una varianza relativamente grande entre los distintos experimentos. Por el contrario, las tres primeras ejecuciones de Snakes, además de mejorar los indicadores en cada uno de los casos como se observó en la Tabla \ref{table:resultados_gris}, tienen una varianza más pequeña, logrando resultados más consistentes y dentro de un rango más acotado en relación a FCM.
+
 \begin{table}[h]
-	\centering
-	\begin{tabular}{l|cll|clll}
-		& \multicolumn{3}{c|}{Fuzzy} & \multicolumn{4}{c}{Snakes} \\ \cline{2-8} 
-		& Int & Int +G($2$) & Int + G($0.5$) & Int & Int +G($2$) & Int + G($0.5$) & Imagen \\ \hline
-		ISBR1 & 75.42\% & 72.19\% & 75.27\% & 73.20\% & 69.57\% & 72.86\% & 56.17\% \\
-		ISBR2 & 81.31\% & 78.75\% & 81.27\% & 78.80\% & 75.47\% & 78.58\% & 60.82\% \\
-		ISBR3 & 77.29\% & 75.02\% & 76.89\% & 74.70\% & 71.58\% & 74.10\% & 56.84\% \\
-		ISBR4 & 76.53\% & 76.80\% & 76.90\% & 74.63\% & 73.34\% & 74.53\% & 60.16\% \\
-		ISBR5 & 76.73\% & 73.45\% & 76.46\% & 74.55\% & 71.10\% & 74.23\% & 55.96\% \\
-		ISBR6 & 74.69\% & 70.22\% & 72.29\% & 73.02\% & 69.22\% & 71.46\% & 53.60\% \\
-		ISBR7 & 79.64\% & 75.24\% & 78.71\% & 77.41\% & 71.90\% & 76.48\% & 63.24\% \\
-		ISBR8 & 80.62\% & 77.37\% & 80.30\% & 78.27\% & 73.57\% & 77.72\% & 59.27\% \\
-		ISBR9 & 77.84\% & 73.48\% & 77.08\% & 75.59\% & 70.11\% & 74.78\% & 60.50\% \\ \hline
-		Media & 77.79\% & 74.72\% & 77.24\% & 75.57\% & 71.76\% & 74.97\% & 58.51\% \\ \hline
-		Desvio Estandar & 2.29\% & 2.69\% & 2.67\% & 2.12\% & 2.06\% & 2.27\% & 3.04\%
-	\end{tabular}
-	\caption{Coeficientes Dice, media y desvío estándar para la segmentación de la materia blanca}
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{r|ccc|cccc}
+			& \cellcolor[HTML]{93D092}FCM I & \cellcolor[HTML]{93D092}\begin{tabular}[c]{@{}c@{}}FCM\\ I+G(2)\end{tabular} & \cellcolor[HTML]{93D092}\begin{tabular}[c]{@{}c@{}}FCM\\ I+G(0.5)\end{tabular} & \cellcolor[HTML]{CBCEFB}SNK I & \cellcolor[HTML]{CBCEFB}\begin{tabular}[c]{@{}c@{}}SNK\\ I+G(2)\end{tabular} & \cellcolor[HTML]{CBCEFB}\begin{tabular}[c]{@{}c@{}}SNK\\ I+G(0.5)\end{tabular} & \cellcolor[HTML]{CBCEFB}Imagen \\ \hline
+			ISBR1 & \textbf{0.7542} & 0.7219 & 0.7527 & 0.7320 & 0.6957 & 0.7286 & 0.5617 \\
+			ISBR2 & \textbf{0.8131} & 0.7875 & 0.8127 & 0.7880 & 0.7547 & 0.7858 & 0.6082 \\
+			ISBR3 & \textbf{0.7729} & 0.7502 & 0.7689 & 0.7470 & 0.7158 & 0.7410 & 0.5684 \\
+			ISBR4 & 0.7653 & 0.7680 & \textbf{0.7690} & 0.7463 & 0.7334 & 0.7453 & 0.6016 \\
+			ISBR5 & \textbf{0.7673} & 0.7345 & 0.7646 & 0.7455 & 0.7110 & 0.7423 & 0.5596 \\
+			ISBR6 & \textbf{0.7469} & 0.7022 & 0.7229 & 0.7302 & 0.6922 & 0.7146 & 0.5360 \\
+			ISBR7 & \textbf{0.7964} & 0.7524 & 0.7871 & 0.7741 & 0.7190 & 0.7648 & 0.6324 \\
+			ISBR8 & \textbf{0.8062} & 0.7737 & 0.8030 & 0.7827 & 0.7357 & 0.7772 & 0.5927 \\
+			ISBR9 & \textbf{0.7784} & 0.7348 & 0.7708 & 0.7559 & 0.7011 & 0.7478 & 0.6050 \\ \hline
+			Media & \textbf{0.7779} & 0.7472 & 0.7724 & 0.7557 & 0.7176 & 0.7497 & 0.5851 \\ \hline
+			Desvio Estandar & 0.0229 & 0.0269 & 0.0267 & 0.0212 & \textbf{0.0206} & 0.0227 & 0.0304 \\ \hline
+		\end{tabular}
+	}
+	\caption{Coeficientes Dice, media y desvío estándar para la segmentación de la materia blanca
+		}
 	\label{table:resultados_blanca}
 \end{table}
+
+En contraste con los resultados obtenidos para la MG, para la MB no se lograron mejoras respecto del resultado del FCM al ejecutar Snakes, como se puede observar en la Tabla \ref{table:resultados_blanca}. Además, para la ejecución basada únicamente en las intensidades se observa un decremento promedio de 2 puntos para el caso de las intensidades y un decremento de 3 puntos para los dos casos donde se utilizó el filtro gaussiano. Si se observa la Figura \ref{fig:boxplotMB}, se puede advertir en este caso una menor varianza de los indicadores para la ejecución de FCM para la segmentación de MB, comparada con la Figura \ref{fig:boxplotMG}. Una situación similar ocurre para las distintas opciones de ejecución del Snakes.
+
+Analizando estos dos experimentos, los resultados parecieran indicar que Snakes tiene una mejor performance al trabajar sobre mallas de baja calidad (como en el caso de MG), y logra adaptarlas mejor utilizando el mapa probabilístico. Contrariamente, Snakes tiene dificultades para lograr mejoras sobre un malla que ya se puede considerar de buena calidad, como sucede en este experimento para MB.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{images/BoxPlotMB.png}
-	\caption{Medianas, percentiles y varianza para la segmentación de la materia blanca}
+	\caption{Boxplot presentando la distribución estadística de los indicadores calculados para la segmentación de la materia blanca, para todas las configuraciones del método seleccionadas.}
 	\label{fig:boxplotMB}
 \end{figure}
 
+
+Como muestra la Tabla \ref{table:resultados_liquido}, tanto el FCM como el Snakes mostraron valores de calidad muy bajos para la segmentación del líquido cefalorraquídeo, lo que también puede apreciarse a partir de la Figura \ref{fig:boxplotLC}, en la cual se muestran además los valores altos de varianza  para las imágenes procesadas.  Estos resultados pueden ser causados por las diferencias de la clasificación del líquido cefalorraquideo sulcal (sCSF) en la segmentación de referencia. En general, los métodos tienden a clasificar los vóxeles de sCSF como líquido cefalorraquídeo. Sin embargo, los mismos están segmentados dentro del área gris en el \emph{ground truth} \citep{valverde2015comparison}. En este trabajo también  se obtienen resultados igualmente bajos para la segmentación del líquido cefalorraquideo utilizando diferentes algoritmos y proponen un pre procesamiento para quitar el sCSF y obtener mejores resultados al comparar con el volumen de referencia.
+
 \begin{table}[h]
 	\centering
-	\begin{tabular}{l|cll|clll}
-		& \multicolumn{3}{c|}{Fuzzy} & \multicolumn{4}{c}{Snakes} \\ \cline{2-8} 
-		& Int & Int +G($2$) & Int + G($0.5$) & Int & Int +G($2$) & Int + G($0.5$) & Imagen \\ \hline
-		ISBR1 & 19.14\% & 19.19\% & 19.57\% & 18.32\% & 17.55\% & 18.71\% & 9.81\% \\
-		ISBR2 & 30.85\% & 31.07\% & 30.47\% & 28.05\% & 27.45\% & 27.84\% & 12.83\% \\
-		ISBR3 & 13.32\% & 16.67\% & 14.01\% & 13.62\% & 15.64\% & 14.13\% & 2.97\% \\
-		ISBR4 & 8.39\% & 12.85\% & 8.21\% & 8.09\% & 11.56\% & 7.98\% & 5.18\% \\
-		ISBR5 & 38.25\% & 38.59\% & 37.54\% & 34.58\% & 32.91\% & 33.72\% & 2.86\% \\
-		ISBR6 & 45.12\% & 46.89\% & 44.91\% & 40.22\% & 39.27\% & 40.14\% & 12.96\% \\
-		ISBR7 & 8.98\% & 17.41\% & 10.06\% & 9.49\% & 17.02\% & 10.82\% & 5.51\% \\
-		ISBR8 & 14.65\% & 27.28\% & 15.20\% & 14.55\% & 26.01\% & 15.23\% & 8.81\% \\
-		ISBR9 & 11.01\% & 19.09\% & 11.90\% & 11.09\% & 17.81\% & 11.96\% & 5.10\% \\ \hline
-		Media & 21.08\% & 25.45\% & 21.32\% & 19.78\% & 22.80\% & 20.06\% & 7.34\% \\ \hline
-		Desvio Estandar & 13.61\% & 11.44\% & 13.16\% & 11.68\% & 9.14\% & 11.22\% & 3.91\%
-	\end{tabular}
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{r|ccc|cccc}
+			& \cellcolor[HTML]{93D092}FCM I & \cellcolor[HTML]{93D092}\begin{tabular}[c]{@{}c@{}}FCM\\ I+G(2)\end{tabular} & \cellcolor[HTML]{93D092}\begin{tabular}[c]{@{}c@{}}FCM\\ I+G(0.5)\end{tabular} & \cellcolor[HTML]{CBCEFB}SNK I & \cellcolor[HTML]{CBCEFB}\begin{tabular}[c]{@{}c@{}}SNK\\ I+G(2)\end{tabular} & \cellcolor[HTML]{CBCEFB}\begin{tabular}[c]{@{}c@{}}SNK\\ I+G(0.5)\end{tabular} & \cellcolor[HTML]{CBCEFB}Imagen \\ \hline
+			ISBR1 & 0.1914 & 0.1919 & \textbf{0.1957} & 0.1832 & 0.1755 & 0.1871 & 0.0981 \\
+			ISBR2 & 0.3085 & \textbf{0.3107} & 0.3047 & 0.2805 & 0.2745 & 0.2784 & 0.1283 \\
+			ISBR3 & 0.1332 & \textbf{0.1667} & 0.1401 & 0.1362 & 0.1564 & 0.1413 & 0.0297 \\
+			ISBR4 & 0.0839 & \textbf{0.1285} & 0.0821 & 0.0809 & 0.1156 & 0.0798 & 0.0518 \\
+			ISBR5 & 0.3825 & \textbf{0.3859} & 0.3754 & 0.3458 & 0.3291 & 0.3372 & 0.0286 \\
+			ISBR6 & 0.4512 & \textbf{0.4689} & 0.4491 & 0.4022 & 0.3927 & 0.4014 & 0.1296 \\
+			ISBR7 & 0.0898 & \textbf{0.1741} & 0.1006 & 0.0949 & 0.1702 & 0.1082 & 0.0551 \\
+			ISBR8 & 0.1465 & \textbf{0.2728} & 0.1520 & 0.1455 & 0.2601 & 0.1523 & 0.0881 \\
+			ISBR9 & 0.1101 & \textbf{0.1909} & 0.1190 & 0.1109 & 0.1781 & 0.1196 & 0.0510 \\ \hline
+			Media & 0.2108 & \textbf{0.2545} & 0.2132 & 0.1978 & 0.2280 & 0.2006 & 0.0734 \\ \hline
+			Desvío Estándar & 0.1361 & 0.1144 & 0.1316 & 0.1168 & 0.0914 & 0.1122 & \textbf{0.0391} \\ \hline
+		\end{tabular}
+	}
 	\caption{Coeficientes Dice, media y desvío estándar para la segmentación del líquido cefalorraquídeo}
 	\label{table:resultados_liquido}
 \end{table}
@@ -138,10 +162,111 @@ Para cada rayo, se suman las longitudes de los segmentos que atraviesan las mall
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{images/BoxPlotLC.png}
-	\caption{Medianas, percentiles y varianza para la segmentación del líquido cefalorraquídeo}
+	\caption{Boxplot presentando la distribución estadística de los indicadores calculados para la segmentación de la líquido cefalorraquídeo, para todas las configuraciones del método seleccionadas.}
 	\label{fig:boxplotLC}
 \end{figure}
 
+Según puede observarse en los indicadores de los tejidos MB y MG, donde se pudieron alcanzar valores altos de calidad, excepto algunos casos aislados, en general utilizando únicamente intensidades, se pudieron obtener valores de calidad superiores a los obtenidos combinando las intensidades con la imagen convolucionada con un filtro gaussiano. Incluso en los casos en los que se obtuvieron mejoras, las mismas no resultan en extremo significativas. Esto se puede ver en los indicadores de FCM para MB y de SNK para MG.
 
 \section{Evaluación cualitativa}\label{section:evaluacion_cualitativa}
-\section{Discusión}\label{section:discusion}
+Para realizar el análisis cualitativo de las mallas generadas, se utilizó como referencia la imagen original y la matriz de probabilidades obtenida por FCM, correspondiente al tejido evaluado y la variante de descriptores empleada para obtener los mapas probabilísticos utilizando FCM (sólo intensidades, o intensidades combinadas con un filtro Gaussiano con $\sigma = 0.5$ u otro con $\sigma = 2$).
+A modo de referencia, en la Figura \ref{fig:cualitativa_matrices} se puede observar el mismo corte axial, del IBSR 8, y de las matrices correspondientes a la MB obtenida con las diferentes configuraciones de FCM.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{images/IBSR_vs_probx3-001.jpg}
+	\caption{Corte axial de IBSR8. (a) imagen original, (b) matriz FCM I, (c) matriz FCM I+G(0.5), (d) matriz FCM I+G(2).}
+	\label{fig:cualitativa_matrices}
+\end{figure}
+
+Según puede observarse en la figura, el mapa probabilístico obtenido por FCM utilizando solamente las intensidades representa con bordes bien definidos a la región de interés (MB). A medida que se aumenta el sigma del filtro Gaussiano, por otro lado, es posible percibir que los bordes comienzan a difuminarse. En la Figura \ref{fig:cualitativa_acercamiento} se presenta un acercamiento de la matriz generada utilizando únicamente intensidades, y el mismo corte de la matriz utilizando intensidades combinadas con filtro Gaussiano con sigma 2. En la misma es posible observar que existen regiones en las que dejan de distinguirse algunas concavidades, y los bordes pierden definición. Esta particularidad es sin duda la que causa una disminución de la calidad de las mallas obtenidas por FCM con filtro Gaussiano y las generadas con Snakes utilizando estas matrices para guiar a las fuerzas externas, respecto a las obtenidas cuando se trabaja solo en base a las intensidades.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{images/acercamiento_prob_NF_vs_prob_GA2.jpg}
+	\caption{Acercamiento de la matriz de probabilidades de MB para el IBSR8. (a) FCM I, (b) FCM  I+G(2).}
+	\label{fig:cualitativa_acercamiento}
+\end{figure}
+
+Para analizar el comportamiento de Snakes sobre estas diferencias en la matriz de probabilidades, en la Figura \ref{fig:cualitativa_mb} se presentan las mallas para MB correspondientes al GT (rojo), al resultado de aplicar FCM con intensidades (verde) y FCM con intensidades y filtro Gaussiano con $\sigma = 2$ (amarillo), sobre el mismo corte y acercamiento presentados en las Figuras \ref{fig:cualitativa_matrices} y \ref{fig:cualitativa_acercamiento}. Como se esperaba, en el acercamiento se puede observar que la malla generada por FCM I+G(2) pierde detalles sobre los bordes, alejándose de los mismos, respecto a la malla obtenida con FCM con intensidades, y en particular en el acercamiento se puede ver que la malla de FCM I+G(2) (amarilla) se separa en la sección central donde tanto la malla de GT (roja), como la de FCM I (verde), se mantienen unidas.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{images/MB_1.jpg}
+	\caption{Mallas para la MB del IBSR 8 sobre matriz de probabilidades de FCM con intensidades. Malla de GT(rojo)  y malla obtenidas con FCM I (verde) y con FCM  I+G(2) (amarilla).}
+	\label{fig:cualitativa_mb}
+\end{figure}
+
+Con el objetivo de evaluar cualitativamente la calidad de las mallas obtenidas para los diferentes tejidos del cerebro, a continuación se muestran varios cortes para los experimentos con FCM y Modelos Deformables. Dado que los mejores resultados se alcanzan con las matrices de probabilidades generadas utilizando FCM con intensidades, el siguiente análisis se realizará únicamente sobre mallas obtenidas con FCM con intensidades y Snakes guiados por estas matrices.
+
+\subsection{Materia Blanca}
+En la figura \ref{fig:cualitativa_mb_2}, se puede observar un corte axial de las mallas correspondientes a la MB de la IBSR1, sobre la matriz de probabilidades (Figura \ref{fig:cualitativa_mb_2}(b)) y sobre la imagen original (Figura \ref{fig:cualitativa_mb_2}(c)). Como se puede observar, la malla generada por FCM (azul) se aproxima muy bien a la región de interés. Al definir los parámetros para el algoritmo de Snakes, se buscó propiciar cambios mínimos que permitan que la malla avance mejor sobre aquellos bordes que no se habían alcanzado. 
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{images/MB_2.jpg}
+	\caption{Mallas de GT (rojo), obtenida por FCM (azul) y Snakes (verde) correspondientes a la MB para el IBSR1. (a) Acercamiento esquina superior izquierda del corte (b) Mallas sobre matriz de probabilidades obtenida por FCM I (c) Mallas sobre IBSR}
+	\label{fig:cualitativa_mb_2}
+\end{figure}
+
+Por ejemplo, en el acercamiento (Figura \ref{fig:cualitativa_mb_2}(a)), se ve que la malla generada por Snakes (verde) se adapta mejor a la concavidad que se observa en la imagen. 
+Si bien a simple vista la malla generada con Snakes pareciera mejorar con respecto a la obtenida con FCM, el indicador de calidad obtenido tiene un valor menor. Esto sucede porque, si comparamos con el GT (rojo), en muchos casos el resultado (verde) se aleja de dicha malla.
+
+En la Figura \ref{fig:cualitativa_mb_3} se muestra un corte coronal para las mallas obtenidas, también para MB, para la imagen IBSR 6, en este caso se observa que en general, la malla obtenida mediante Modelos Deformables (verde) se acerca más hacia los bordes respecto a la obtenida por FCM (azul). Sin embargo, en muchos casos, también se aleja de lo definido en el GT (roja). En esta imagen también se aprecia que la malla asociada al GT (roja) tiene dos concavidades, indicadas con el recuadro amarillo, que no se pueden discriminar utilizando únicamente las intensidades de la imagen. Descriptores más complejos que puedan caracterizar ese sector mejorarían las matrices de probabilidad y, por consiguiente, permitirían obtener mejoras utilizando Snakes.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.4]{images/MB_3.jpg}
+	\caption{Mallas de GT (rojo), obtenida por FCM (azul) y Snakes (verde) correspondientes a la MB para el IBSR6. (a) Sobre matriz de probabilidades obtenida por FCM I (b) Sobre IBSR}
+	\label{fig:cualitativa_mb_3}
+\end{figure}
+
+\subsection{Materia Gris}
+Sobre el corte sagital del IBSR9 (Figura \ref{fig:cualitativa_mg}), se puede ver que la malla de GT (roja) se encuentra considerablemente por fuera de lo que se clasifica como MG según la matriz de probabilidades obtenida por FCM (Figura \ref{fig:cualitativa_mg}(a)). Si bien la malla obtenida por FCM (azul) se encuentra bien ajustada al contorno de la región de interés, al observar que los indicadores de calidad no resultan altos, se decidió recalibrar los parámetros para mejorar con la etapa de Snakes. En este caso, incrementando la influencia de la fuerza de inflación y aumentando además el valor de K para permitir que la malla avance hacia valores más disímiles de probabilidad respecto a los de la región, los resultados obtenidos mejoran considerablemente. Este cambio se observa con claridad en la malla obtenida con Snakes (verde), que se aleja levemente del contorno de la matriz de probabilidades respecto de la posición inicial de la malla de FCM (azul), acercándose más a la malla de GT. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{images/MG_1.jpg}
+	\caption{Mallas de GT (rojo), obtenida por FCM (azul) y Snakes (verde) correspondientes a la MG para el IBSR9. (a) Sobre matriz de probabilidades obtenida por FCM con intensidades (b) Sobre IBSR}
+	\label{fig:cualitativa_mg}
+\end{figure}
+
+Algo interesante de analizar es que en todos los estudios considerados, en la segmentación de referencia se identifican como MG a regiones que ni con intensidades ni agregando el filtro gaussiano se pueden apreciar en las matrices de probabilidades obtenidas para dicho tejido (Figura \ref{fig:cualitativa_mg_2}, recuadros rojos). Sólo en ciertos casos, algunos puntos de esta región se identifican con una probabilidad relativamente alta. Por lo tanto, tampoco es posible mejorar la segmentación con Snakes para esta región, dado que se basa en la información de estas matrices para deformar la superficie activa.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.6]{images/MG_probVsGT.jpg}
+	\caption{Corte Axial (A) y Coronal ( C) de las mallas GT para la MG (amarillo), sobre las matrices de probabilidades obtenidas con FCM para distintos IBSR.}
+	\label{fig:cualitativa_mg_2}
+\end{figure}
+
+Dado que esto ocurre con todas las segmentaciones de referencia, es de suponer que se trataría de un tejido que es reconocido por el profesional médico utilizando conocimiento anatómico. La incorporación de otros indicadores más representativos, como se mencionó anteriormente, permitiría segmentar con más precisión la región correspondiente.
+
+\subsection{Liquido Cefalorraquídeo}
+
+En la Figura \ref{fig:cualitativa_lc}, se pueden ver las diferentes mallas para el LC en un corte axial de la IBSR5.  Para seleccionar los parámetros que mejoraran la calidad obtenida para las mallas de esta región, a diferencia de lo ocurrido con la MG, fue necesario disminuir la influencia de la fuerza de inflación y el valor de K, con el objetivo de impulsar a la malla a crecer únicamente en regiones con probabilidades muy similares a las de la región, y contraerse en caso contrario. Según puede observarse, la malla obtenida por Snakes (verde) se contrae levemente respecto de la obtenida por FCM (azul); sin embargo, en diversas regiones (recuadro naranja), la malla resultante sigue siendo considerablemente más grande que la malla de referencia (roja). Por otro lado, al disminuir la capacidad de inflarse de la malla ante probabilidades disímiles, en algunas regiones (recuadro amarillo) se dejan de detectar zonas que corresponden al tejido.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/LC_1.jpg}
+	\caption{Mallas de GT (rojo), obtenida por FCM (azul) y Snakes (verde) correspondientes al LC para el IBSR5. (a) Sobre matriz de probabilidades obtenida por FCM con intensidades (b) Sobre IBSR}
+	\label{fig:cualitativa_lc}
+\end{figure}
+
+En la Figura \ref{fig:cualitativa_3dmagic} se presentan las reconstrucciones tridimensionales de las mallas obtenidas luego de aplicar FCM (azul) y el esquema completo (verde), superpuestas al GT de referencia.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.08]{images/mallas_3D.jpg}
+	\caption{Mallas 3D de GT (rojo) superpuesta con FCM (azul) y GT con Snakes (verde), para la MB, MG y LC del IBSR2.
+		}
+	\label{fig:cualitativa_3dmagic}
+\end{figure}
+
+Para la MB se observa una superposición de las mallas con una predominancia superficial de la malla de FCM (azul) por sobre el GT (rojo). En la imagen correspondiente a Snakes (verde) se observa que la malla presenta una cantidad menor de falsos positivos que la obtenida por FCM.
+
+De manera más acentuada, la misma observación se desprende de las mallas de la MG, donde vemos una predominancia superficial mucho mayor del GT al superponerlo con la malla obtenida con FCM, y no así en el caso de la resultante tras aplicar Snakes, donde se observa una segmentación más adaptada. También es posible notar como la tendencia inflacionaria del Snakes provoca menos falsos positivos, y, por lo tanto, una mejor adaptación a la malla del GT.  Nótese, además, que la aplicación de Snakes produce también un suavizado de la misma.
+
+Para el LC observamos tanto para FCM como para Snakes una sobresegmentación superficial ya que las mallas verde y azul predominan sobre el rojo del GT.
