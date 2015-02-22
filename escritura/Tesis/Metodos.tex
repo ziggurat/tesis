@@ -1,14 +1,14 @@
 \chapter{Esquema de segmentación propuesto}\label{chapter:metodos}
 Este capítulo tiene por objetivo presentar el esquema de segmentación propuesto en este trabajo.  El mismo está basado en la combinación de un algoritmo de Fuzzy C-Means con un esquema de Modelos Deformables. Esta integración permite incorporar fácilmente la información de distintos descriptores extraídos a partir de una imagen al método de Superficies Activas, y al mismo tiempo establecer restricciones espaciales sobre la malla obtenida utilizando Fuzzy C-Means.
  
-La primera etapa de esta propuesta, basada en Fuzzy c-Means se inicializa con la imagen original, indicando la cantidad de regiones que se desean segmentar en la misma (clusters). El resultado es un mapa probabilístico por cluster, que indica para cada punto de la imagen, su probabilidad de pertenencia a dicho cluster.
+La primera etapa de esta propuesta, basada en Fuzzy C-Means se inicializa con la imagen original, indicando la cantidad de regiones que se desean segmentar en la misma (clusters). El resultado es un mapa probabilístico por cluster, que indica para cada punto de la imagen, su probabilidad de pertenencia al mismo.
 
-A partir de estos mapas probabilísticos, y luego de seleccionar la región de interés, se realiza un umbralado y extracción del contorno del objeto para obtener una malla inicial, que es utilizada luego como entrada para el esquema de Superficies Activas. El algoritmo toma la malla de entrada y la deforma utilizando para ello información que obtiene de la matriz de probabilidades obtenida por Fuzzy C-Means.
+A partir de estos mapas probabilísticos, y luego de seleccionar la región de interés, se realiza un umbralado y extracción del contorno del objeto para obtener una malla inicial, que es utilizada luego como entrada para el esquema de Superficies Activas. El algoritmo toma la malla de entrada y la deforma utilizando para ello utilizando para ello la matriz de probabilidades previamente obtenida por Fuzzy C-Means.
 
-En la siguiente sección (\ref{section:descripcion_general}) se resume, en términos generales, el esquema propuesto. En la Sección \ref{section:segmentacion_fuzzy} se hace especial hincapié en el algoritmo de Fuzzy c-Means, en la Sección \ref{section:extraccion_de_mallas} se explican los pasos para realizar la extracción de la malla de superficie, mientras que en la Sección \ref{section:modelos_deformables} se detalla el algoritmo de Snakes utilizado.
+En la siguiente sección (\ref{section:descripcion_general}) se resume, en términos generales, el esquema propuesto. En la Sección \ref{section:segmentacion_fuzzy} se hace especial hincapié en el algoritmo de Fuzzy C-Means, en la Sección \ref{section:extraccion_de_mallas} se explican los pasos para realizar la extracción de la malla de superficie, mientras que en la Sección \ref{section:modelos_deformables} se detalla el algoritmo de Snakes utilizado.
 
 \section{Descripción general}\label{section:descripcion_general}
-El esquema de segmentación propuesto es un pipeline de procesamiento dividido en etapas, en donde la salida de cada etapa es la entrada de la etapa siguiente (Figura \ref{fig:esquema_de_segmentacion}).
+El esquema de segmentación propuesto es un pipeline de procesamiento dividido en etapas, en donde la salida de cada una es la entrada de la siguiente (Figura \ref{fig:esquema_de_segmentacion}).
 
 
 \begin{figure}[H]
@@ -18,7 +18,7 @@ El esquema de segmentación propuesto es un pipeline de procesamiento dividido e
 	\label{fig:esquema_de_segmentacion}
 \end{figure}
 
-Para la primera etapa se utiliza el algoritmo de Fuzzy C-Means (Sección \ref{section:segmentacion_fuzzy}). Este algoritmo, dada una imagen tridimensional y el número de regiones en las que se espera se divida la misma, obtiene una serie de mapas probabilísticos que describen con cuánta probabilidad un punto pertenece o no a una determinada región de interés. A partir de estos mapas se realizan una serie de operaciones que permiten obtener un volumen inicial, binario y uniforme, de cada segmento. Estos volúmenes son sometidos posteriormente a un método de extracción de mallas, que permite obtener una geometría basada en triángulos que recubre completamente a cada región (Sección \ref{section:extraccion_de_mallas}). Finalmente, una de las mallas es escogida por el usuario, para ser refinada utilizando un esquema de Modelos Deformables (Sección \ref{section:modelos_deformables}). El resultado es una superficie suave que recubre a la región de interés y que se asemeja significativamente a la estructura real del objeto.
+Para la primera etapa se utiliza el algoritmo de Fuzzy C-Means (Sección \ref{section:segmentacion_fuzzy}). Este enfoque permite, dada una imagen tridimensional y el número $c$ de regiones en las que se espera se divida la misma, obtener una serie de mapas probabilísticos que describen con cuánta probabilidad un punto pertenece o no a una determinada región de interés. A partir de estos mapas se realizan una serie de operaciones una serie de operaciones mediante las cuales se obtiene un volumen inicial, binario y uniforme, de cada segmento. Estos volúmenes son sometidos posteriormente a un método de extracción de mallas, mediante el cual se construye una geometría basada en triángulos que recubre completamente a cada región (Sección \ref{section:extraccion_de_mallas}). Finalmente, una de las mallas es escogida por el usuario, para ser refinada utilizando un esquema de Modelos Deformables (Sección \ref{section:modelos_deformables}). El resultado es una superficie suave que recubre a la región de interés y que se asemeja significativamente a la estructura real del objeto.
 
 \section{Segmentación por Fuzzy C-Means}\label{section:segmentacion_fuzzy}
 \input{Fuzzy}
@@ -51,17 +51,17 @@ Como se puede observar en la Figura \ref{fig:umbralado}, el umbralado aplicado a
 En algunos casos, luego del umbralado prevalecen pequeños huecos dentro del volumen binario. Para que el algoritmo de mallado no extraiga una superficie de estas zonas no deseadas, eliminamos los pequeños huecos que quedaron dentro del área de interés. Aplicamos un método de eliminación de huecos que consiste en marcar como pertenecientes a la zona de interés aquellos grupos de voxeles que hayan sido previamente asignados al fondo pero que no están conectados al mismo \citep{soille2003morphological}. Para estudiar la conexión con el fondo se realizó un recorrido del volumen binario desde el fondo hacia la región de interés.
 
 \subsection{Extracción de la malla}
-El último paso es obtener el contorno del objeto de interés en forma de una lista de puntos vinculados. Estos puntos se obtienen a partir del volumen binario utilizando un enfoque de simplificación de superficie \cite{fang2009tetrahedral}, que permite obtener una malla que vincula los puntos mediante triángulos. Inicialmente se obtiene una representación de la superficie desde el volumen tridimensional. Esto se logra identificando cuando hay un cambio de blanco a negro o de negro a blanco en el volumen binario. Una vez obtenida esta información, se procede a generar una lista de puntos y una lista de triplas de puntos que representan cada triángulo.
+El último paso es obtener el contorno del objeto de interés en forma de una lista de puntos vinculados. Estos puntos se obtienen a partir del volumen binario utilizando un enfoque de simplificación de superficie \citep{fang2009tetrahedral}, que permite obtener una malla que vincula los puntos mediante triángulos. Inicialmente se obtiene una representación de la superficie desde el volumen tridimensional. Esto se logra identificando cuando hay un cambio de blanco a negro o de negro a blanco en el volumen binario. Una vez obtenida esta información, se procede a generar una lista de puntos y una lista de triplas de puntos que representan cada triángulo.
 
 
 \section{Modelos deformables}\label{section:modelos_deformables}
-El esquema de segmentación propuesto contempla la utilización de Modelos Deformables (también llamados Contornos Activos) para mejorar la segmentación, mediante la integración de información espacial a la aproximación inicial obtenida con el algoritmo de Fuzzy C-Means. El objetivo es obtener una superficie cerrada y suave, que logre ajustarse lo más posible a las estructuras de interés.
+El esquema de segmentación propuesto contempla la utilización de Modelos Deformables (Superficies Activas) para mejorar la segmentación, mediante la integración de información espacial a la aproximación inicial obtenida con el algoritmo de Fuzzy C-Means. El objetivo es obtener una superficie cerrada y suave, que logre ajustarse lo más posible a las estructuras de interés.
 
 Inicialmente se describen las características del modelo clásico de Contornos Activos en 2D \citep{kass1988snakes} (Sección \ref{section:modelo_continuo_contornos_activos}). Luego se presenta su aproximación numérica discreta en 2D y 3D (Sección \ref{section:modelo_discreto_contornos_activos}), propuesta por \cite{mcinerney2000t} y considerada en este trabajo. Por último, se incorpora un análisis de sensibilidad para mostrar el comportamiento de los diferentes parámetros del algoritmo (Sección \ref{section:estudio_de_sensibilidad}).
 
 \subsection{Modelo continuo de Contornos Activos en 2D}\label{section:modelo_continuo_contornos_activos}
 
-En el esquema original de Modelos Deformables en 2D se busca definir un contorno, conocido como Snake, que delimita a la región de interés. Matemáticamente, un Snake se define como una curva paramétrica (Figura \ref{fig:curva_parametrica}):
+En el esquema original de Contornos Activos en 2D se busca definir un contorno, conocido como Snake, que delimita a la región de interés. Matemáticamente, un Snake se define como una curva paramétrica (Figura \ref{fig:curva_parametrica}):
 
 %
 \begin{equation}	
@@ -270,7 +270,7 @@ En la Figura \ref{fig:sensibilidad4} se presenta el corte axial de tres superfic
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.05]{images/sensibilidad4.jpg}
-	\caption{Corte de diferentes superficies activas obtenidas con valores de $c=0.15$, $d=1.5$ y $k=2$ fijos, $a$ y $b$ $0.005$ (amarillo), $0.5$ (naranja) y $1$ (rojo). }
+	\caption{Corte de diferentes superficies activas obtenidas con valores de $c=0.15$, $d=1.5$ y $k=2$ fijos, $a = b = 0.005$ (amarillo), $0.5$ (naranja) y $1$ (rojo). }
 	\label{fig:sensibilidad4}
 \end{figure}
 

@@ -461,7 +461,7 @@
     {0pt}
     {\color{title}}
 %% Sections are preceded by an empty line.
-\titlespacing{\section}{0pt}{\baselineskip}{0pt}
+\titlespacing{\section}{0pt}{\baselineskip}{0.5\baselineskip}
 %% In the table of contents, section names are followed by a line of dots 8pt
 %% apart.
 \dottedcontents{section}[3.8em]{\titlefont}{2.3em}{8pt}
