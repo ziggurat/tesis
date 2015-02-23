@@ -50,6 +50,15 @@ Como se puede observar en la Figura \ref{fig:umbralado}, el umbralado aplicado a
 \subsection{Rellenado de huecos}
 En algunos casos, luego del umbralado prevalecen pequeños huecos dentro del volumen binario. Para que el algoritmo de mallado no extraiga una superficie de estas zonas no deseadas, eliminamos los pequeños huecos que quedaron dentro del área de interés. Aplicamos un método de eliminación de huecos que consiste en marcar como pertenecientes a la zona de interés aquellos grupos de voxeles que hayan sido previamente asignados al fondo pero que no están conectados al mismo \citep{soille2003morphological}. Para estudiar la conexión con el fondo se realizó un recorrido del volumen binario desde el fondo hacia la región de interés.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/rellenado.png}
+	\caption{En rojo, el grupo de vóxeles contiguos rellenados (mismo voxel en los cortes axial, coronal y sagital)}
+	\label{fig:rellenado}
+\end{figure}
+
+En la Figura \ref{fig:rellenado} exponemos un ejemplo de rellenado. Pese a que son pocos puntos los corregidos por el rellenado, este es necesario para evitar que el algoritmo de extracción de mallas triangule esas pequeñas áreas.
+
 \subsection{Extracción de la malla}
 El último paso es obtener el contorno del objeto de interés en forma de una lista de puntos vinculados. Estos puntos se obtienen a partir del volumen binario utilizando un enfoque de simplificación de superficie \citep{fang2009tetrahedral}, que permite obtener una malla que vincula los puntos mediante triángulos. Inicialmente se obtiene una representación de la superficie desde el volumen tridimensional. Esto se logra identificando cuando hay un cambio de blanco a negro o de negro a blanco en el volumen binario. Una vez obtenida esta información, se procede a generar una lista de puntos y una lista de triplas de puntos que representan cada triángulo.
 
